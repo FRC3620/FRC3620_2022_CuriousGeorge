@@ -4,6 +4,12 @@
 
 package frc.robot;
 
+import java.util.function.Consumer;
+
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -19,12 +25,35 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  private Logger logger;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
+    logger = EventLogging.getLogger(Robot.class, Level.INFO);
+    logger.info ("I'm alive!");
+
+    CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {//whenever a command initializes, the function declared bellow will run.
+      public void accept(Command command) {
+        logger.info("Initialized {}", command.getClass().getSimpleName());//I scream at people
+      }
+    });
+
+    CommandScheduler.getInstance().onCommandFinish(new Consumer<Command>() {//whenever a command ends, the function declared bellow will run.
+      public void accept(Command command) {
+        logger.info("Ended {}", command.getClass().getSimpleName());//I, too, scream at people
+      }
+    });
+
+    CommandScheduler.getInstance().onCommandInterrupt(new Consumer<Command>() {//whenever a command ends, the function declared bellow will run.
+      public void accept(Command command) {
+        logger.info("Interrupted {}", command.getClass().getSimpleName());//I, in addition, as well, scream.
+      }
+    });
+    
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
