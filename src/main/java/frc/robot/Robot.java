@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.DataLogger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.RobotMode;
@@ -65,6 +66,12 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    // get data logging going
+    DataLogger robotDataLogger = new DataLogger();
+    new RobotDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);
+    robotDataLogger.setInterval(0.25);
+    robotDataLogger.start();
   }
 
   /**

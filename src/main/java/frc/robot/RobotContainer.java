@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+import org.usfirst.frc3620.misc.CANDeviceFinder;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
@@ -17,6 +22,11 @@ import edu.wpi.first.wpilibj2.command.Command;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  public final static Logger logger = EventLogging.getLogger(RobotContainer.class, Level.INFO);
+  
+  // need this
+  static CANDeviceFinder canDeviceFinder;
+
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
@@ -24,6 +34,9 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    canDeviceFinder = new CANDeviceFinder();
+    logger.info ("CAN bus: " + canDeviceFinder.getDeviceSet());
+
     // Configure the button bindings
     configureButtonBindings();
   }
