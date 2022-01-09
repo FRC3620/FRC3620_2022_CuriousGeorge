@@ -9,7 +9,10 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
+import org.usfirst.frc3620.misc.RobotMode;
 
+import edu.wpi.first.util.net.PortForwarder;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -27,6 +30,8 @@ public class Robot extends TimedRobot {
 
   private Logger logger;
 
+  static RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -35,6 +40,9 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     logger = EventLogging.getLogger(Robot.class, Level.INFO);
     logger.info ("I'm alive!");
+
+    PortForwarder.add (10080, "frcvision.local", 80);
+    PortForwarder.add (10022, "frcvision.local", 22);
 
     CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {//whenever a command initializes, the function declared bellow will run.
       public void accept(Command command) {
@@ -77,7 +85,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    processRobotModeChange(RobotMode.DISABLED);
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -85,6 +95,8 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    processRobotModeChange(RobotMode.AUTONOMOUS);
+
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -106,6 +118,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    processRobotModeChange(RobotMode.TELEOP);
+    logMatchInfo();
   }
 
   /** This function is called periodically during operator control. */
@@ -116,9 +131,42 @@ public class Robot extends TimedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+
+    processRobotModeChange(RobotMode.TEST);
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
+
+  /*
+  * this routine gets called whenever we change modes
+  */
+  void processRobotModeChange(RobotMode newMode) {
+    logger.info("Switching from {} to {}", currentRobotMode, newMode);
+    
+    previousRobotMode = currentRobotMode;
+    currentRobotMode = newMode;
+
+    // if any subsystems need to know about mode changes, let
+    // them know here.
+    // exampleSubsystem.processRobotModeChange(newMode);
+    
+  }
+
+  public static RobotMode getCurrentRobotMode(){
+    return currentRobotMode;
+  }
+
+  void logMatchInfo() {
+    if (DriverStation.isFMSAttached()) {
+      logger.info("FMS attached. Event name {}, match type {}, match number {}, replay number {}", 
+        DriverStation.getEventName(),
+        DriverStation.getMatchType(),
+        DriverStation.getMatchNumber(),
+        DriverStation.getReplayNumber());
+    }
+    logger.info("Alliance {}, position {}", DriverStation.getAlliance(), DriverStation.getLocation());
+  }
+
 }
