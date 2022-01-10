@@ -11,6 +11,39 @@ targetCompatibility = JavaVersion.VERSION_11
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
 
+// need to look at https://discuss.gradle.org/t/custom-processresources-task/16443/9
+task printGitProperties { // make sure generateGitProperties task to execute before accessing generated properties
+    dependsOn generateGitProperties
+    doLast {
+        //println project.projectDir
+        println project.ext.gitProps
+        println project.ext.gitProps["git.dirty"] + " " + project.ext.gitProps["git.commit.id.describe"] + " " + project.ext.gitProps["project.dir"]+ " " + project.ext.gitProps["build.time"]
+    }
+}
+
+def getBuildTime() {
+    return new Date().toString();
+}
+
+gitProperties {
+    // Customize directory using gitPropertiesResourceDir config
+    // The directory in this config key is also added as a classpath entry
+    // (so the git.properties file will be included in the final JAR file)
+    customProperty "build.time", { getBuildTime() }
+    customProperty "project.dir", { project.projectDir.getName() }
+    customProperty 'git.commit.id.describe', { it.describe(tags: true) } 
+    gitPropertiesResourceDir = file("${project.rootDir}/src/main/deploy")
+    extProperty = 'gitProps'
+    //println tasks
+}
+generateGitProperties.outputs.upToDateWhen { false } // make sure the generateGitProperties task always executes (even when git.properties is not changed)
+generateGitProperties.finalizedBy printGitProperties
+
+tasks.processResources.dependsOn generateGitProperties
+
+tasks.findByName('processResources').mustRunAfter 'generateGitProperties'
+//tasks.processResources.dependsOn(generateGitProperties)
+
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project DeployUtils.
 deploy {
@@ -93,10 +126,3 @@ jar {
 deployArtifact.jarTask = jar
 wpi.java.configureExecutableTasks(jar)
 wpi.java.configureTestTasks(test)
-
-gitProperties {
-    // Customize directory using gitPropertiesResourceDir config
-    // The directory in this config key is also added as a classpath entry
-    // (so the git.properties file will be included in the final JAR file)
-    gitPropertiesResourceDir = file("${project.rootDir}/src/main/deploy")
-}
