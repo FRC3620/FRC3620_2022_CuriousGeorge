@@ -5,7 +5,6 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 import edu.wpi.first.hal.HAL;
-import edu.wpi.first.wpilibj.DriverStation;
 
 public class DriverStationLoggingHandler extends Handler {
 	int sequence = 1;

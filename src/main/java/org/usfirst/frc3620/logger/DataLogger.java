@@ -3,6 +3,7 @@ package org.usfirst.frc3620.logger;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
@@ -90,5 +91,17 @@ public class DataLogger extends DataLoggerBase {
         } catch (IOException e) {
             logger.error("trouble when logging data: {}", e);
         }
+    }
+
+    private static final ThreadLocal<DecimalFormat> f2formatter =
+    new ThreadLocal<DecimalFormat>() {
+        @Override
+        protected DecimalFormat initialValue() {
+            return new DecimalFormat("#.##");
+        }
+    };
+
+    public static String f2(double value) {
+        return f2formatter.get().format(value);
     }
 }
