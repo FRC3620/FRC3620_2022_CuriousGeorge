@@ -8,8 +8,6 @@ import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
-import org.usfirst.frc3620.misc.CANDeviceId.CANDeviceType;
-
 import edu.wpi.first.hal.can.CANJNI;
 
 public class CANDeviceFinder {
@@ -26,6 +24,7 @@ public class CANDeviceFinder {
     public CANDeviceFinder() {
         super();
         find();
+        research();
     }
 
     public boolean isDevicePresent(CANDeviceType deviceType, int id) {
@@ -46,6 +45,10 @@ public class CANDeviceFinder {
             }
         }
         return rv;
+    }
+
+    public boolean isPowerDistributionPresent() {
+        return isDevicePresent(CANDeviceType.CTRE_PDP, 0);
     }
 
     /**
@@ -89,15 +92,15 @@ public class CANDeviceFinder {
     class DeviceFinder extends CanFinder {
         Set<CANDeviceId> deviceSet;
         CANDeviceType canDeviceType;
-        DeviceFinder(int devType, int mfg, int apiId, int maxDevices, Set<CANDeviceId> deviceSet, CANDeviceType canDeviceType) {
+        DeviceFinder(CANDeviceType canDeviceType, Set<CANDeviceId> deviceSet) {
             super();
 
             this.deviceSet = deviceSet;
             this.canDeviceType = canDeviceType;
 
-            ids = new int[maxDevices];
-            for (int i = 0; i < maxDevices; i++) {
-                ids[i] = canBusId(devType, mfg, apiId, i);
+            ids = new int[canDeviceType.getMaxDevices()];
+            for (int i = 0; i < canDeviceType.getMaxDevices(); i++) {
+                ids[i] = (canDeviceType.getMsgId() & 0xffffffc0) | (i & 0x3f);
             }
         }
 
@@ -112,13 +115,13 @@ public class CANDeviceFinder {
 
     class APIFinder extends CanFinder {
         CANDeviceType canDeviceType;
-        APIFinder(int devType, int mfg, int deviceId, CANDeviceType canDeviceType) {
+        APIFinder(CANDeviceType canDeviceType, int deviceId) {
             super();
             this.canDeviceType = canDeviceType;
 
             ids = new int[1024];
             for (int i = 0; i < 1024; i++) {
-                ids[i] = canBusId(devType, mfg, i, deviceId);
+                ids[i] = (canDeviceType.msgId & 0xffff0000) | ((i << 6) & 0xffc0) | (deviceId & 0x3f);
             }
         }
 
@@ -137,56 +140,15 @@ public class CANDeviceFinder {
      * cached messages from the robot API.
      */
     public void find() {
+        deviceSet.clear();
+        byDeviceType.clear();
+
         logger.info ("calling find()");
         List<CanFinder> finders = new ArrayList<>();
 
-        /*
-         * PDPs used to be 0x08041400.
-         * 2019.02.09: PDPs respond to APIs 0x50 0x51 0x52 0x59 0x5d
-         */
-        finders.add(new DeviceFinder(8, 4, extractApiId(0x08041400), 1, deviceSet, CANDeviceType.PDP));
-
-        /*
-         * SRX used to be 0x02041400.
-
-        As of 2019.02.08: (SRX @ devid 1)
-         7 0x007 = 020401C1
-        81 0x051 = 02041441 ** using this?
-        82 0x052 = 02041481
-        83 0x053 = 020414C1
-        87 0x057 = 020415C1
-        91 0x05B = 020416C1
-        92 0x05C = 02041701
-        93 0x05D = 02041741
-        94 0x05E = 02041781
-
-        2020.01.20 Device id is 0x0204 (https://github.com/CrossTheRoadElec/Phoenix-api/blob/master/src/main/java/com/ctre/phoenix/motorcontrol/can/TalonSRX.java)
-
-        Talon FX and SRX are the same.
-        */
-        finders.add(new DeviceFinder(2, 4, extractApiId(0x02041441), 64, deviceSet, CANDeviceType.TALON));
-
-        /*
-        SPX used to be 0x01041400.
-
-        As of 2019.02.08:  (SPX @ devid 2)
-         7 0x007 = 010401C2
-        81 0x051 = 01041442 ** using this
-        83 0x053 = 010414C2
-        91 0x05B = 010416C2
-        92 0x05C = 01041702
-        93 0x05D = 01041742
-        94 0x05E = 01041782
-
-        2020.01.20 Device id is 0x0104 (https://github.com/CrossTheRoadElec/Phoenix-api/blob/master/src/main/java/com/ctre/phoenix/motorcontrol/can/VictorSPX.java)
-        */
-        finders.add(new DeviceFinder(1, 4, extractApiId(0x01041442), 64, deviceSet, CANDeviceType.VICTOR_SPX));
-
-        /* we always used 0x09041400 for PCMs */
-        finders.add(new DeviceFinder(9, 4, extractApiId(0x09041400), 64, deviceSet, CANDeviceType.PCM));
-
-        // per REV (0x02051800)
-        finders.add(new DeviceFinder(2, 5, extractApiId(0x02051800), 64, deviceSet, CANDeviceType.SPARK_MAX));
+        for (CANDeviceType canDeviceType : CANDeviceType.values()) {
+            finders.add(new DeviceFinder(canDeviceType, deviceSet));
+        }
 
         findDetails(finders);
     }
@@ -195,18 +157,17 @@ public class CANDeviceFinder {
         logger.info ("calling research()");
         List<CanFinder> finders = new ArrayList<>();
         
-        finders.add(new APIFinder(9, 4, 0, CANDeviceType.PCM)); // PCM
-        finders.add(new APIFinder(8, 4, 0, CANDeviceType.PDP)); // PDP
-        finders.add(new APIFinder(2, 4, 1, CANDeviceType.TALON)); // SRX #1
-        finders.add(new APIFinder(1, 4, 2, CANDeviceType.VICTOR_SPX)); // SPX #2
+        finders.add(new APIFinder(CANDeviceType.CTRE_PCM, 0)); // PCM 0
+        finders.add(new APIFinder(CANDeviceType.CTRE_PDP, 0)); // PDP 0
+        finders.add(new APIFinder(CANDeviceType.REV_PH, 1)); // PCM 0
+        finders.add(new APIFinder(CANDeviceType.REV_PDH, 1)); // PDP 0
+        finders.add(new APIFinder(CANDeviceType.TALON, 1)); // SRX #1
+        finders.add(new APIFinder(CANDeviceType.VICTOR_SPX, 2)); // SPX #2
 
         findDetails(finders);
     }
 
     void findDetails(List<CanFinder> finders) {
-        deviceSet.clear();
-        byDeviceType.clear();
-
         for (CanFinder finder: finders) {
             finder.pass1();
         }

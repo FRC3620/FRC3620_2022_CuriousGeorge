@@ -44,14 +44,13 @@ public class LoggingMaster {
     }
 
     public static File getLoggingDirectory() {
-        System.getProperties().list(System.out);
         if (_logDirectory == null) { // quick check
             synchronized (LoggingMaster.class) {
                 if (_logDirectory == null) {
                     // Set dataLogger and Time information
                     TimeZone.setDefault(TimeZone.getTimeZone("America/Detroit"));
                     // TODO need to change this to not equal RoboRio
-                    if (System.getProperty("os.arch").equals("amd64")) {
+                    if (!System.getProperty("os.arch").equals("arm")) {
                         _logDirectory = new File("./logs");
                     } else {
                         if (_logDirectory == null)
