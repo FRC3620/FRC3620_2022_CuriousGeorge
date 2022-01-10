@@ -3,6 +3,7 @@ import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2022.1.1"
+    id "com.gorylenko.gradle-git-properties" version "2.3.2"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -92,3 +93,10 @@ jar {
 deployArtifact.jarTask = jar
 wpi.java.configureExecutableTasks(jar)
 wpi.java.configureTestTasks(test)
+
+gitProperties {
+    // Customize directory using gitPropertiesResourceDir config
+    // The directory in this config key is also added as a classpath entry
+    // (so the git.properties file will be included in the final JAR file)
+    gitPropertiesResourceDir = file("${project.rootDir}/src/main/deploy")
+}

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.DataLogger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
+import org.usfirst.frc3620.misc.GitNess;
 import org.usfirst.frc3620.misc.RobotMode;
 
 import edu.wpi.first.util.net.PortForwarder;
@@ -40,7 +41,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     logger = EventLogging.getLogger(Robot.class, Level.INFO);
-    logger.info ("I'm alive!");
+    logger.info ("I'm alive! {}", GitNess.gitString());
 
     PortForwarder.add (10080, "frcvision.local", 80);
     PortForwarder.add (10022, "frcvision.local", 22);

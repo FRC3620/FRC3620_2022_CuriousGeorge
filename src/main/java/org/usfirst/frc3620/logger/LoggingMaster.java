@@ -49,7 +49,6 @@ public class LoggingMaster {
                 if (_logDirectory == null) {
                     // Set dataLogger and Time information
                     TimeZone.setDefault(TimeZone.getTimeZone("America/Detroit"));
-                    // TODO need to change this to not equal RoboRio
                     if (!System.getProperty("os.arch").equals("arm")) {
                         _logDirectory = new File("./logs");
                     } else {
