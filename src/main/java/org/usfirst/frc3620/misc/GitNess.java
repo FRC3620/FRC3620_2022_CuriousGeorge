@@ -45,6 +45,14 @@ public class GitNess {
         sb.append(d);
         sb.append(" ");
 
+        d = p.getProperty("git.branch");
+        if (d == null) {
+            d = " Branch=null";
+        } else {
+            d = " Branch=\"" + d + "\"";
+        }
+        sb.append(d);
+
         d = p.getProperty("git.commit.id.describe");
         if (d == null) {
             d = "unknown";
@@ -56,14 +64,6 @@ public class GitNess {
             d = "-unknownDirtyness";
         } else {
             d = Boolean.parseBoolean(d) ? "-dirty" : "";
-        }
-        sb.append(d);
-
-        d = p.getProperty("git.branch");
-        if (d == null) {
-            d = " Branch=null";
-        } else {
-            d = " Branch=\"" + d + "\"";
         }
         sb.append(d);
 
