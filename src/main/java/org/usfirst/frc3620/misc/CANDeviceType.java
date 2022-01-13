@@ -5,6 +5,10 @@
 package org.usfirst.frc3620.misc;
 
 public enum CANDeviceType {
+    /* CAN bus ID for a devType|mfg|api|dev.
+     * total of 32 bits: 8 bit devType, 8 bit mfg, 10 bit API, 6 bit device id.
+     */
+
     /*
      * PDPs used to be 0x08041400.
      * 2019.02.09: PDPs respond to APIs 0x50 0x51 0x52 0x59 0x5d

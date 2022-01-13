@@ -11,7 +11,7 @@ import org.usfirst.frc3620.logger.EventLogging.Level;
 import edu.wpi.first.hal.can.CANJNI;
 
 public class CANDeviceFinder {
-    Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+    static Logger logger = EventLogging.getLogger(CANDeviceFinder.class, Level.INFO);
 
     Set<CANDeviceId> deviceSet = new TreeSet<>();
 
@@ -200,29 +200,7 @@ public class CANDeviceFinder {
             deviceNumberSet.add(canDeviceId.getDeviceNumber());
         }
     }
-
-    /* help to calculate the CAN bus ID for a devType|mfg|api|dev.
-    total of 32 bits: 8 bit devType, 8 bit mfg, 10 bit API, 6 bit device id.
-    */
-    boolean logCanBusIds = false;
-    private int canBusId (int devType, int mfg, int apiId, int devId) {
-        // TODO bounds check parameters
-        int rv = ((devType & 0xff) << 24) |
-          ((mfg & 0xff) << 16 ) |
-          ((apiId & 0x3ff) << 6) |
-          (devId & 0x3f);
-        if (logCanBusIds) {
-          logger.info("devType {}, mfg {}, api {}, devId {} -> {}",
-            String.format ("0x%02X", devType),
-            String.format ("0x%02X", mfg),
-            String.format ("0x%03X", apiId),
-            String.format ("0x%02X", devId),
-            String.format ("0x%08X", rv)
-          );
-        }
-        return rv;
-    }
-
+    
     private int extractDeviceId (int canId) {
         return canId & 0x3f;
     }
