@@ -88,7 +88,7 @@ public class EventLogging {
      *            Message to log.
      */
     public static final void writeWarningToDS(String message) {
-        if (DriverStation.getInstance().isDSAttached()) {
+        if (DriverStation.isDSAttached()) {
         	DriverStation.reportWarning(message, false);
         }
     }
