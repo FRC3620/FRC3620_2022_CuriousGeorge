@@ -15,6 +15,19 @@ targetCompatibility = JavaVersion.VERSION_11
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
 
+test {
+    filter {
+        // https://stackoverflow.com/a/52879530/17887564
+        setFailOnNoMatchingTests(false)
+
+        // run this if nothing else so only this runs
+        includeTestsMatching 'DummyTest'
+
+        // includeTestsMatching 'ConfigurationTest.testMinifier'
+        // includeTestsMatching 'SillyTests'
+    }
+}
+
 task printGitProperties {
     dependsOn generateGitProperties
     doLast {
@@ -90,6 +103,8 @@ def includeDesktopSupport = true
 dependencies {
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
+
+    implementation 'com.google.code.gson:gson:2.8.9'
 
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.32'
