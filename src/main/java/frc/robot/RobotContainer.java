@@ -92,27 +92,8 @@ public class RobotContainer {
   public static RelativeEncoder driveSubsystemRightBackDriveEncoder;
   public static RelativeEncoder driveSubsystemRightBackAzimuthEncoder;
   public static AnalogInput driveSubsystemRightBackHomeEncoder;
-  
-  public static WPI_TalonSRX m_armMotor;
-  public static WPI_TalonFX shooterSubsystemFalcon1;
-  public static WPI_TalonFX shooterSubsystemFalcon2;
-  public static WPI_TalonFX shooterSubsystemFalcon3;
-  public static WPI_TalonSRX shooterSubsystemBallFeeder; 
-  public static CANSparkMax shooterSubsystemHoodMax;
-  public static RelativeEncoder shooterSubsystemHoodEncoder;
-  public static CANSparkMax intakeSubsystemSparkMax;
-  public static CANSparkMax liftSubsystemWinch;
-  public static RelativeEncoder liftEncoder;
-
-  public static Solenoid solenoidArmUp;
-  public static Solenoid intakeSubsystemArmDown;
-  public static DoubleSolenoid liftBrake;
-  public static Solenoid liftRelease;
-  public static Solenoid visionLight;
 
   private static DigitalInput practiceBotJumper;
-  public static DigitalInput liftLimitSwitch;
-  public static DigitalInput hoodLimitSwitch;
 
   public static Compressor theCompressor;
 
