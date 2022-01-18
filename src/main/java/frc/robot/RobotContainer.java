@@ -118,7 +118,7 @@ public class RobotContainer {
     makeSubsystems();
     // Configure the button bindings
     configureButtonBindings();
-    //setupSmartDashboardCommands();
+    setupSmartDashboardCommands();
   }
 
   void setupMotors() {
@@ -195,6 +195,12 @@ public class RobotContainer {
 
       driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
     }
+  }
+
+  void setupSmartDashboardCommands() {
+    SmartDashboard.putData(new ZeroDriveEncodersCommand(driveSubsystem));
+  
+    SmartDashboard.putData("TestAuto", new TestAuto(driveSubsystem));
   }
 
   void makeSubsystems() {
@@ -277,6 +283,12 @@ public class RobotContainer {
    * 
    * @return true if this robot is a competition robot.
    */
+
+  public Command getAutonomousCommand() {
+    // An ExampleCommand will run in autonomous
+    //return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
+    return new TestAuto(driveSubsystem);
+  }
    
   public static boolean amIACompBot() {
     if (DriverStation.isFMSAttached()) {
