@@ -21,9 +21,11 @@ public class TestAuto extends SequentialCommandGroup {
    * Creates a new SimpleAutoCommand.
    */
   public TestAuto(DriveSubsystem driveSubsystem) {
-      addCommands(new AutoDriveCommand(4*12, 180, .2, 180, driveSubsystem),
+      addCommands(
+      new AutoDriveCommand(4*12, 180, .2, 90, driveSubsystem),
       new AutoDriveCommand(4*12, 90, .2, 180, driveSubsystem),
-      new AutoDriveCommand(4*12, 0, .2, 180, driveSubsystem),
-      new AutoDriveCommand(4*12, 270, .2, 180, driveSubsystem));
+      new AutoDriveCommand(4*12, 0, .3, 180, driveSubsystem),
+      new AutoDriveCommand(4*12, 270, .2, 180, driveSubsystem)
+      );
   }
 }
