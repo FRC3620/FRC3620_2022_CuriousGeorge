@@ -77,6 +77,7 @@ public class Robot extends TimedRobot {
 
     chooser.addOption("TestAuto", m_robotContainer.getAutonomousCommand());
     chooser.addOption("5 Ball Auto", m_robotContainer.getAutonomousCommand());
+    chooser.addOption("4 Ball Auto", m_robotContainer.getAutonomousCommand());
 
 
 
