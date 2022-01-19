@@ -24,7 +24,7 @@ public class CANDeviceFinder {
     public CANDeviceFinder() {
         super();
         find();
-        research();
+        // research();
     }
 
     public boolean isDevicePresent(CANDeviceType deviceType, int id) {
