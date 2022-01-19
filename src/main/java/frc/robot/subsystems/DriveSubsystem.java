@@ -27,6 +27,7 @@ import frc.robot.commands.TeleOpDriveCommand;
 import frc.robot.miscellaneous.DriveVectors;
 import frc.robot.miscellaneous.SwerveCalculator;
 import frc.robot.miscellaneous.Vector;
+import frc.robot.miscellaneous.HomeEncoders;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -84,21 +85,6 @@ public class DriveSubsystem extends SubsystemBase {
 	public final double MAX_VELOCITY_IN_PER_SEC = MAX_VELOCITY_RPM*WHEEL_CIRCUMFERENCE/60; //max velocity in inches per second origanlly 60
 	private final double MAX_TURN = 4; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
 
-    // readings of the absolute encoders when the wheels are pointed at true 0 degrees (gears to front of robot)
-	
-	private double COMPETITION_RIGHT_FRONT_ABSOLUTE_OFFSET = 36.8;
-	private double COMPETITION_LEFT_FRONT_ABSOLUTE_OFFSET = -92.1;
-	private double COMPETITION_LEFT_BACK_ABSOLUTE_OFFSET = -122.9;
-	private double COMPETITION_RIGHT_BACK_ABSOLUTE_OFFSET = -62.4;
-	
-	
-	// readings of the absolute encoders when the wheels are pointed at true 0 degrees (gears to front of robot)
-	// PRACTICE BOT!!!!!!!!!
-	private double PRACTICE_RIGHT_FRONT_ABSOLUTE_OFFSET = -122.5;
-	private double PRACTICE_LEFT_FRONT_ABSOLUTE_OFFSET = -116.2;
-	private double PRACTICE_LEFT_BACK_ABSOLUTE_OFFSET = 8.78;
-	private double PRACTICE_RIGHT_BACK_ABSOLUTE_OFFSET = -107.36;
-
 	// readings of the absolute encoders when the wheels are pointed at true 0 degrees (gears to front of robot)
 	// PRACTICE BOT!!!!!!!!!
 	private double RIGHT_FRONT_ABSOLUTE_OFFSET;
@@ -148,16 +134,16 @@ public class DriveSubsystem extends SubsystemBase {
 	  logger.info("ETHERNET MAC address: {}", MacAddress);
 	  if (MacAddress.equals("00-80-2F-18-5C-5F")) {
 		  logger.info("I THINK IM A PRACTICE BOT");
-		RIGHT_FRONT_ABSOLUTE_OFFSET = PRACTICE_RIGHT_FRONT_ABSOLUTE_OFFSET;
-		LEFT_FRONT_ABSOLUTE_OFFSET = PRACTICE_LEFT_FRONT_ABSOLUTE_OFFSET;
-		RIGHT_BACK_ABSOLUTE_OFFSET = PRACTICE_RIGHT_BACK_ABSOLUTE_OFFSET;
-		LEFT_BACK_ABSOLUTE_OFFSET = PRACTICE_LEFT_BACK_ABSOLUTE_OFFSET;
+		RIGHT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_RIGHT_FRONT_ABSOLUTE_OFFSET;
+		LEFT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_LEFT_FRONT_ABSOLUTE_OFFSET;
+		RIGHT_BACK_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_RIGHT_BACK_ABSOLUTE_OFFSET;
+		LEFT_BACK_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_LEFT_BACK_ABSOLUTE_OFFSET;
 	  } else {
 		logger.info("I THINK IM A COMPETITION BOT");
-		  RIGHT_BACK_ABSOLUTE_OFFSET = COMPETITION_RIGHT_BACK_ABSOLUTE_OFFSET;
-		  LEFT_BACK_ABSOLUTE_OFFSET = COMPETITION_LEFT_BACK_ABSOLUTE_OFFSET;
-		  RIGHT_FRONT_ABSOLUTE_OFFSET = COMPETITION_RIGHT_FRONT_ABSOLUTE_OFFSET;
-		  LEFT_FRONT_ABSOLUTE_OFFSET = COMPETITION_LEFT_FRONT_ABSOLUTE_OFFSET;
+		  RIGHT_BACK_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_RIGHT_BACK_ABSOLUTE_OFFSET;
+		  LEFT_BACK_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_LEFT_BACK_ABSOLUTE_OFFSET;
+		  RIGHT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_RIGHT_FRONT_ABSOLUTE_OFFSET;
+		  LEFT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_LEFT_FRONT_ABSOLUTE_OFFSET;
 	  }
 	if (rightFrontDriveMaster != null) {
 		rightFrontVelPID = rightFrontDriveMaster.getPIDController();

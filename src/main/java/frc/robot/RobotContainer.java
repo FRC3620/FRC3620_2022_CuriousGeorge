@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.slf4j.Logger;
@@ -118,7 +119,8 @@ public class RobotContainer {
     makeSubsystems();
     // Configure the button bindings
     configureButtonBindings();
-    //setupSmartDashboardCommands();
+    setupSmartDashboardCommands();
+    setupAutonomousCommands();
   }
 
   void setupMotors() {
@@ -195,6 +197,14 @@ public class RobotContainer {
 
       driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
     }
+  }
+
+  void setupSmartDashboardCommands() {
+    SmartDashboard.putData(new ZeroDriveEncodersCommand(driveSubsystem));
+  
+    SmartDashboard.putData("TestAuto", new TestAuto(driveSubsystem));
+    SmartDashboard.putData("5 Ball Auto", new FiveBallAuto(driveSubsystem));
+    SmartDashboard.putData("4 Ball Auto", new FourBallAuto(driveSubsystem));
   }
 
   void makeSubsystems() {
@@ -277,7 +287,7 @@ public class RobotContainer {
    * 
    * @return true if this robot is a competition robot.
    */
-   
+
   public static boolean amIACompBot() {
     if (DriverStation.isFMSAttached()) {
       return true;
@@ -294,7 +304,22 @@ public class RobotContainer {
 
     return false;
   }
+
+  SendableChooser<Command> chooser = new SendableChooser<>();
+  public void setupAutonomousCommands() {
+
+    SmartDashboard.putData("Auto mode", chooser);
+
+    chooser.addOption("TestAuto", new TestAuto(driveSubsystem));
+    chooser.addOption("5 Ball Auto", new FiveBallAuto(driveSubsystem));
+  }
   
+  public Command getAutonomousCommand() {
+    // An ExampleCommand will run in autonomous
+    //return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
+    return chooser.getSelected();
+  }
+   
 
   
   public static String identifyRoboRIO() {
