@@ -71,6 +71,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     
+
     // get data logging going
     DataLogger robotDataLogger = new DataLogger();
     new RobotDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);

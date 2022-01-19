@@ -204,6 +204,7 @@ public class RobotContainer {
   
     SmartDashboard.putData("TestAuto", new TestAuto(driveSubsystem));
     SmartDashboard.putData("5 Ball Auto", new FiveBallAuto(driveSubsystem));
+    SmartDashboard.putData("4 Ball Auto", new FourBallAuto(driveSubsystem));
   }
 
   void makeSubsystems() {
