@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.slf4j.Logger;
@@ -119,6 +120,7 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     setupSmartDashboardCommands();
+    setupAutonomousCommands();
   }
 
   void setupMotors() {
@@ -286,12 +288,6 @@ public class RobotContainer {
    * @return true if this robot is a competition robot.
    */
 
-  public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    //return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
-    return null;
-  }
-   
   public static boolean amIACompBot() {
     if (DriverStation.isFMSAttached()) {
       return true;
@@ -308,7 +304,22 @@ public class RobotContainer {
 
     return false;
   }
+
+  SendableChooser<Command> chooser = new SendableChooser<>();
+  public void setupAutonomousCommands() {
+
+    SmartDashboard.putData("Auto mode", chooser);
+
+    chooser.addOption("TestAuto", new TestAuto(driveSubsystem));
+    chooser.addOption("5 Ball Auto", new FiveBallAuto(driveSubsystem));
+  }
   
+  public Command getAutonomousCommand() {
+    // An ExampleCommand will run in autonomous
+    //return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
+    return chooser.getSelected();
+  }
+   
 
   
   public static String identifyRoboRIO() {
