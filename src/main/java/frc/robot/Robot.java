@@ -71,15 +71,6 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
     
-    SendableChooser<Command> chooser = new SendableChooser<>();
-
-    SmartDashboard.putData("Auto mode", chooser);
-
-    chooser.addOption("TestAuto", m_robotContainer.getAutonomousCommand());
-    chooser.addOption("5 Ball Auto", m_robotContainer.getAutonomousCommand());
-
-
-
     // get data logging going
     DataLogger robotDataLogger = new DataLogger();
     new RobotDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);
