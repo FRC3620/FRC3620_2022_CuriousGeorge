@@ -201,6 +201,7 @@ public class RobotContainer {
     SmartDashboard.putData(new ZeroDriveEncodersCommand(driveSubsystem));
   
     SmartDashboard.putData("TestAuto", new TestAuto(driveSubsystem));
+    SmartDashboard.putData("5 Ball Auto", new FiveBallAuto(driveSubsystem));
   }
 
   void makeSubsystems() {
@@ -287,7 +288,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     //return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
-    return new TestAuto(driveSubsystem);
+    return null;
   }
    
   public static boolean amIACompBot() {

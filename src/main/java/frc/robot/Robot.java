@@ -76,6 +76,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto mode", chooser);
 
     chooser.addOption("TestAuto", m_robotContainer.getAutonomousCommand());
+    chooser.addOption("5 Ball Auto", m_robotContainer.getAutonomousCommand());
 
 
 
