@@ -16,11 +16,11 @@ import frc.robot.subsystems.DriveSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class TestAuto extends SequentialCommandGroup {
+public class FiveBallAuto extends SequentialCommandGroup {
   /**
    * Creates a new SimpleAutoCommand.
    */
-  public TestAuto(DriveSubsystem driveSubsystem) {
+  public FiveBallAuto(DriveSubsystem driveSubsystem) {
       addCommands(
       //shoot
       new AutoDriveCommand(42, 180, .5, 180, driveSubsystem),
