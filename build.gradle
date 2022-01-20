@@ -28,6 +28,17 @@ test {
     }
 }
 
+// this helps junit test results show up in output
+// look at https://stackoverflow.com/a/36130467/17887564 for some more suggestions
+tasks.withType(Test) { 
+  testLogging {
+    exceptionFormat "full"
+    // events "passed", "failed" // , "started", "skipped"
+    showStandardStreams true
+    showExceptions true
+  }
+}
+
 task printGitProperties {
     dependsOn generateGitProperties
     doLast {
