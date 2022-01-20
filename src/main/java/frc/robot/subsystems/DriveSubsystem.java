@@ -123,6 +123,9 @@ public class DriveSubsystem extends SubsystemBase {
 	private double targetHeading;
 	private double spinPower;
 
+	private double NavXOffset = 0;  
+
+
 	//***********************************************************************************************************
 	//***********************************************************************************************************
 
@@ -248,6 +251,8 @@ public class DriveSubsystem extends SubsystemBase {
 			updateVelocityPID(rightBackVelPID);
 		}
 		drivePIDTuning = SmartDashboard.getBoolean("Are We Tuning Drive PID?", false);
+
+		NavXOffset = SmartDashboard.getNumber("NavX Offset", 0);
 
 		currentHeading = getNavXFixedAngle();
 
@@ -689,8 +694,19 @@ public class DriveSubsystem extends SubsystemBase {
 		return azimuth;
 	}
 
+	public void setNavXOffset(double offsetAngle){
+		NavXOffset = offsetAngle;
+	}
+
+	public double getNavXOffset(){
+		return NavXOffset;
+	}
+
 	public double getNavXFixedAngle(){ //returns angle in the range of -180 degrees to 180 degrees with 0 being the front
-		double angle = 180 + ahrs.getAngle(); // added 180 degrees to make north the front of the robot.
+		
+		//resetting front of robot to 0
+		//double angle = 180 + ahrs.getAngle(); // added 180 degrees to make north the front of the robot.
+		double angle = ahrs.getAngle() + NavXOffset;    //adding in offset based on initial robot position for auto
 
 		angle = angle % 360;
 		
