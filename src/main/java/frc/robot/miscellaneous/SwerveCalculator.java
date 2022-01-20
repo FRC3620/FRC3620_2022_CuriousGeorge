@@ -7,9 +7,6 @@
 
 package frc.robot.miscellaneous;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.DriveSubsystem;
-
 /**
  * Add your docs here.
  */
@@ -17,41 +14,45 @@ public class SwerveCalculator {
     public double halfChasisWidth;  //Chasis width and length must be in meters 
     public double halfChasisLength; //Chasis width and length must be in meters 
     public double maxDriveVelocity;
-    public DriveSubsystem driveSubsystem;
 
-	public SwerveCalculator(double chasisWidth, double chasisLength, double maxVelocity, DriveSubsystem m_driveSubsystem) {		
+	public SwerveCalculator(double chasisWidth, double chasisLength, double maxVelocity) {		
 		halfChasisWidth = chasisWidth / 2;     
         halfChasisLength = chasisLength / 2;	 	 
         maxDriveVelocity = maxVelocity;
-        driveSubsystem = m_driveSubsystem;
+	}
+
+	public double calculateStrafeAngle (double joyX, double joyY) {
+		return Math.atan2(joyY, joyX)*(180/Math.PI); //get our desired strafing angle in degrees
+	}
+
+	public double calculateStrafeVectorMagnitude (double joyX, double joyY) {
+		return Math.sqrt((joyX*joyX) + (joyY*joyY)); //get desired strafing magnitude
 	}
 
 	public DriveVectors calculateEverything (double joyX, double joyY, double joyRotation) {
+        return calculateEverythingFromVector(calculateStrafeAngle(joyX, joyY), calculateStrafeVectorMagnitude(joyX, joyY), joyRotation);
+	}
 
-		double strafeX;
-		double strafeY;
+	/**
+	 * Calculate the swerve unit vectors for a certain strafe / rotate setup.
+	 * 
+	 * The strafeAngle is relative to the robot; 0 is straight ahead, and increasing angle is clockwise
+	 * (the way a compass works).
+	 * 
+	 * joyRotation is also the way a compass works (positive turns the robot clockwise).	
+	 * 
+	 * The DriveVectors returned have the convection that 0 is pointing to the right, and 
+	 * increasing angle is CCW (the way we taught in math class)
+	 * 	 * 
+	 * @param strafeVectorAngle
+	 * @param strafeVectorMagnitude
+	 * @param joyRotation
+	 * @return
+	 */
+	public DriveVectors calculateEverythingFromVector (double strafeVectorAngle, double strafeVectorMagnitude, double joyRotation) {
 
-		if(driveSubsystem.getFieldRelative()){
-
-			double robotHeading = driveSubsystem.getNavXFixedAngle(); //get NavX heading in degrees (from -180 to 180)
-			double strafeVectorAngle = Math.atan2(joyY, joyX)*(180/Math.PI); //get our desired strafing angle in degrees
-			strafeVectorAngle = strafeVectorAngle + robotHeading; //add heading to strafing angle to find our field-relative angle
-			SmartDashboard.putNumber("joyX", joyX);
-			SmartDashboard.putNumber("joyY", joyY);
-			SmartDashboard.putNumber("Strafe Vector Angle", strafeVectorAngle);
-			double strafeVectorMagnitude = Math.sqrt((joyX*joyX) + (joyY*joyY)); //get desired strafing magnitude
-
-			strafeX = strafeVectorMagnitude*Math.cos(strafeVectorAngle*Math.PI/180); //calculate X and Y components of the new strafing vector
-			strafeY = strafeVectorMagnitude*Math.sin(strafeVectorAngle*Math.PI/180);
-
-		} else{
-			double strafeVectorAngle = Math.atan2(joyY, joyX)*(180/Math.PI);
-			strafeVectorAngle = normalizeAngle(strafeVectorAngle + 180);
-			double strafeVectorMagnitude = Math.sqrt((joyX*joyX) + (joyY*joyY));
-
-			strafeX = strafeVectorMagnitude*Math.cos(strafeVectorAngle*Math.PI/180); 
-			strafeY = strafeVectorMagnitude*Math.sin(strafeVectorAngle*Math.PI/180);
-		}
+		double strafeX = strafeVectorMagnitude*Math.cos(strafeVectorAngle*Math.PI/180); //calculate X and Y components of the new strafing vector
+		double strafeY = strafeVectorMagnitude*Math.sin(strafeVectorAngle*Math.PI/180);
 
 		double a = strafeX-(joyRotation*halfChasisLength);    //joyX is the horizontal input on the strafe joystick (the horizontal component of the desired vehicle speed), its units are in/s. 
 		double b = strafeX+(joyRotation*halfChasisLength);	   //variables A and B are horizontal components of WHEEL velocity, their units are in/s

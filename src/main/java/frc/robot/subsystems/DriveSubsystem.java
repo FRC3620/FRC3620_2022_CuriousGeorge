@@ -126,7 +126,7 @@ public class DriveSubsystem extends SubsystemBase {
 	//***********************************************************************************************************
 	//***********************************************************************************************************
 
-	SwerveCalculator sc = new SwerveCalculator(CHASIS_WIDTH, CHASIS_LENGTH, MAX_VELOCITY_IN_PER_SEC, this);
+	SwerveCalculator sc = new SwerveCalculator(CHASIS_WIDTH, CHASIS_LENGTH, MAX_VELOCITY_IN_PER_SEC);
 	DriveVectors oldVectors;
 
   public DriveSubsystem() {
@@ -216,6 +216,7 @@ public class DriveSubsystem extends SubsystemBase {
 			SmartDashboard.putNumber("Right Front Azimuth fixed", getFixedPosition(rightFrontAzimuthEncoder));
 			SmartDashboard.putNumber("Right Front Home Encoder", getHomeEncoderHeading(rightFrontHomeEncoder));
 			SmartDashboard.putNumber("Right Front Drive Current Draw", rightFrontDriveMaster.getOutputCurrent());
+			SmartDashboard.putNumber("Right Front Drive Voltage", rightFrontDriveMaster.getAppliedOutput());
 		}
 		if (leftFrontDriveEncoder != null) {
 			SmartDashboard.putNumber("Left Front Velocity", leftFrontDriveEncoder.getVelocity());
@@ -223,6 +224,7 @@ public class DriveSubsystem extends SubsystemBase {
 			SmartDashboard.putNumber("Left Front Azimuth fixed", getFixedPosition(leftFrontAzimuthEncoder));
 			SmartDashboard.putNumber("Left Front Home Encoder", getHomeEncoderHeading(leftFrontHomeEncoder));
 			SmartDashboard.putNumber("Left Front Drive Current Draw", leftFrontDriveMaster.getOutputCurrent());
+			SmartDashboard.putNumber("Left Front Drive Voltage", leftFrontDriveMaster.getAppliedOutput());
 		}
 		if (leftBackDriveEncoder != null) {
 			SmartDashboard.putNumber("Left Back Velocity", leftBackDriveEncoder.getVelocity());
@@ -352,12 +354,44 @@ public class DriveSubsystem extends SubsystemBase {
 			//SmartDashboard.putBoolean("Change Test Heading", false);
 	}
 
+	/**
+	 * Calculate DriveVectors. Correct for field orientation based on the current state
+	 * of the isFieldRelative.
+	 * 
+	 * @param vx joystick x
+	 * @param vy joystick y
+	 * @param vr rotate
+	 * @return drive vectors for the swerve units.
+	 */
+	DriveVectors calculateEverything(double vx, double vy, double vr) {
+		return calculateEverything(vx, vy, vr, getFieldRelative());
+	}
+
+	DriveVectors calculateEverything (double vx, double vy, double vr, boolean doFieldRelative) {
+		double strafeVectorAngle = sc.calculateStrafeAngle(vx, vy);
+		double strafeVectorMagnitude = sc.calculateStrafeVectorMagnitude(vx, vy);
+		SmartDashboard.putNumber("drive.vx", vx);
+		SmartDashboard.putNumber("drive.vy", vy);
+		SmartDashboard.putNumber("drive.strafeVectorAngle", strafeVectorAngle);
+		if (doFieldRelative) {
+			double robotHeading = getNavXFixedAngle(); //get NavX heading in degrees (from -180 to 180)
+			strafeVectorAngle = strafeVectorAngle + robotHeading; //add heading to strafing angle to find our field-relative angle
+		} else {
+			// not sure this is wise!
+			strafeVectorAngle = sc.normalizeAngle(strafeVectorAngle + 180);
+		}
+		SmartDashboard.putNumber("drive.strafeVectorAngle+correction", strafeVectorAngle);
+		SmartDashboard.putNumber("drive.strafeVectorMagnitude", strafeVectorMagnitude);
+
+		return sc.calculateEverythingFromVector(strafeVectorAngle, strafeVectorMagnitude, vr);
+	}
+
 	public void teleOpDrive(double strafeX, double strafeY, double spinX) {
 		double vx = strafeX*MAX_VELOCITY_IN_PER_SEC;
 		double vy = strafeY*MAX_VELOCITY_IN_PER_SEC;
 		double vr = spinX*MAX_TURN;
 
-		DriveVectors newVectors = sc.calculateEverything(vx, vy, vr);
+		DriveVectors newVectors = calculateEverything(vx, vy, vr);
 
 		//SmartDashboard.putNumber("Left Front Calculated Vectors", newVectors.leftBack.getDirection());
 		//System.out.println("Left Front Calculated Vectors: " + newVectors.leftBack.getDirection());
@@ -438,7 +472,7 @@ public class DriveSubsystem extends SubsystemBase {
 		double vy = Math.sin(Math.toRadians(heading))*MAX_VELOCITY_IN_PER_SEC*speed;
 		double vr = spin*MAX_TURN;
 
-		DriveVectors newVectors = sc.calculateEverything(vx, vy, vr);
+		DriveVectors newVectors = calculateEverything(vx, vy, vr);
 
 		DriveVectors currentDirections = getCurrentVectors();
 
@@ -462,7 +496,7 @@ public class DriveSubsystem extends SubsystemBase {
 		double vy = Math.sin(Math.toRadians(strafeAngle))*MAX_VELOCITY_IN_PER_SEC;
 		double vr = 0;
 
-		DriveVectors newVectors = sc.calculateEverything(vx, vy, vr);
+		DriveVectors newVectors = calculateEverything(vx, vy, vr);
 
 		DriveVectors currentDirections = getCurrentVectors();
 
