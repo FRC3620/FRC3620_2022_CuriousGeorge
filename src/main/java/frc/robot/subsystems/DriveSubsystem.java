@@ -197,6 +197,28 @@ public class DriveSubsystem extends SubsystemBase {
 		rightBackVelPID.setFeedbackDevice(rightBackDriveEncoder);
 	}
 
+	SmartDashboard.putNumber("P Gain Position", kPositionP);
+	SmartDashboard.putNumber("I Gain Position", kPositionI);
+	SmartDashboard.putNumber("D Gain Position", kPositionD);
+	SmartDashboard.putNumber("I Zone Position", kPositionIz);
+	SmartDashboard.putNumber("Feed Forward Position", kPositionFF);
+	SmartDashboard.putNumber("Max Output Position", kVelocityMaxOutput);
+	SmartDashboard.putNumber("Min Output Position", kVelocityMinOutput);
+	
+	SmartDashboard.putNumber("P Gain Velocity", kVelocityP);
+	SmartDashboard.putNumber("I Gain Velocity", kVelocityI);
+	SmartDashboard.putNumber("D Gain Velocity", kVelocityD);
+	SmartDashboard.putNumber("I Zone Velocity", kVelocityIz);
+	SmartDashboard.putNumber("Feed Forward Velocity", kVelocityFF);
+	SmartDashboard.putNumber("Max Output Velocity", kVelocityMaxOutput);
+	SmartDashboard.putNumber("Min Output Velocity", kVelocityMinOutput);
+	SmartDashboard.putNumber("PID Position Setpoint", 0);
+
+	SmartDashboard.putBoolean("Are We Tuning Drive PID?", drivePIDTuning);
+
+	SmartDashboard.putNumber("Azimuth Test Heading", 0);
+	SmartDashboard.putBoolean("Change Test Heading", false);
+
 	this.setDefaultCommand(new TeleOpDriveCommand(this));
 	
 	spinPIDController = new PIDController(kSpinP, kSpinI, kSpinD);
