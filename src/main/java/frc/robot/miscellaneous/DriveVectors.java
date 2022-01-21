@@ -8,7 +8,7 @@
 package frc.robot.miscellaneous;
 
 /**
- * Add your docs here.
+ * A container for the vectors for all four corner drive units.
  */
 public class DriveVectors {
     @Override

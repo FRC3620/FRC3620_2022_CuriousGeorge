@@ -7,10 +7,6 @@
 
 package frc.robot;
 
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
-
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
@@ -21,6 +17,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -28,9 +25,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.XboxController;
+//import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -112,8 +107,6 @@ public class RobotContainer {
     canDeviceFinder = new CANDeviceFinder();
     logger.info ("CAN bus: " + canDeviceFinder.getDeviceSet());
 
-    identifyRoboRIO();
-
     makeHardware();
     setupMotors();
     makeSubsystems();
@@ -123,51 +116,20 @@ public class RobotContainer {
     setupAutonomousCommands();
   }
 
-  void setupMotors() {
-    int kTimeoutMs = 0;
-
-    if (driveSubsystemRightFrontDrive != null){
-
-      resetMaxToKnownState(driveSubsystemRightFrontDrive);
-      driveSubsystemRightFrontDrive.setClosedLoopRampRate(DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT);
-
-      resetMaxToKnownState(driveSubsystemRightFrontAzimuth);
-      driveSubsystemRightFrontAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
-
-      resetMaxToKnownState(driveSubsystemLeftFrontDrive);
-      driveSubsystemLeftFrontDrive.setClosedLoopRampRate(DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT);
-
-      resetMaxToKnownState(driveSubsystemLeftFrontAzimuth);
-      driveSubsystemLeftFrontAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
-
-      resetMaxToKnownState(driveSubsystemLeftBackDrive);
-      driveSubsystemLeftBackDrive.setClosedLoopRampRate(DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT);
-
-      resetMaxToKnownState(driveSubsystemLeftBackAzimuth);
-      driveSubsystemLeftBackAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
-
-      resetMaxToKnownState(driveSubsystemRightBackDrive);
-      driveSubsystemRightBackDrive.setClosedLoopRampRate(DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT);
-      
-      resetMaxToKnownState(driveSubsystemRightBackAzimuth);
-      driveSubsystemRightBackAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
-    }
-  }
-
   void makeHardware() {
+    practiceBotJumper = new DigitalInput(0);
     boolean iAmACompetitionRobot = amIACompBot();
-    //if (!iAmACompetitionRobot) {
-    //  logger.warn ("this is a test chassis, will try to deal with missing hardware!");
-    //}
+    if (!iAmACompetitionRobot) {
+      logger.warn ("this is a test chassis, will try to deal with missing hardware!");
+    }
 
     // we don't need to use the canDeviceFinder for CAN Talons because
     // they do not put up unreasonable amounts of SPAM
-
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1, "Swerve") || iAmACompetitionRobot){
 
       driveSubsystemRightFrontDrive = new CANSparkMax(1, MotorType.kBrushless);
       driveSubsystemRightFrontDriveEncoder = driveSubsystemRightFrontDrive.getEncoder();
-
+      
       driveSubsystemRightFrontAzimuth = new CANSparkMax(2, MotorType.kBrushless);
       driveSubsystemRightFrontAzimuthEncoder = driveSubsystemRightFrontAzimuth.getEncoder();
 
@@ -199,24 +161,47 @@ public class RobotContainer {
     }
   }
 
-  void setupSmartDashboardCommands() {
-    SmartDashboard.putData(new ZeroDriveEncodersCommand(driveSubsystem));
-  
-    SmartDashboard.putData("TestAuto", new TestAuto(driveSubsystem));
-    SmartDashboard.putData("5 Ball Auto", new FiveBallAuto(driveSubsystem));
-    SmartDashboard.putData("4 Ball Auto", new FourBallAuto(driveSubsystem));
+  void setupMotors() {
+    int kTimeoutMs = 0;
+
+    if (driveSubsystemRightFrontDrive != null){
+
+      resetMaxToKnownState(driveSubsystemRightFrontDrive, true);
+      driveSubsystemRightFrontDrive.setClosedLoopRampRate(DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT);
+
+      resetMaxToKnownState(driveSubsystemRightFrontAzimuth, false);
+      driveSubsystemRightFrontAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
+
+      resetMaxToKnownState(driveSubsystemLeftFrontDrive, true);
+      driveSubsystemLeftFrontDrive.setClosedLoopRampRate(DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT);
+
+      resetMaxToKnownState(driveSubsystemLeftFrontAzimuth, false);
+      driveSubsystemLeftFrontAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
+
+      resetMaxToKnownState(driveSubsystemLeftBackDrive, true);
+      driveSubsystemLeftBackDrive.setClosedLoopRampRate(DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT);
+
+      resetMaxToKnownState(driveSubsystemLeftBackAzimuth, false);
+      driveSubsystemLeftBackAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
+
+      resetMaxToKnownState(driveSubsystemRightBackDrive, true);
+      driveSubsystemRightBackDrive.setClosedLoopRampRate(DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT);
+      
+      resetMaxToKnownState(driveSubsystemRightBackAzimuth, false);
+      driveSubsystemRightBackAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
+    }
   }
 
-
-  void makeSubsystems() {
-    driveSubsystem = new DriveSubsystem();
-  }
-  static void resetMaxToKnownState(CANSparkMax x) {
-    x.setInverted(false);
+  static void resetMaxToKnownState(CANSparkMax x, boolean inverted) {
+    x.setInverted(inverted);
     x.setIdleMode(IdleMode.kCoast);
     x.setOpenLoopRampRate(1);
     x.setClosedLoopRampRate(1);
     x.setSmartCurrentLimit(50);
+  }
+
+  void makeSubsystems() {
+    driveSubsystem = new DriveSubsystem();
   }
 
   /**
@@ -226,9 +211,30 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-  driverJoystick = new Joystick(DRIVER_JOYSTICK_PORT);
+    driverJoystick = new Joystick(DRIVER_JOYSTICK_PORT);
   }
 
+  void setupSmartDashboardCommands() {
+    SmartDashboard.putData(new ZeroDriveEncodersCommand(driveSubsystem));
+  
+    SmartDashboard.putData("TestAuto", new TestAuto(driveSubsystem));
+    SmartDashboard.putData("5 Ball Auto", new FiveBallAuto(driveSubsystem));
+    SmartDashboard.putData("4 Ball Auto", new FourBallAuto(driveSubsystem));
+
+    SmartDashboard.putData("DougTestAutoDrive", new DougTestAutoDrive(driveSubsystem));
+    SmartDashboard.putData("DougTestAutoSpin", new DougTestAutoSpin(driveSubsystem));
+    SmartDashboard.putData("Reset NavX", new ResetNavXCommand(driveSubsystem));
+    SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
+  }
+
+  SendableChooser<Command> chooser = new SendableChooser<>();
+  public void setupAutonomousCommands() {
+    SmartDashboard.putData("Auto mode", chooser);
+
+    chooser.addOption("TestAuto", new TestAuto(driveSubsystem));
+    chooser.addOption("5 Ball Auto", new FiveBallAuto(driveSubsystem));
+  }
+  
   public static double getDriveVerticalJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y);
     SmartDashboard.putNumber("driver.raw.y", axisValue);
@@ -255,7 +261,7 @@ public class RobotContainer {
 
   public static double getDriveSpinJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X);
-    SmartDashboard.putNumber("driverSpin", axisValue);
+    SmartDashboard.putNumber("driver.raw.spin", axisValue);
     if (axisValue < 0.2 && axisValue > -0.2) {
       return 0;
     }
@@ -280,7 +286,7 @@ public class RobotContainer {
    */
 
   /**
-   * Determine if this robot is a completition robot. It is if
+   * Determine if this robot is a competition robot. It is if
    * it's connected to an FMS.
    * 
    * We should probably also check for an "I am a test" file or jumper
@@ -294,59 +300,16 @@ public class RobotContainer {
       return true;
     }
 
-    /*
-    # GCF - Removing this condition
-
     if(practiceBotJumper.get() == true){
       return true;
     }
-    */
-
 
     return false;
   }
 
-  SendableChooser<Command> chooser = new SendableChooser<>();
-  public void setupAutonomousCommands() {
-
-    SmartDashboard.putData("Auto mode", chooser);
-
-    chooser.addOption("TestAuto", new TestAuto(driveSubsystem));
-    chooser.addOption("5 Ball Auto", new FiveBallAuto(driveSubsystem));
-  }
-  
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
     //return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
     return chooser.getSelected();
-  }
-   
-
-  
-  public static String identifyRoboRIO() {
-    String rv = "";
-    try {
-			for (Enumeration<NetworkInterface> e = NetworkInterface
-					.getNetworkInterfaces(); e.hasMoreElements();) {
-				NetworkInterface network = e.nextElement();
-				logger.info("found network {}", network);
-				byte[] mac = network.getHardwareAddress();
-				if (mac != null) {
-					StringBuilder sb = new StringBuilder();
-					for (int i = 0; i < mac.length; i++) {
-						sb.append(String.format("%02X%s", mac[i],
-								(i < mac.length - 1) ? "-" : ""));
-					}
-					String macString = sb.toString();
-          logger.info("Current MAC address: {}", macString);
-          if (network.getName().equals("eth0")) {
-            rv = macString;
-          }
-				}
-			}
-		} catch (SocketException e) {
-			e.printStackTrace();
-    }
-    return rv;
   }
 }
