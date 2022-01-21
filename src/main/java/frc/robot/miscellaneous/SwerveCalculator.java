@@ -29,11 +29,11 @@ public class SwerveCalculator {
 	 * @param joyY joystick Y, positive forward
 	 * @return strafe angle, 0 straight ahead, 90 to the right...
 	 */
-	public double calculateStrafeAngle (double joyX, double joyY) {
+	public static double calculateStrafeAngle (double joyX, double joyY) {
 		return 90 - (Math.atan2(joyY, joyX)*(180/Math.PI)); //get our desired strafing angle in degrees
 	}
 
-	public double calculateStrafeVectorMagnitude (double joyX, double joyY) {
+	public static double calculateStrafeVectorMagnitude (double joyX, double joyY) {
 		return Math.sqrt((joyX*joyX) + (joyY*joyY)); //get desired strafing magnitude
 	}
 
@@ -62,10 +62,12 @@ public class SwerveCalculator {
 		double r_strafeVectorAngle = 90.0 - strafeVectorAngle;
 		double r_joyRotation = - joyRotation;
 
+		/*
 		SmartDashboard.putNumber("calc.va_r", r_strafeVectorAngle);
 		SmartDashboard.putNumber("calc.va", strafeVectorAngle);
 		SmartDashboard.putNumber("calc.jr", joyRotation);
 		SmartDashboard.putNumber("calc.jr_r", r_joyRotation);
+		*/
 
 		//calculate X and Y components of the new strafing vector
 		double strafeX = strafeVectorMagnitude*Math.cos(r_strafeVectorAngle*Math.PI/180);
@@ -93,8 +95,12 @@ public class SwerveCalculator {
 		return new Vector (angle, velocity);
 	}
 
-	public double normalizeAngle(double angle) {//This method makes sure the angle difference calculated falls between -180 degrees and 180 degrees
-
+	/**
+	 * This method makes sure the angle difference calculated falls between -180 degrees and 180 degrees
+	 * @param angle
+	 * @return
+	 */
+	public static double normalizeAngle(double angle) {
 		angle = angle % 360;
 		
 		if(angle > 180){
@@ -109,7 +115,7 @@ public class SwerveCalculator {
 		return angle;
 	}
 
-	public double getAngleDifference(double y, double x) {//x = target angle, y = source angle, this finds the shortest angle difference for the swerve modules
+	public static double calculateAngleDifference(double y, double x) {//x = target angle, y = source angle, this finds the shortest angle difference for the swerve modules
 		double diff = x - y;
 
 		diff = normalizeAngle(diff);
@@ -117,9 +123,9 @@ public class SwerveCalculator {
 		return diff;
 	}
 	
-	double steeringCutoff = 20;
-	public Vector determineNewVector (Vector calculated, Vector current) { //takes 2 vectors and calculates the angle between them and returns a new "fixed" vector
-		double diff = getAngleDifference(current.getDirection(), calculated.getDirection());
+	static double steeringCutoff = 20;
+	public static Vector determineNewVector (Vector calculated, Vector current) { //takes 2 vectors and calculates the angle between them and returns a new "fixed" vector
+		double diff = calculateAngleDifference(current.getDirection(), calculated.getDirection());
 		if(Math.abs(diff) < 90 ) { // if the difference is greater than 90 degrees, the angle is normalized (see normalizeAngle()) and added 180 degrees 
 			if(Math.abs(calculated.getMagnitude())> steeringCutoff){
 				return new Vector(current.getDirection() + diff, calculated.getMagnitude());     //this also means that it is faster to invert the power on the motors and go to the angle 180 greater than the one returned by fancyCalc
@@ -148,15 +154,13 @@ public class SwerveCalculator {
 		}
 	}
 	
-	public DriveVectors fixVectors(DriveVectors calculatedVectors, DriveVectors currentVectors ) { //fixes every vector of the DriverVectors object and returns them
-		
+	public static DriveVectors fixVectors(DriveVectors calculatedVectors, DriveVectors currentVectors ) { //fixes every vector of the DriverVectors object and returns them
 		DriveVectors fixedVectors = new DriveVectors();
 		
 		fixedVectors.leftFront = determineNewVector(calculatedVectors.leftFront, currentVectors.leftFront);
 		fixedVectors.rightFront = determineNewVector(calculatedVectors.rightFront, currentVectors.rightFront);
 		fixedVectors.leftBack = determineNewVector(calculatedVectors.leftBack, currentVectors.leftBack);
 		fixedVectors.rightBack = determineNewVector(calculatedVectors.rightBack, currentVectors.rightBack);
-
 		
 		//System.out.println ("calculated: " + calculatedVectors.leftBack);
 		//System.out.println ("new: " + fixedVectors.leftBack);

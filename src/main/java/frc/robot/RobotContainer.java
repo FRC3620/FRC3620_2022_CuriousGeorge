@@ -220,6 +220,10 @@ public class RobotContainer {
     SmartDashboard.putData("TestAuto", new TestAuto(driveSubsystem));
     SmartDashboard.putData("5 Ball Auto", new FiveBallAuto(driveSubsystem));
     SmartDashboard.putData("4 Ball Auto", new FourBallAuto(driveSubsystem));
+
+    SmartDashboard.putData("DougTestAutoDrive", new DougTestAutoDrive(driveSubsystem));
+    SmartDashboard.putData("DougTestAutoSpin", new DougTestAutoSpin(driveSubsystem));
+    SmartDashboard.putData("Reset NavX", new ResetNavXCommand(driveSubsystem));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
@@ -256,7 +260,7 @@ public class RobotContainer {
 
   public static double getDriveSpinJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X);
-    SmartDashboard.putNumber("driverSpin", axisValue);
+    SmartDashboard.putNumber("driver.raw.spin", axisValue);
     if (axisValue < 0.2 && axisValue > -0.2) {
       return 0;
     }

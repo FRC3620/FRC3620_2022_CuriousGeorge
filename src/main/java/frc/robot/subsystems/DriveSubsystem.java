@@ -112,7 +112,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 	private boolean drivePIDTuning = false;
 
-	private boolean fieldRelative = false;	// TODO put back to true
+	private boolean fieldRelative = true;
 
 	private PIDController spinPIDController;
 	private double kSpinP = 0.013;
@@ -273,12 +273,10 @@ public class DriveSubsystem extends SubsystemBase {
 			updateVelocityPID(leftBackVelPID);
 			updateVelocityPID(rightBackVelPID);
 		}
+
 		drivePIDTuning = SmartDashboard.getBoolean("Are We Tuning Drive PID?", false);
 
 		currentHeading = getNavXFixedAngle();
-
-		SmartDashboard.putNumber("NavX heading", currentHeading);
-		SmartDashboard.putBoolean("drive.field.relative", fieldRelative);
 
 		double commandedSpin = RobotContainer.getDriveSpinJoystick();
 
@@ -299,12 +297,17 @@ public class DriveSubsystem extends SubsystemBase {
 			periodicAutoSpinMode();
 		}
 		SmartDashboard.putNumber("Target Heading", targetHeading);
+		SmartDashboard.putNumber("NavX heading", currentHeading);
+		SmartDashboard.putNumber("spin power", spinPower);
+
+		SmartDashboard.putBoolean("drive.field.relative", fieldRelative);
 
 		SmartDashboard.putNumber("driver.joy.x", RobotContainer.getDriveHorizontalJoystick());
 		SmartDashboard.putNumber("driver.joy.y", RobotContainer.getDriveVerticalJoystick());
+		SmartDashboard.putNumber("driver.joy.spin", RobotContainer.getDriveSpinJoystick());	
 		SmartDashboard.putNumber("driver.joy.c", joystick_count++);
-	
 	}
+
 	int joystick_count = 0;
 
   	public void periodicManualSpinMode(){
@@ -316,9 +319,9 @@ public class DriveSubsystem extends SubsystemBase {
   	public void periodicAutoSpinMode(){
 		spinPIDController.setSetpoint(targetHeading);
 		spinPower = spinPIDController.calculate(currentHeading);
-		double error = spinPIDController.getPositionError();
 
-		SmartDashboard.putNumber("Spin PID error", error);
+		SmartDashboard.putNumber("Spin PID error", spinPIDController.getPositionError());
+		SmartDashboard.putNumber("Spin PID setpoint", spinPIDController.getSetpoint());
   	}
 
   	public double getStrafeXValue() {
@@ -405,8 +408,9 @@ public class DriveSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("drive.vy", vy);
 		SmartDashboard.putNumber("drive.strafeVectorAngle", strafeVectorAngle);
 		if (doFieldRelative) {
-			double robotHeading = getNavXFixedAngle(); //get NavX heading in degrees (from -180 to 180)
-			strafeVectorAngle = strafeVectorAngle + robotHeading; //add heading to strafing angle to find our field-relative angle
+			double robotHeading = getNavXFixedAngle();
+			 //get NavX heading in degrees (from -180 to 180)
+			strafeVectorAngle = sc.normalizeAngle(strafeVectorAngle - robotHeading); //add heading to strafing angle to find our field-relative angle
 		} else {
 			// not sure this is wise!
 			strafeVectorAngle = sc.normalizeAngle(strafeVectorAngle);
@@ -497,13 +501,10 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 	}
 
-	public void timedDrive(double heading, double speed, double spin){            // degrees are from -180 to 180 degrees with 0 degrees pointing east
+	// degrees are from -180 to 180 degrees with 0 degrees pointing east
+	public void timedDrive(double heading, double speed, double spin) {
 
-		double vx = Math.cos(Math.toRadians(heading))*MAX_VELOCITY_IN_PER_SEC*speed;  //both spin and speed are set as a decimal from 0 to 1 that represents the percentage of the maximum strafe or turn speed
-		double vy = Math.sin(Math.toRadians(heading))*MAX_VELOCITY_IN_PER_SEC*speed;
-		double vr = spin*MAX_TURN;
-
-		DriveVectors newVectors = calculateEverything(vx, vy, vr);
+		DriveVectors newVectors = sc.calculateEverythingFromVector(heading, MAX_VELOCITY_IN_PER_SEC*speed, spin*MAX_TURN);
 
 		DriveVectors currentDirections = getCurrentVectors();
 
@@ -719,7 +720,8 @@ public class DriveSubsystem extends SubsystemBase {
 				azimuth = 360 + azimuth;
 			}
 
-			azimuth = Math.round(azimuth);
+			// DEW 2022.01.21 not sure this should be here...
+			// azimuth = Math.round(azimuth);
 
 			return azimuth;
 		} else {
