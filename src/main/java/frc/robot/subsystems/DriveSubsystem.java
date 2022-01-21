@@ -616,13 +616,13 @@ public class DriveSubsystem extends SubsystemBase {
 
 	public void updateVelocityPID(SparkMaxPIDController pidController) {
 		if (pidController != null) {
-			double p = SmartDashboard.getNumber("P Gain Velocity", 0);
-			double i = SmartDashboard.getNumber("I Gain Velocity", 0);
-			double d = SmartDashboard.getNumber("D Gain Velocity", 0);
-			double iz = SmartDashboard.getNumber("I Zone Velocity", 0);
-			double ff = SmartDashboard.getNumber("Feed Forward Velocity", 0);
-			double max = SmartDashboard.getNumber("Max Output Velocity", 0);
-			double min = SmartDashboard.getNumber("Min Output Velocity", 0);
+			double p = SmartDashboard.getNumber("P Gain Velocity", kVelocityP);
+			double i = SmartDashboard.getNumber("I Gain Velocity", kVelocityI);
+			double d = SmartDashboard.getNumber("D Gain Velocity", kVelocityD);
+			double iz = SmartDashboard.getNumber("I Zone Velocity", kVelocityIz);
+			double ff = SmartDashboard.getNumber("Feed Forward Velocity", kVelocityFF);
+			double max = SmartDashboard.getNumber("Max Output Velocity", kVelocityMaxOutput);
+			double min = SmartDashboard.getNumber("Min Output Velocity", kVelocityMinOutput);
 
 			if((p != kVelocityP)) {
 				pidController.setP(p);
