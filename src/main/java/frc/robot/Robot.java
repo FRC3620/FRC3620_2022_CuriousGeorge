@@ -16,8 +16,6 @@ import org.usfirst.frc3620.misc.RobotMode;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -44,7 +42,6 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     logger = EventLogging.getLogger(Robot.class, Level.INFO);
     logger.info ("I'm alive! {}", GitNess.gitDescription());
-    logger.info ("the long version: {}", GitNess.gitString());
 
     PortForwarder.add (10080, "frcvision.local", 80);
     PortForwarder.add (10022, "frcvision.local", 22);

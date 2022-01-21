@@ -45,14 +45,6 @@ public class GitNess {
         sb.append(d);
         sb.append(" ");
 
-        d = p.getProperty("git.branch");
-        if (d == null) {
-            d = " Branch=null";
-        } else {
-            d = " Branch=\"" + d + "\"";
-        }
-        sb.append(d);
-
         d = p.getProperty("git.commit.id.describe");
         if (d == null) {
             d = "unknown";
@@ -67,15 +59,23 @@ public class GitNess {
         }
         sb.append(d);
 
+        d = p.getProperty("git.branch");
+        if (d == null) {
+            d = " Branch=(null)";
+        } else {
+            d = " Branch=" + d;
+        }
+        sb.append(d);
+
         d = p.getProperty("build.time");
         if (d != null) {
-            d = " Built time \"" + d + "\"";
+            d = " Build-time=\"" + d + "\"";
         }
         sb.append(d);
 
         d = p.getProperty("git.build.host");
         if (d != null) {
-            d = " Build host \"" + d + "\"";
+            d = " Build-host=" + d;
         }
         sb.append(d);
 
