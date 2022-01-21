@@ -19,7 +19,7 @@ public class SwerveCalcTest {
     }
 
     void sw (double x, double y, double expected) {
-        double sa = sc.calculateStrafeAngle(x, y);
+        double sa = SwerveCalculator.calculateStrafeAngle(x, y);
         assertEquals("swerve calculation broke", expected, sa, 0.1);
     }
 

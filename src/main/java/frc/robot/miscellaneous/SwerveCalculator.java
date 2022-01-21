@@ -60,14 +60,12 @@ public class SwerveCalculator {
 	public DriveVectors calculateEverythingFromVector (double strafeVectorAngle, double strafeVectorMagnitude, double joyRotation) {
 		// these will be in math coordinates - 0 points right, increasing values CCW
 		double r_strafeVectorAngle = 90.0 - strafeVectorAngle;
-		double r_joyRotation = - joyRotation;
+		double r_joyRotation = joyRotation;
 
-		/*
 		SmartDashboard.putNumber("calc.va_r", r_strafeVectorAngle);
 		SmartDashboard.putNumber("calc.va", strafeVectorAngle);
 		SmartDashboard.putNumber("calc.jr", joyRotation);
 		SmartDashboard.putNumber("calc.jr_r", r_joyRotation);
-		*/
 
 		//calculate X and Y components of the new strafing vector
 		double strafeX = strafeVectorMagnitude*Math.cos(r_strafeVectorAngle*Math.PI/180);

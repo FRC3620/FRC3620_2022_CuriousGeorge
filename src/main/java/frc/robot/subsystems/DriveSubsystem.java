@@ -376,7 +376,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 		DriveVectors currentDirections = getCurrentVectors();
 
-		newVectors = sc.fixVectors(newVectors, currentDirections);
+		newVectors = SwerveCalculator.fixVectors(newVectors, currentDirections);
 
 		if (rightFrontDriveMaster != null) {
 			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
@@ -402,18 +402,18 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	DriveVectors calculateEverything (double vx, double vy, double vr, boolean doFieldRelative) {
-		double strafeVectorAngle = sc.calculateStrafeAngle(vx, vy);
-		double strafeVectorMagnitude = sc.calculateStrafeVectorMagnitude(vx, vy);
+		double strafeVectorAngle = SwerveCalculator.calculateStrafeAngle(vx, vy);
+		double strafeVectorMagnitude = SwerveCalculator.calculateStrafeVectorMagnitude(vx, vy);
 		SmartDashboard.putNumber("drive.vx", vx);
 		SmartDashboard.putNumber("drive.vy", vy);
 		SmartDashboard.putNumber("drive.strafeVectorAngle", strafeVectorAngle);
 		if (doFieldRelative) {
 			double robotHeading = getNavXFixedAngle();
 			 //get NavX heading in degrees (from -180 to 180)
-			strafeVectorAngle = sc.normalizeAngle(strafeVectorAngle - robotHeading); //add heading to strafing angle to find our field-relative angle
+			strafeVectorAngle = SwerveCalculator.normalizeAngle(strafeVectorAngle - robotHeading); //add heading to strafing angle to find our field-relative angle
 		} else {
 			// not sure this is wise!
-			strafeVectorAngle = sc.normalizeAngle(strafeVectorAngle);
+			strafeVectorAngle = SwerveCalculator.normalizeAngle(strafeVectorAngle);
 		}
 		SmartDashboard.putNumber("drive.strafeVectorAngle+correction", strafeVectorAngle);
 		SmartDashboard.putNumber("drive.strafeVectorMagnitude", strafeVectorMagnitude);
@@ -436,7 +436,7 @@ public class DriveSubsystem extends SubsystemBase {
 		//SmartDashboard.putNumber("Left Front Current Vectors", currentDirections.leftBack.getDirection());
 		//System.out.println("Left Front Current Vectors: " + currentDirections.leftBack.getDirection());
 
-		newVectors = sc.fixVectors(newVectors, currentDirections);
+		newVectors = SwerveCalculator.fixVectors(newVectors, currentDirections);
 
 		if (rightFrontDriveMaster != null) {
 			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
@@ -501,14 +501,18 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 	}
 
-	// degrees are from -180 to 180 degrees with 0 degrees pointing east
-	public void timedDrive(double heading, double speed, double spin) {
-
+	/**
+	 * Drive the robot in autonomous.
+	 * @param heading direction to drive in, compass-wise (0 straight, +90 to the right)
+	 * @param speed 0..1
+	 * @param spin direction and speed to spin. -1..+1, -1 is full to left, +1 is full to right.
+	 */
+	public void autoDrive(double heading, double speed, double spin) {
 		DriveVectors newVectors = sc.calculateEverythingFromVector(heading, MAX_VELOCITY_IN_PER_SEC*speed, spin*MAX_TURN);
 
 		DriveVectors currentDirections = getCurrentVectors();
 
-		newVectors = sc.fixVectors(newVectors, currentDirections);
+		newVectors = SwerveCalculator.fixVectors(newVectors, currentDirections);
 
 		if (rightFrontDriveMaster != null) {
 			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
@@ -532,7 +536,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 		DriveVectors currentDirections = getCurrentVectors();
 
-		newVectors = sc.fixVectors(newVectors, currentDirections);
+		newVectors = SwerveCalculator.fixVectors(newVectors, currentDirections);
 
 		if (rightFrontDriveMaster != null) {
 			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
@@ -568,7 +572,7 @@ public class DriveSubsystem extends SubsystemBase {
 		newVectors.leftBack = new Vector(leftBackAngle, turnSpeed);  // we will fix the velocity for rear below
 		newVectors.rightBack = new Vector(rightBackAngle, turnSpeed);
 
-		newVectors = sc.fixVectors(newVectors, currentDirections); //gets quickest wheel angle and direction configuration
+		newVectors = SwerveCalculator.fixVectors(newVectors, currentDirections); //gets quickest wheel angle and direction configuration
 		
 		if (rightFrontDriveMaster != null) {
 			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);

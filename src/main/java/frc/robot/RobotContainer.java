@@ -224,6 +224,7 @@ public class RobotContainer {
     SmartDashboard.putData("DougTestAutoDrive", new DougTestAutoDrive(driveSubsystem));
     SmartDashboard.putData("DougTestAutoSpin", new DougTestAutoSpin(driveSubsystem));
     SmartDashboard.putData("Reset NavX", new ResetNavXCommand(driveSubsystem));
+    SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();

@@ -30,8 +30,8 @@ public class AutoSpinCommand extends CommandBase {
   @Override
   public void execute() {
     //double heading = driveSubsystem.getNavXFixedAngle(); 
-    double spinX = - pathSpeed;
-    driveSubsystem.timedDrive(0, 0, spinX);
+    double spinX = pathSpeed;
+    driveSubsystem.autoDrive(0, 0, spinX);
   }
 
   // Called once the command ends or is interrupted.

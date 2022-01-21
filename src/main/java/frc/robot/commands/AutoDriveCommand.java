@@ -76,8 +76,8 @@ public class AutoDriveCommand extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        double spinX = - driveSubsystem.getSpinPower();
-        driveSubsystem.timedDrive(desiredAngle, pathSpeed, spinX);
+        double spinX = driveSubsystem.getSpinPower();
+        driveSubsystem.autoDrive(desiredAngle, pathSpeed, spinX);
 
         double currentPositionRightFront = driveSubsystem.getDriveMotorPositionRightFront();
         double currentPositionLeftFront = driveSubsystem.getDriveMotorPositionLeftFront();
