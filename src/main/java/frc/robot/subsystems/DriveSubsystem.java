@@ -17,6 +17,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
+import org.usfirst.frc3620.misc.ConfigurationItem;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.math.controller.PIDController;
@@ -111,7 +112,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 	private boolean drivePIDTuning = false;
 
-	private boolean fieldRelative = true;
+	private boolean fieldRelative = false;	// TODO put back to true
 
 	private PIDController spinPIDController;
 	private double kSpinP = 0.013;
@@ -129,8 +130,8 @@ public class DriveSubsystem extends SubsystemBase {
 	SwerveCalculator sc = new SwerveCalculator(CHASIS_WIDTH, CHASIS_LENGTH, MAX_VELOCITY_IN_PER_SEC);
 	DriveVectors oldVectors;
 
-  public DriveSubsystem() {
-	  String MacAddress = RobotContainer.identifyRoboRIO();
+  	public DriveSubsystem() {
+	  String MacAddress = ConfigurationItem.identifyRoboRIO();
 	  logger.info("ETHERNET MAC address: {}", MacAddress);
 	  if (MacAddress.equals("00-80-2F-18-5C-5F")) {
 		  logger.info("I THINK IM A PRACTICE BOT");
@@ -145,88 +146,88 @@ public class DriveSubsystem extends SubsystemBase {
 		  RIGHT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_RIGHT_FRONT_ABSOLUTE_OFFSET;
 		  LEFT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_LEFT_FRONT_ABSOLUTE_OFFSET;
 	  }
-	if (rightFrontDriveMaster != null) {
-		rightFrontVelPID = rightFrontDriveMaster.getPIDController();
-		rightFrontPositionPID = rightFrontAzimuth.getPIDController();
-		leftFrontVelPID = leftFrontDriveMaster.getPIDController();
-		leftFrontPositionPID = leftFrontAzimuth.getPIDController();
-		rightBackVelPID = rightBackDriveMaster.getPIDController();
-		rightBackPositionPID = rightBackAzimuth.getPIDController();
-		leftBackVelPID = leftBackDriveMaster.getPIDController();
-		leftBackPositionPID = leftBackAzimuth.getPIDController();
+		if (rightFrontDriveMaster != null) {
+			rightFrontVelPID = rightFrontDriveMaster.getPIDController();
+			rightFrontPositionPID = rightFrontAzimuth.getPIDController();
+			leftFrontVelPID = leftFrontDriveMaster.getPIDController();
+			leftFrontPositionPID = leftFrontAzimuth.getPIDController();
+			rightBackVelPID = rightBackDriveMaster.getPIDController();
+			rightBackPositionPID = rightBackAzimuth.getPIDController();
+			leftBackVelPID = leftBackDriveMaster.getPIDController();
+			leftBackPositionPID = leftBackAzimuth.getPIDController();
 
-		rightFrontDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
-		leftFrontDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
-		leftBackDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
-		rightBackDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
+			rightFrontDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
+			leftFrontDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
+			leftBackDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
+			rightBackDriveEncoder.setPositionConversionFactor(DRIVE_ENCODER_CONVERSION_FACTOR);
 
-		rightFrontDriveEncoder
-				.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY * WHEEL_CIRCUMFERENCE) / 60);
-		leftFrontDriveEncoder
-				.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY * WHEEL_CIRCUMFERENCE) / 60);
-		leftBackDriveEncoder
-				.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY * WHEEL_CIRCUMFERENCE) / 60);
-		rightBackDriveEncoder
-				.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY * WHEEL_CIRCUMFERENCE) / 60);
+			rightFrontDriveEncoder
+					.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY * WHEEL_CIRCUMFERENCE) / 60);
+			leftFrontDriveEncoder
+					.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY * WHEEL_CIRCUMFERENCE) / 60);
+			leftBackDriveEncoder
+					.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY * WHEEL_CIRCUMFERENCE) / 60);
+			rightBackDriveEncoder
+					.setVelocityConversionFactor((WHEEL_TO_ENCODER_RATIO_VELOCITY * WHEEL_CIRCUMFERENCE) / 60);
 
-		rightFrontAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
-		leftFrontAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
-		leftBackAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
-		rightBackAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
+			rightFrontAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
+			leftFrontAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
+			leftBackAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
+			rightBackAzimuthEncoder.setPositionConversionFactor(AZIMUTH_ENCODER_CONVERSION_FACTOR);
 
-		rightBackDriveEncoder.setPositionConversionFactor(1);
+			rightBackDriveEncoder.setPositionConversionFactor(1);
 
-		setPositionPID(rightFrontPositionPID);
-		setPositionPID(leftFrontPositionPID);
-		setPositionPID(leftBackPositionPID);
-		setPositionPID(rightBackPositionPID);
+			setPositionPID(rightFrontPositionPID);
+			setPositionPID(leftFrontPositionPID);
+			setPositionPID(leftBackPositionPID);
+			setPositionPID(rightBackPositionPID);
 
-		setVelocityPID(rightFrontVelPID);
-		setVelocityPID(leftFrontVelPID);
-		setVelocityPID(leftBackVelPID);
-		setVelocityPID(rightBackVelPID);
+			setVelocityPID(rightFrontVelPID);
+			setVelocityPID(leftFrontVelPID);
+			setVelocityPID(leftBackVelPID);
+			setVelocityPID(rightBackVelPID);
 
-		rightFrontPositionPID.setFeedbackDevice(rightFrontAzimuthEncoder);
-		leftFrontPositionPID.setFeedbackDevice(leftFrontAzimuthEncoder);
-		leftBackPositionPID.setFeedbackDevice(leftBackAzimuthEncoder);
-		rightBackPositionPID.setFeedbackDevice(rightBackAzimuthEncoder);
+			rightFrontPositionPID.setFeedbackDevice(rightFrontAzimuthEncoder);
+			leftFrontPositionPID.setFeedbackDevice(leftFrontAzimuthEncoder);
+			leftBackPositionPID.setFeedbackDevice(leftBackAzimuthEncoder);
+			rightBackPositionPID.setFeedbackDevice(rightBackAzimuthEncoder);
 
-		rightFrontVelPID.setFeedbackDevice(rightFrontDriveEncoder);
-		leftFrontVelPID.setFeedbackDevice(leftFrontDriveEncoder);
-		leftBackVelPID.setFeedbackDevice(leftBackDriveEncoder);
-		rightBackVelPID.setFeedbackDevice(rightBackDriveEncoder);
+			rightFrontVelPID.setFeedbackDevice(rightFrontDriveEncoder);
+			leftFrontVelPID.setFeedbackDevice(leftFrontDriveEncoder);
+			leftBackVelPID.setFeedbackDevice(leftBackDriveEncoder);
+			rightBackVelPID.setFeedbackDevice(rightBackDriveEncoder);
+		}
+
+		SmartDashboard.putNumber("P Gain Position", kPositionP);
+		SmartDashboard.putNumber("I Gain Position", kPositionI);
+		SmartDashboard.putNumber("D Gain Position", kPositionD);
+		SmartDashboard.putNumber("I Zone Position", kPositionIz);
+		SmartDashboard.putNumber("Feed Forward Position", kPositionFF);
+		SmartDashboard.putNumber("Max Output Position", kVelocityMaxOutput);
+		SmartDashboard.putNumber("Min Output Position", kVelocityMinOutput);
+		
+		SmartDashboard.putNumber("P Gain Velocity", kVelocityP);
+		SmartDashboard.putNumber("I Gain Velocity", kVelocityI);
+		SmartDashboard.putNumber("D Gain Velocity", kVelocityD);
+		SmartDashboard.putNumber("I Zone Velocity", kVelocityIz);
+		SmartDashboard.putNumber("Feed Forward Velocity", kVelocityFF);
+		SmartDashboard.putNumber("Max Output Velocity", kVelocityMaxOutput);
+		SmartDashboard.putNumber("Min Output Velocity", kVelocityMinOutput);
+		SmartDashboard.putNumber("PID Position Setpoint", 0);
+
+		SmartDashboard.putBoolean("Are We Tuning Drive PID?", drivePIDTuning);
+
+		SmartDashboard.putNumber("Azimuth Test Heading", 0);
+		SmartDashboard.putBoolean("Change Test Heading", false);
+
+		this.setDefaultCommand(new TeleOpDriveCommand(this));
+		
+		spinPIDController = new PIDController(kSpinP, kSpinI, kSpinD);
+		spinPIDController.enableContinuousInput(-180, 180); //sets a circular range instead of a linear one. 
+		spinPIDController.setTolerance(3);
+
+		fixRelativeEncoders();
 	}
-
-	SmartDashboard.putNumber("P Gain Position", kPositionP);
-	SmartDashboard.putNumber("I Gain Position", kPositionI);
-	SmartDashboard.putNumber("D Gain Position", kPositionD);
-	SmartDashboard.putNumber("I Zone Position", kPositionIz);
-	SmartDashboard.putNumber("Feed Forward Position", kPositionFF);
-	SmartDashboard.putNumber("Max Output Position", kVelocityMaxOutput);
-	SmartDashboard.putNumber("Min Output Position", kVelocityMinOutput);
-	
-	SmartDashboard.putNumber("P Gain Velocity", kVelocityP);
-	SmartDashboard.putNumber("I Gain Velocity", kVelocityI);
-	SmartDashboard.putNumber("D Gain Velocity", kVelocityD);
-	SmartDashboard.putNumber("I Zone Velocity", kVelocityIz);
-	SmartDashboard.putNumber("Feed Forward Velocity", kVelocityFF);
-	SmartDashboard.putNumber("Max Output Velocity", kVelocityMaxOutput);
-	SmartDashboard.putNumber("Min Output Velocity", kVelocityMinOutput);
-	SmartDashboard.putNumber("PID Position Setpoint", 0);
-
-	SmartDashboard.putBoolean("Are We Tuning Drive PID?", drivePIDTuning);
-
-	SmartDashboard.putNumber("Azimuth Test Heading", 0);
-	SmartDashboard.putBoolean("Change Test Heading", false);
-
-	this.setDefaultCommand(new TeleOpDriveCommand(this));
-	
-	spinPIDController = new PIDController(kSpinP, kSpinI, kSpinD);
-	spinPIDController.enableContinuousInput(-180, 180); //sets a circular range instead of a linear one. 
-	spinPIDController.setTolerance(3);
-
-	fixRelativeEncoders();
-  }
 
 	@Override
 	public void periodic() {
@@ -276,6 +277,7 @@ public class DriveSubsystem extends SubsystemBase {
 		currentHeading = getNavXFixedAngle();
 
 		SmartDashboard.putNumber("NavX heading", currentHeading);
+		SmartDashboard.putBoolean("drive.field.relative", fieldRelative);
 
 		double commandedSpin = RobotContainer.getDriveSpinJoystick();
 
@@ -298,19 +300,19 @@ public class DriveSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("Target Heading", targetHeading);
 	}
 
-  public void periodicManualSpinMode(){
+  	public void periodicManualSpinMode(){
 		setTargetHeading(currentHeading);
 		double commandedSpin = RobotContainer.getDriveSpinJoystick();
 		spinPower = commandedSpin;
-  }
+  	}
 
-  public void periodicAutoSpinMode(){
+  	public void periodicAutoSpinMode(){
 		spinPIDController.setSetpoint(targetHeading);
 		spinPower = spinPIDController.calculate(currentHeading);
 		double error = spinPIDController.getPositionError();
 
 		SmartDashboard.putNumber("Spin PID error", error);
-  }
+  	}
 
   	public double getStrafeXValue() {
 		double rv = MAX_VELOCITY_RPM*RobotContainer.getDriveHorizontalJoystick();
@@ -400,7 +402,7 @@ public class DriveSubsystem extends SubsystemBase {
 			strafeVectorAngle = strafeVectorAngle + robotHeading; //add heading to strafing angle to find our field-relative angle
 		} else {
 			// not sure this is wise!
-			strafeVectorAngle = sc.normalizeAngle(strafeVectorAngle + 180);
+			strafeVectorAngle = sc.normalizeAngle(strafeVectorAngle);
 		}
 		SmartDashboard.putNumber("drive.strafeVectorAngle+correction", strafeVectorAngle);
 		SmartDashboard.putNumber("drive.strafeVectorMagnitude", strafeVectorMagnitude);
@@ -538,7 +540,10 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 	}
 	
-	public void twoWheelRotation(double speed){ //If the front of the robot is NORTH, 0 degrees is east, 90 degrees is north, -90 degrees is south, +/-180 degrees is west
+	public void twoWheelRotation(double speed){ 
+		// these angles are angles for Vectors. Math class degress:
+		// 0 degrees is to the right, 90 degrees is front, -90 degrees is behind, +/-180 degrees is left
+
 		double leftFrontAngle = -160;
 		double rightFrontAngle = 160;
 		double leftBackAngle = 90; //should be pointing forward
@@ -746,7 +751,7 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public double getNavXFixedAngle(){ //returns angle in the range of -180 degrees to 180 degrees with 0 being the front
-		double angle = 180 + ahrs.getAngle(); // added 180 degrees to make north the front of the robot.
+		double angle = ahrs.getAngle(); // added 180 degrees to make north the front of the robot.
 
 		angle = angle % 360;
 		
