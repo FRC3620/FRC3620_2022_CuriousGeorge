@@ -131,21 +131,22 @@ public class DriveSubsystem extends SubsystemBase {
 	DriveVectors oldVectors;
 
   	public DriveSubsystem() {
-	  String MacAddress = ConfigurationItem.identifyRoboRIO();
-	  logger.info("ETHERNET MAC address: {}", MacAddress);
-	  if (MacAddress.equals("00-80-2F-18-5C-5F")) {
-		  logger.info("I THINK IM A PRACTICE BOT");
-		RIGHT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_RIGHT_FRONT_ABSOLUTE_OFFSET;
-		LEFT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_LEFT_FRONT_ABSOLUTE_OFFSET;
-		RIGHT_BACK_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_RIGHT_BACK_ABSOLUTE_OFFSET;
-		LEFT_BACK_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_LEFT_BACK_ABSOLUTE_OFFSET;
-	  } else {
-		logger.info("I THINK IM A COMPETITION BOT");
-		  RIGHT_BACK_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_RIGHT_BACK_ABSOLUTE_OFFSET;
-		  LEFT_BACK_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_LEFT_BACK_ABSOLUTE_OFFSET;
-		  RIGHT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_RIGHT_FRONT_ABSOLUTE_OFFSET;
-		  LEFT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_LEFT_FRONT_ABSOLUTE_OFFSET;
-	  }
+		String macAddress = ConfigurationItem.identifyRoboRIO();
+		logger.info("ETHERNET MAC address: {}", macAddress);
+		if (macAddress.equals("00-80-2F-18-5C-5F")) {
+			logger.info("I THINK IM A PRACTICE BOT");
+			RIGHT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_RIGHT_FRONT_ABSOLUTE_OFFSET;
+			LEFT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_LEFT_FRONT_ABSOLUTE_OFFSET;
+			RIGHT_BACK_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_RIGHT_BACK_ABSOLUTE_OFFSET;
+			LEFT_BACK_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_LEFT_BACK_ABSOLUTE_OFFSET;
+		} else {
+			logger.info("I THINK IM A COMPETITION BOT");
+			RIGHT_BACK_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_RIGHT_BACK_ABSOLUTE_OFFSET;
+			LEFT_BACK_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_LEFT_BACK_ABSOLUTE_OFFSET;
+			RIGHT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_RIGHT_FRONT_ABSOLUTE_OFFSET;
+			LEFT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_LEFT_FRONT_ABSOLUTE_OFFSET;
+		}
+
 		if (rightFrontDriveMaster != null) {
 			rightFrontVelPID = rightFrontDriveMaster.getPIDController();
 			rightFrontPositionPID = rightFrontAzimuth.getPIDController();
@@ -298,7 +299,13 @@ public class DriveSubsystem extends SubsystemBase {
 			periodicAutoSpinMode();
 		}
 		SmartDashboard.putNumber("Target Heading", targetHeading);
+
+		SmartDashboard.putNumber("driver.joy.x", RobotContainer.getDriveHorizontalJoystick());
+		SmartDashboard.putNumber("driver.joy.y", RobotContainer.getDriveVerticalJoystick());
+		SmartDashboard.putNumber("driver.joy.c", joystick_count++);
+	
 	}
+	int joystick_count = 0;
 
   	public void periodicManualSpinMode(){
 		setTargetHeading(currentHeading);

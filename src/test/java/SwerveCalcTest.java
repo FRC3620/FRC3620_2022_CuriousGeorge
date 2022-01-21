@@ -8,9 +8,20 @@ import frc.robot.miscellaneous.DriveVectors;
 import frc.robot.miscellaneous.SwerveCalculator;
 import frc.robot.miscellaneous.Vector;
 
-/* make a test that does nothing so we never have trouble with Gradle test not finding any tests */
 public class SwerveCalcTest {
     SwerveCalculator sc = new SwerveCalculator(1, 1, 1);
+
+    @Test
+    public void s00() {
+        sw(0, 1, 0);
+        sw(1, 0, 90);
+        sw(1, 1, 90);
+    }
+
+    void sw (double x, double y, double expected) {
+        double sa = sc.calculateStrafeAngle(x, y);
+        assertEquals("swerve calculation broke", expected, sa, 0.1);
+    }
 
     @Test
     public void t00() {
@@ -30,13 +41,13 @@ public class SwerveCalcTest {
     public ExpectedException exceptionRule = ExpectedException.none();
     
     @Test
-    public void shouldFail01() {
+    public void t02_shouldFail() {
         exceptionRule.expect(AssertionError.class);
         xy (1, 1, 45, 2); // should fail
     }
 
     @Test
-    public void shouldFail02() {
+    public void t03_shouldFail() {
         exceptionRule.expect(AssertionError.class);
         xy (1, 1, 47, 1); // should fail
     }

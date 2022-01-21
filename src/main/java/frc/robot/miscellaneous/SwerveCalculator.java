@@ -7,6 +7,8 @@
 
 package frc.robot.miscellaneous;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  * Add your docs here.
  */
@@ -21,8 +23,14 @@ public class SwerveCalculator {
         maxDriveVelocity = maxVelocity;
 	}
 
+	/**
+	 * For a X, Y joystick position, calculate the strafe angle.
+	 * @param joyX joystick X, positive to the right
+	 * @param joyY joystick Y, positive forward
+	 * @return strafe angle, 0 straight ahead, 90 to the right...
+	 */
 	public double calculateStrafeAngle (double joyX, double joyY) {
-		return Math.atan2(joyY, joyX)*(180/Math.PI); //get our desired strafing angle in degrees
+		return 90 - (Math.atan2(joyY, joyX)*(180/Math.PI)); //get our desired strafing angle in degrees
 	}
 
 	public double calculateStrafeVectorMagnitude (double joyX, double joyY) {
@@ -42,7 +50,7 @@ public class SwerveCalculator {
 	 * joyRotation is also the way a compass works (positive turns the robot clockwise).	
 	 * 
 	 * The DriveVectors returned have the convection that 0 is pointing to the right, and 
-	 * increasing angle is CCW (the way we taught in math class)
+	 * increasing angle is CCW (the way we were taught in math class)
 	 * 	 * 
 	 * @param strafeVectorAngle
 	 * @param strafeVectorMagnitude
@@ -50,14 +58,23 @@ public class SwerveCalculator {
 	 * @return
 	 */
 	public DriveVectors calculateEverythingFromVector (double strafeVectorAngle, double strafeVectorMagnitude, double joyRotation) {
+		// these will be in math coordinates - 0 points right, increasing values CCW
+		double r_strafeVectorAngle = 90.0 - strafeVectorAngle;
+		double r_joyRotation = - joyRotation;
 
-		double strafeX = strafeVectorMagnitude*Math.cos(strafeVectorAngle*Math.PI/180); //calculate X and Y components of the new strafing vector
-		double strafeY = strafeVectorMagnitude*Math.sin(strafeVectorAngle*Math.PI/180);
+		SmartDashboard.putNumber("calc.va_r", r_strafeVectorAngle);
+		SmartDashboard.putNumber("calc.va", strafeVectorAngle);
+		SmartDashboard.putNumber("calc.jr", joyRotation);
+		SmartDashboard.putNumber("calc.jr_r", r_joyRotation);
 
-		double a = strafeX-(joyRotation*halfChasisLength);    //joyX is the horizontal input on the strafe joystick (the horizontal component of the desired vehicle speed), its units are in/s. 
-		double b = strafeX+(joyRotation*halfChasisLength);	   //variables A and B are horizontal components of WHEEL velocity, their units are in/s
-		double c = strafeY-(joyRotation*halfChasisWidth);     //joyY is the vertical input on the strafe joystick (the vertical component of the desired vehicle speed), its units are in/s.
-		double d = strafeY+(joyRotation*halfChasisWidth);     //variables C and D are vertical components of WHEEL velocity, their units are in/s
+		//calculate X and Y components of the new strafing vector
+		double strafeX = strafeVectorMagnitude*Math.cos(r_strafeVectorAngle*Math.PI/180);
+		double strafeY = strafeVectorMagnitude*Math.sin(r_strafeVectorAngle*Math.PI/180);
+
+		double a = strafeX-(r_joyRotation*halfChasisLength);    //joyX is the horizontal input on the strafe joystick (the horizontal component of the desired vehicle speed), its units are in/s. 
+		double b = strafeX+(r_joyRotation*halfChasisLength);	   //variables A and B are horizontal components of WHEEL velocity, their units are in/s
+		double c = strafeY-(r_joyRotation*halfChasisWidth);     //joyY is the vertical input on the strafe joystick (the vertical component of the desired vehicle speed), its units are in/s.
+		double d = strafeY+(r_joyRotation*halfChasisWidth);     //variables C and D are vertical components of WHEEL velocity, their units are in/s
 
 		DriveVectors rv = new DriveVectors();    //created a DriveVectors object, which holds 4 vector objects (each with its respective direction and magnitude), one for each wheel
 		rv.leftFront = fancyCalc(b,  d);          

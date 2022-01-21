@@ -23,6 +23,8 @@ test {
         // run this if nothing else so only this runs
         includeTestsMatching 'DummyTest'
 
+        includeTestsMatching 'SwerveCalcTest'
+
         // includeTestsMatching 'ConfigurationTest.testMinifier'
         // includeTestsMatching 'SillyTests'
     }

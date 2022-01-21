@@ -43,17 +43,12 @@ public class TeleOpDriveCommand extends CommandBase {
     driveSubsystem.setTargetHeading(desiredHeading);
   }
 
-  int count = 0;
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     strafeX = RobotContainer.getDriveHorizontalJoystick();
     strafeY = RobotContainer.getDriveVerticalJoystick();
     spinX = -driveSubsystem.getSpinPower();
-    SmartDashboard.putNumber("driver.joy.x", strafeX);
-    SmartDashboard.putNumber("driver.joy.y", strafeY);
-    SmartDashboard.putNumber("driver.joy.c", count++);
 
     driveSubsystem.teleOpDrive(strafeX, strafeY, spinX);
   }

@@ -166,34 +166,34 @@ public class RobotContainer {
 
     if (driveSubsystemRightFrontDrive != null){
 
-      resetMaxToKnownState(driveSubsystemRightFrontDrive);
+      resetMaxToKnownState(driveSubsystemRightFrontDrive, true);
       driveSubsystemRightFrontDrive.setClosedLoopRampRate(DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT);
 
-      resetMaxToKnownState(driveSubsystemRightFrontAzimuth);
+      resetMaxToKnownState(driveSubsystemRightFrontAzimuth, false);
       driveSubsystemRightFrontAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
 
-      resetMaxToKnownState(driveSubsystemLeftFrontDrive);
+      resetMaxToKnownState(driveSubsystemLeftFrontDrive, true);
       driveSubsystemLeftFrontDrive.setClosedLoopRampRate(DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT);
 
-      resetMaxToKnownState(driveSubsystemLeftFrontAzimuth);
+      resetMaxToKnownState(driveSubsystemLeftFrontAzimuth, false);
       driveSubsystemLeftFrontAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
 
-      resetMaxToKnownState(driveSubsystemLeftBackDrive);
+      resetMaxToKnownState(driveSubsystemLeftBackDrive, true);
       driveSubsystemLeftBackDrive.setClosedLoopRampRate(DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT);
 
-      resetMaxToKnownState(driveSubsystemLeftBackAzimuth);
+      resetMaxToKnownState(driveSubsystemLeftBackAzimuth, false);
       driveSubsystemLeftBackAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
 
-      resetMaxToKnownState(driveSubsystemRightBackDrive);
+      resetMaxToKnownState(driveSubsystemRightBackDrive, true);
       driveSubsystemRightBackDrive.setClosedLoopRampRate(DRIVE_CLOSED_LOOP_RAMP_RATE_CONSTANT);
       
-      resetMaxToKnownState(driveSubsystemRightBackAzimuth);
+      resetMaxToKnownState(driveSubsystemRightBackAzimuth, false);
       driveSubsystemRightBackAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
     }
   }
 
-  static void resetMaxToKnownState(CANSparkMax x) {
-    x.setInverted(false);
+  static void resetMaxToKnownState(CANSparkMax x, boolean inverted) {
+    x.setInverted(inverted);
     x.setIdleMode(IdleMode.kCoast);
     x.setOpenLoopRampRate(1);
     x.setClosedLoopRampRate(1);
