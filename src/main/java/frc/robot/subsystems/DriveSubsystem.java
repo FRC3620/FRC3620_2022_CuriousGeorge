@@ -224,6 +224,8 @@ public class DriveSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("Azimuth Test Heading", 0);
 		SmartDashboard.putBoolean("Change Test Heading", false);
 
+		SmartDashboard.putNumber("NavX Offset", 0);
+
 		this.setDefaultCommand(new TeleOpDriveCommand(this));
 		
 		spinPIDController = new PIDController(kSpinP, kSpinI, kSpinD);
@@ -279,7 +281,7 @@ public class DriveSubsystem extends SubsystemBase {
 
 		drivePIDTuning = SmartDashboard.getBoolean("Are We Tuning Drive PID?", false);
 
-		NavXOffset = SmartDashboard.getNumber("NavX Offset", 0);
+		SmartDashboard.putNumber("NavX Offset", NavXOffset  );
 
 		currentHeading = getNavXFixedAngle();
 

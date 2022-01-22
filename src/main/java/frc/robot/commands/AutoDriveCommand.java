@@ -77,7 +77,10 @@ public class AutoDriveCommand extends CommandBase {
     @Override
     public void execute() {
         double spinX = driveSubsystem.getSpinPower();
-        driveSubsystem.autoDrive(desiredAngle, pathSpeed, spinX);
+
+        // need to correct for what direction we are heading
+        double desiredAngleRelativeToRobot = desiredAngle - driveSubsystem.getNavXFixedAngle();
+        driveSubsystem.autoDrive(desiredAngleRelativeToRobot, pathSpeed, spinX);
 
         double currentPositionRightFront = driveSubsystem.getDriveMotorPositionRightFront();
         double currentPositionLeftFront = driveSubsystem.getDriveMotorPositionLeftFront();

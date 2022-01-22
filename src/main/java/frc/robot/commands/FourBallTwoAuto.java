@@ -8,9 +8,9 @@ public class FourBallTwoAuto extends SequentialCommandGroup {
   public FourBallTwoAuto(DriveSubsystem driveSubsystem) {
       addCommands(
       //shoot
-      new AutoDriveCommand(45, 185, .5, 180, driveSubsystem),
+      new AutoDriveCommandDONOTUSE(45, 185, .5, 180, driveSubsystem),
       //shoot
-      new AutoDriveCommand(84, 185 , .5, 180, driveSubsystem)
+      new AutoDriveCommandDONOTUSE(84, 185 , .5, 180, driveSubsystem)
       //shootx2
       );
   }

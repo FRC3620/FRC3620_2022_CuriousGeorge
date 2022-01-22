@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class AutoDriveBeingDevelopedCommand extends CommandBase {
+public class AutoDriveCommandDONOTUSE extends CommandBase {
 
     private DriveSubsystem driveSubsystem;
 
@@ -30,11 +30,11 @@ public class AutoDriveBeingDevelopedCommand extends CommandBase {
     private IAutonomousLogger autonomousLogger;
     private String legName;
 
-    public AutoDriveBeingDevelopedCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem) {
+    public AutoDriveCommandDONOTUSE(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem) {
         this(distance, strafeAngle, speed, heading, driveSubsystem, null, null);
     }
 
-    public AutoDriveBeingDevelopedCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem, String legName, IAutonomousLogger autonomousLogger) {
+    public AutoDriveCommandDONOTUSE(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem, String legName, IAutonomousLogger autonomousLogger) {
         this.driveSubsystem = driveSubsystem;
         addRequirements(driveSubsystem);
 
@@ -77,10 +77,7 @@ public class AutoDriveBeingDevelopedCommand extends CommandBase {
     @Override
     public void execute() {
         double spinX = driveSubsystem.getSpinPower();
-
-        // need to correct for what direction we are heading
-        double desiredAngleRelativeToRobot = desiredAngle - driveSubsystem.getNavXFixedAngle();
-        driveSubsystem.autoDrive(desiredAngleRelativeToRobot, pathSpeed, spinX);
+        driveSubsystem.autoDrive(desiredAngle, pathSpeed, spinX);
 
         double currentPositionRightFront = driveSubsystem.getDriveMotorPositionRightFront();
         double currentPositionLeftFront = driveSubsystem.getDriveMotorPositionLeftFront();
