@@ -611,8 +611,8 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 	}
 
-	public void updateVelocityPID(SparkMaxPIDController pidController) {
-		if (pidController != null) {
+	public void updateVelocityPIDs(SparkMaxPIDController... pidControllers) {
+		if (pidControllers[0] != null) {
 			double p = SmartDashboard.getNumber("P Gain Velocity", kVelocityP);
 			double i = SmartDashboard.getNumber("I Gain Velocity", kVelocityI);
 			double d = SmartDashboard.getNumber("D Gain Velocity", kVelocityD);
