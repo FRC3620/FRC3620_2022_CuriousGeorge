@@ -8,7 +8,6 @@
 package frc.robot.miscellaneous;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.DriveSubsystem;
 
 /**
  * Add your docs here.
@@ -17,46 +16,65 @@ public class SwerveCalculator {
     public double halfChasisWidth;  //Chasis width and length must be in meters 
     public double halfChasisLength; //Chasis width and length must be in meters 
     public double maxDriveVelocity;
-    public DriveSubsystem driveSubsystem;
 
-	public SwerveCalculator(double chasisWidth, double chasisLength, double maxVelocity, DriveSubsystem m_driveSubsystem) {		
+	public SwerveCalculator(double chasisWidth, double chasisLength, double maxVelocity) {		
 		halfChasisWidth = chasisWidth / 2;     
         halfChasisLength = chasisLength / 2;	 	 
         maxDriveVelocity = maxVelocity;
-        driveSubsystem = m_driveSubsystem;
+	}
+
+	/**
+	 * For a X, Y joystick position, calculate the strafe angle.
+	 * @param joyX joystick X, positive to the right
+	 * @param joyY joystick Y, positive forward
+	 * @return strafe angle, 0 straight ahead, 90 to the right...
+	 */
+	public static double calculateStrafeAngle (double joyX, double joyY) {
+		return 90 - (Math.atan2(joyY, joyX)*(180/Math.PI)); //get our desired strafing angle in degrees
+	}
+
+	public static double calculateStrafeVectorMagnitude (double joyX, double joyY) {
+		return Math.sqrt((joyX*joyX) + (joyY*joyY)); //get desired strafing magnitude
 	}
 
 	public DriveVectors calculateEverything (double joyX, double joyY, double joyRotation) {
+        return calculateEverythingFromVector(calculateStrafeAngle(joyX, joyY), calculateStrafeVectorMagnitude(joyX, joyY), joyRotation);
+	}
 
-		double strafeX;
-		double strafeY;
+	/**
+	 * Calculate the swerve unit vectors for a certain strafe / rotate setup.
+	 * 
+	 * The strafeAngle is relative to the robot; 0 is straight ahead, and increasing angle is clockwise
+	 * (the way a compass works).
+	 * 
+	 * joyRotation is also the way a compass works (positive turns the robot clockwise).	
+	 * 
+	 * The DriveVectors returned have the convection that 0 is pointing to the right, and 
+	 * increasing angle is CCW (the way we were taught in math class)
+	 * 	 * 
+	 * @param strafeVectorAngle
+	 * @param strafeVectorMagnitude
+	 * @param joyRotation
+	 * @return
+	 */
+	public DriveVectors calculateEverythingFromVector (double strafeVectorAngle, double strafeVectorMagnitude, double joyRotation) {
+		// these will be in math coordinates - 0 points right, increasing values CCW
+		double r_strafeVectorAngle = 90.0 - strafeVectorAngle;
+		double r_joyRotation = joyRotation;
 
-		if(driveSubsystem.getFieldRelative()){
+		SmartDashboard.putNumber("calc.va_r", r_strafeVectorAngle);
+		SmartDashboard.putNumber("calc.va", strafeVectorAngle);
+		SmartDashboard.putNumber("calc.jr", joyRotation);
+		SmartDashboard.putNumber("calc.jr_r", r_joyRotation);
 
-			double robotHeading = driveSubsystem.getNavXFixedAngle(); //get NavX heading in degrees (from -180 to 180)
-			double strafeVectorAngle = Math.atan2(joyY, joyX)*(180/Math.PI); //get our desired strafing angle in degrees
-			strafeVectorAngle = strafeVectorAngle + robotHeading; //add heading to strafing angle to find our field-relative angle
-			SmartDashboard.putNumber("joyX", joyX);
-			SmartDashboard.putNumber("joyY", joyY);
-			SmartDashboard.putNumber("Strafe Vector Angle", strafeVectorAngle);
-			double strafeVectorMagnitude = Math.sqrt((joyX*joyX) + (joyY*joyY)); //get desired strafing magnitude
+		//calculate X and Y components of the new strafing vector
+		double strafeX = strafeVectorMagnitude*Math.cos(r_strafeVectorAngle*Math.PI/180);
+		double strafeY = strafeVectorMagnitude*Math.sin(r_strafeVectorAngle*Math.PI/180);
 
-			strafeX = strafeVectorMagnitude*Math.cos(strafeVectorAngle*Math.PI/180); //calculate X and Y components of the new strafing vector
-			strafeY = strafeVectorMagnitude*Math.sin(strafeVectorAngle*Math.PI/180);
-
-		} else{
-			double strafeVectorAngle = Math.atan2(joyY, joyX)*(180/Math.PI);
-			strafeVectorAngle = normalizeAngle(strafeVectorAngle + 180);
-			double strafeVectorMagnitude = Math.sqrt((joyX*joyX) + (joyY*joyY));
-
-			strafeX = strafeVectorMagnitude*Math.cos(strafeVectorAngle*Math.PI/180); 
-			strafeY = strafeVectorMagnitude*Math.sin(strafeVectorAngle*Math.PI/180);
-		}
-
-		double a = strafeX-(joyRotation*halfChasisLength);    //joyX is the horizontal input on the strafe joystick (the horizontal component of the desired vehicle speed), its units are in/s. 
-		double b = strafeX+(joyRotation*halfChasisLength);	   //variables A and B are horizontal components of WHEEL velocity, their units are in/s
-		double c = strafeY-(joyRotation*halfChasisWidth);     //joyY is the vertical input on the strafe joystick (the vertical component of the desired vehicle speed), its units are in/s.
-		double d = strafeY+(joyRotation*halfChasisWidth);     //variables C and D are vertical components of WHEEL velocity, their units are in/s
+		double a = strafeX-(r_joyRotation*halfChasisLength);    //joyX is the horizontal input on the strafe joystick (the horizontal component of the desired vehicle speed), its units are in/s. 
+		double b = strafeX+(r_joyRotation*halfChasisLength);	   //variables A and B are horizontal components of WHEEL velocity, their units are in/s
+		double c = strafeY-(r_joyRotation*halfChasisWidth);     //joyY is the vertical input on the strafe joystick (the vertical component of the desired vehicle speed), its units are in/s.
+		double d = strafeY+(r_joyRotation*halfChasisWidth);     //variables C and D are vertical components of WHEEL velocity, their units are in/s
 
 		DriveVectors rv = new DriveVectors();    //created a DriveVectors object, which holds 4 vector objects (each with its respective direction and magnitude), one for each wheel
 		rv.leftFront = fancyCalc(b,  d);          
@@ -75,8 +93,12 @@ public class SwerveCalculator {
 		return new Vector (angle, velocity);
 	}
 
-	public double normalizeAngle(double angle) {//This method makes sure the angle difference calculated falls between -180 degrees and 180 degrees
-
+	/**
+	 * This method makes sure the angle difference calculated falls between -180 degrees and 180 degrees
+	 * @param angle
+	 * @return
+	 */
+	public static double normalizeAngle(double angle) {
 		angle = angle % 360;
 		
 		if(angle > 180){
@@ -91,7 +113,7 @@ public class SwerveCalculator {
 		return angle;
 	}
 
-	public double getAngleDifference(double y, double x) {//x = target angle, y = source angle, this finds the shortest angle difference for the swerve modules
+	public static double calculateAngleDifference(double y, double x) {//x = target angle, y = source angle, this finds the shortest angle difference for the swerve modules
 		double diff = x - y;
 
 		diff = normalizeAngle(diff);
@@ -99,9 +121,9 @@ public class SwerveCalculator {
 		return diff;
 	}
 	
-	double steeringCutoff = 20;
-	public Vector determineNewVector (Vector calculated, Vector current) { //takes 2 vectors and calculates the angle between them and returns a new "fixed" vector
-		double diff = getAngleDifference(current.getDirection(), calculated.getDirection());
+	static double steeringCutoff = 20;
+	public static Vector determineNewVector (Vector calculated, Vector current) { //takes 2 vectors and calculates the angle between them and returns a new "fixed" vector
+		double diff = calculateAngleDifference(current.getDirection(), calculated.getDirection());
 		if(Math.abs(diff) < 90 ) { // if the difference is greater than 90 degrees, the angle is normalized (see normalizeAngle()) and added 180 degrees 
 			if(Math.abs(calculated.getMagnitude())> steeringCutoff){
 				return new Vector(current.getDirection() + diff, calculated.getMagnitude());     //this also means that it is faster to invert the power on the motors and go to the angle 180 greater than the one returned by fancyCalc
@@ -130,15 +152,13 @@ public class SwerveCalculator {
 		}
 	}
 	
-	public DriveVectors fixVectors(DriveVectors calculatedVectors, DriveVectors currentVectors ) { //fixes every vector of the DriverVectors object and returns them
-		
+	public static DriveVectors fixVectors(DriveVectors calculatedVectors, DriveVectors currentVectors ) { //fixes every vector of the DriverVectors object and returns them
 		DriveVectors fixedVectors = new DriveVectors();
 		
 		fixedVectors.leftFront = determineNewVector(calculatedVectors.leftFront, currentVectors.leftFront);
 		fixedVectors.rightFront = determineNewVector(calculatedVectors.rightFront, currentVectors.rightFront);
 		fixedVectors.leftBack = determineNewVector(calculatedVectors.leftBack, currentVectors.leftBack);
 		fixedVectors.rightBack = determineNewVector(calculatedVectors.rightBack, currentVectors.rightBack);
-
 		
 		//System.out.println ("calculated: " + calculatedVectors.leftBack);
 		//System.out.println ("new: " + fixedVectors.leftBack);

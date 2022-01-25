@@ -24,7 +24,7 @@ public class CANDeviceFinder {
     public CANDeviceFinder() {
         super();
         find();
-        research();
+        // research();
     }
 
     public boolean isDevicePresent(CANDeviceType deviceType, int id) {
@@ -143,7 +143,7 @@ public class CANDeviceFinder {
         deviceSet.clear();
         byDeviceType.clear();
 
-        logger.info ("calling find()");
+        logger.debug ("calling find()");
         List<CanFinder> finders = new ArrayList<>();
 
         for (CANDeviceType canDeviceType : CANDeviceType.values()) {

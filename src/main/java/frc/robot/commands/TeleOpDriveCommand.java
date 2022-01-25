@@ -11,13 +11,12 @@ import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class TeleOpDriveCommand extends CommandBase {
-  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);;
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
   private DriveSubsystem driveSubsystem;
 
   double strafeX;
@@ -43,17 +42,12 @@ public class TeleOpDriveCommand extends CommandBase {
     driveSubsystem.setTargetHeading(desiredHeading);
   }
 
-  int count = 0;
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     strafeX = RobotContainer.getDriveHorizontalJoystick();
     strafeY = RobotContainer.getDriveVerticalJoystick();
-    spinX = -driveSubsystem.getSpinPower();
-    SmartDashboard.putNumber("driver.joy.x", strafeX);
-    SmartDashboard.putNumber("driver.joy.y", strafeY);
-    SmartDashboard.putNumber("driver.joy.c", count++);
+    spinX = driveSubsystem.getSpinPower();
 
     driveSubsystem.teleOpDrive(strafeX, strafeY, spinX);
   }
