@@ -219,7 +219,7 @@ public class RobotContainer {
   
     SmartDashboard.putData("TestAuto", new TestAuto(driveSubsystem));
     SmartDashboard.putData("5 Ball Auto", new FiveBallAuto(driveSubsystem));
-    SmartDashboard.putData("4 Ball Auto", new FourBallAuto(driveSubsystem));
+    SmartDashboard.putData("4 Ball Auto", new FourBallAutoP(driveSubsystem));
 
     SmartDashboard.putData("DougTestAutoDrive", new DougTestAutoDrive(driveSubsystem));
     SmartDashboard.putData("DougTestAutoSpin", new DougTestAutoSpin(driveSubsystem));
@@ -232,7 +232,8 @@ public class RobotContainer {
     SmartDashboard.putData("Auto mode", chooser);
 
     chooser.addOption("TestAuto", new TestAuto(driveSubsystem));
-    chooser.addOption("5 Ball Auto", new FiveBallAuto(driveSubsystem));
+    chooser.addOption("5 Ball P Auto", new FiveBallAuto(driveSubsystem));
+    chooser.addOption("4 Ball P Auto", new FourBallAutoP(driveSubsystem));
   }
   
   public static double getDriveVerticalJoystick() {

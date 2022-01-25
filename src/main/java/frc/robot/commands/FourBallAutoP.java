@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class FiveBallAuto extends SequentialCommandGroup {
-  public FiveBallAuto(DriveSubsystem driveSubsystem) {
+public class FourBallAutoP extends SequentialCommandGroup {
+  public FourBallAutoP(DriveSubsystem driveSubsystem) {
 
       addCommands(
       new setInitialNavXOffsetCommand(driveSubsystem, 90)
