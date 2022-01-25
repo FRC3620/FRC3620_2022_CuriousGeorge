@@ -89,6 +89,8 @@ public class RobotContainer {
   public static RelativeEncoder driveSubsystemRightBackAzimuthEncoder;
   public static AnalogInput driveSubsystemRightBackHomeEncoder;
 
+  public static AnalogInput intakeSubsystemUltrasonicSensor;
+
   private static DigitalInput practiceBotJumper;
 
   public static Compressor theCompressor;
@@ -158,8 +160,11 @@ public class RobotContainer {
       driveSubsystemRightBackAzimuth = new CANSparkMax(8, MotorType.kBrushless);
       driveSubsystemRightBackAzimuthEncoder = driveSubsystemRightBackAzimuth.getEncoder();
 
-      driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
+      //driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
+      driveSubsystemRightBackHomeEncoder = driveSubsystemLeftBackHomeEncoder;
     }
+    
+    intakeSubsystemUltrasonicSensor = new AnalogInput(3);
   }
 
   void setupMotors() {
@@ -203,7 +208,7 @@ public class RobotContainer {
 
   void makeSubsystems() {
     driveSubsystem = new DriveSubsystem();
-    intakeSubsystem = new IntakeSubsystem();
+    intakeSubsystem = new IntakeSubsystem(intakeSubsystemUltrasonicSensor);
   }
 
   /**

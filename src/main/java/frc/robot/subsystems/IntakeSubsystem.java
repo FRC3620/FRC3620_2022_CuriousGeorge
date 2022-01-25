@@ -5,12 +5,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
+import edu.wpi.first.wpilibj.AnalogInput;
 
 public class IntakeSubsystem extends SubsystemBase {
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
@@ -22,13 +24,16 @@ public class IntakeSubsystem extends SubsystemBase {
   private final Color kRedTarget = new Color(0.65, 0.29, 0.06);
   //Light on: private final Color kRedTarget = new Color(0.38, 0.43, 0.19);
   //private final Color kRedTarget = new Color(0.561, 0.232, 0.114);
+  private AnalogInput ultrasonicSensor;
   /** Creates a new IntakeSubsystem. */
-  public IntakeSubsystem() {
+  public IntakeSubsystem(AnalogInput ultrasonicSensor) {
     m_colorMatcher.setConfidenceThreshold(0.95);
     m_colorMatcher.addColorMatch(kBlueTarget);
     //m_colorMatcher.addColorMatch(kGreenTarget);
     m_colorMatcher.addColorMatch(kRedTarget);
     //m_colorMatcher.addColorMatch(kYellowTarget);
+
+    this.ultrasonicSensor = ultrasonicSensor;
   }
 
   @Override
@@ -58,5 +63,13 @@ public class IntakeSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Confidence", match.confidence);
     }
     SmartDashboard.putString("Detected Color", colorString);
+
+
+
+    double ultrasonicSensorVoltage = ultrasonicSensor.getVoltage();
+    double ultrasonicSensorDistance = (ultrasonicSensorVoltage  / 0.0977) / 2.54;
+    SmartDashboard.putNumber("ultrasonicSensorDistance", ultrasonicSensorDistance);
+    SmartDashboard.putNumber("ultrasonicSensorVoltage",ultrasonicSensorVoltage);
+
   }
 }
