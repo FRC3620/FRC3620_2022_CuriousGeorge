@@ -242,7 +242,7 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 
 		if (rightFrontDriveMaster  != null) {
-				updateVelocityPIDs(rightFrontVelPID, leftFrontVelPID, leftBackVelPID, rightBackVelPID);
+			updateVelocityPIDs(rightFrontVelPID, leftFrontVelPID, leftBackVelPID, rightBackVelPID);
 		}
 		drivePIDTuning = SmartDashboard.getBoolean("Are We Tuning Drive PID?", false);
 
