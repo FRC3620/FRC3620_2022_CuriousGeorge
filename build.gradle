@@ -25,6 +25,7 @@ test {
 
         // includeTestsMatching 'ConfigurationTest.testMinifier'
         // includeTestsMatching 'SillyTests'
+        // includeTestsMatching 'GitNessTest'
     }
 }
 
