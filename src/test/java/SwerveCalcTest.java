@@ -15,7 +15,7 @@ public class SwerveCalcTest {
     public void s00() {
         sw(0, 1, 0);
         sw(1, 0, 90);
-        sw(1, 1, 90);
+        sw(1, 1, 45);
     }
 
     void sw (double x, double y, double expected) {

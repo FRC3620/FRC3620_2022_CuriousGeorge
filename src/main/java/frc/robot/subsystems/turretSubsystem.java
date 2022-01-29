@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
-public class turretSubsystem extends SubsystemBase {
+public class TurretSubsystem extends SubsystemBase {
   boolean encoderIsValid = false;
   CANSparkMax turretDrive = RobotContainer.turretSubsystemturretSpinner;
   RelativeEncoder turretEncoder = RobotContainer.turretSubsystemturretEncoder;
@@ -26,7 +26,7 @@ public class turretSubsystem extends SubsystemBase {
   /**
    * Creates a new turretSubsystem.
    */
-  public turretSubsystem() {
+  public TurretSubsystem() {
     turretEncoder.setPositionConversionFactor(90/7.8);
     turretEncoder.setVelocityConversionFactor(1);
 
@@ -48,7 +48,7 @@ public class turretSubsystem extends SubsystemBase {
     double turretPower = turretDrive.getAppliedOutput();
     if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
       if (!encoderIsValid) {
-        turnturret(-0.045);
+        turnTurret(-0.045);
 
         if (calibrationTimer == null) {
           calibrationTimer = new Timer();
@@ -58,7 +58,7 @@ public class turretSubsystem extends SubsystemBase {
           if (calibrationTimer.get() > 0.5){
             if (Math.abs(turretSpeed) < 20) {
               encoderIsValid = true;
-              turnturret(0.0);
+              turnTurret(0.0);
               turretEncoder.setPosition(0.0);
             }
           
@@ -79,11 +79,11 @@ public class turretSubsystem extends SubsystemBase {
    * 
    * @param speed speed to turn it. positive is clockwise
    */
-  public void turnturret(double speed) {
+  public void turnTurret(double speed) {
     turretDrive.set(speed);
   }
 
-  public void setturretPosition (double angle) {
+  public void setTurretPosition (double angle) {
     turretPID.setReference(angle, ControlType.kPosition);
   }
 }

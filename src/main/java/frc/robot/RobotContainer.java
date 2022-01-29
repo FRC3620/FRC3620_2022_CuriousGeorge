@@ -70,6 +70,11 @@ public class RobotContainer {
   public static RelativeEncoder driveSubsystemRightFrontDriveEncoder;
   public static RelativeEncoder driveSubsystemRightFrontAzimuthEncoder;
   public static AnalogInput driveSubsystemRightFrontHomeEncoder;
+
+  
+  public static CANSparkMax turretSubsystemturretSpinner;
+  public static RelativeEncoder turretSubsystemturretEncoder;
+
   
   public static CANSparkMax driveSubsystemLeftFrontDrive;
   public static CANSparkMax driveSubsystemLeftFrontAzimuth;
@@ -96,7 +101,7 @@ public class RobotContainer {
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
   public static IntakeSubsystem intakeSubsystem;
-
+  public static TurretSubsystem turretSubsystem;
   // joysticks here....
   public static Joystick driverJoystick;
   public static Joystick operatorJoystick;
@@ -204,6 +209,7 @@ public class RobotContainer {
   void makeSubsystems() {
     driveSubsystem = new DriveSubsystem();
     intakeSubsystem = new IntakeSubsystem();
+    turretSubsystem = new TurretSubsystem();
   }
 
   /**
@@ -214,6 +220,11 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     driverJoystick = new Joystick(DRIVER_JOYSTICK_PORT);
+    JoystickButton turntable135Button = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
+    turntable135Button.whenPressed(new MoveTurretCommand(turretSubsystem, 90));
+
+    JoystickButton turntable136Button = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
+    turntable136Button.whenPressed(new MoveTurretCommand(turretSubsystem, 180));
   }
 
   void setupSmartDashboardCommands() {
@@ -315,3 +326,4 @@ public class RobotContainer {
     return chooser.getSelected();
   }
 }
+
