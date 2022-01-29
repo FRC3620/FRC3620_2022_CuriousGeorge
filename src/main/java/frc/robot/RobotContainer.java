@@ -165,8 +165,16 @@ public class RobotContainer {
 
       driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
     }
-  }
 
+    //turret 
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 20, "turret") || iAmACompetitionRobot) {
+      turretSubsystemturretSpinner = new CANSparkMax(20, MotorType.kBrushless);
+      resetMaxToKnownState(turretSubsystemturretSpinner, true);
+      turretSubsystemturretSpinner.setSmartCurrentLimit(10);
+      turretSubsystemturretEncoder = turretSubsystemturretSpinner.getEncoder();
+    }
+  }
+  
   void setupMotors() {
     int kTimeoutMs = 0;
 
@@ -220,11 +228,12 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     driverJoystick = new Joystick(DRIVER_JOYSTICK_PORT);
-    JoystickButton turntable135Button = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
-    turntable135Button.whenPressed(new MoveTurretCommand(turretSubsystem, 90));
 
-    JoystickButton turntable136Button = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
-    turntable136Button.whenPressed(new MoveTurretCommand(turretSubsystem, 180));
+    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
+      .whenPressed(new MoveTurretCommand(turretSubsystem, 90));
+
+    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B)
+      .whenPressed(new MoveTurretCommand(turretSubsystem, 180));
   }
 
   void setupSmartDashboardCommands() {

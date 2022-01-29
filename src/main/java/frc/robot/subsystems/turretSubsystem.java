@@ -1,13 +1,9 @@
 package frc.robot.subsystems;
 
-import java.sql.Time;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics. CANSparkMax.ControlType;
-import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.ControlType;
 
 import org.usfirst.frc3620.misc.RobotMode;
 
@@ -31,11 +27,10 @@ public class TurretSubsystem extends SubsystemBase {
     turretEncoder.setVelocityConversionFactor(1);
 
     // set up PID for turretPID here
-  turretPID.setP(0);   
-  turretPID.setI(0.0);     
-  turretPID.setD(30);    
-  turretPID.setFF(0.0);      
-
+    turretPID.setP(0.09);   
+    turretPID.setI(0.0);     
+    turretPID.setD(30);    
+    turretPID.setFF(0.0);      
   }
 
   @Override
@@ -46,6 +41,7 @@ public class TurretSubsystem extends SubsystemBase {
     double turretPosition = turretEncoder.getPosition();
     double turretCurrent = turretDrive.getOutputCurrent();
     double turretPower = turretDrive.getAppliedOutput();
+
     if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
       if (!encoderIsValid) {
         turnTurret(-0.045);
@@ -54,21 +50,20 @@ public class TurretSubsystem extends SubsystemBase {
           calibrationTimer = new Timer();
           calibrationTimer.reset();
           calibrationTimer.start();
-         } else {
+        } else {
           if (calibrationTimer.get() > 0.5){
             if (Math.abs(turretSpeed) < 20) {
               encoderIsValid = true;
               turnTurret(0.0);
               turretEncoder.setPosition(0.0);
             }
-          
           }
         }
       }
     }
 
     SmartDashboard.putNumber("turretSpeed", turretSpeed);
-    SmartDashboard.putNumber("turretposition", turretPosition);
+    SmartDashboard.putNumber("turretPosition", turretPosition);
     SmartDashboard.putNumber("turretCurrent", turretCurrent);
     SmartDashboard.putBoolean("turretEncoderValid", encoderIsValid);
     SmartDashboard.putNumber("turretPower", turretPower);
@@ -84,6 +79,9 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void setTurretPosition (double angle) {
-    turretPID.setReference(angle, ControlType.kPosition);
+    if (encoderIsValid) {
+      turretPID.setReference(angle, ControlType.kPosition);
+      SmartDashboard.putNumber("turretRequestedAngle", angle);
+    }
   }
 }
