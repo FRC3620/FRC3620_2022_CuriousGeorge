@@ -42,7 +42,6 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     logger = EventLogging.getLogger(Robot.class, Level.INFO);
     logger.info ("I'm alive! {}", GitNess.gitDescription());
-    logger.info ("the long version: {}", GitNess.gitString());
 
     PortForwarder.add (10080, "frcvision.local", 80);
     PortForwarder.add (10022, "frcvision.local", 22);
@@ -68,6 +67,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    
 
     // get data logging going
     DataLogger robotDataLogger = new DataLogger();
@@ -106,7 +106,8 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     processRobotModeChange(RobotMode.AUTONOMOUS);
 
-   // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    logger.info ("running {}", m_autonomousCommand);
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
