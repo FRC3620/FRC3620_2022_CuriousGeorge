@@ -67,9 +67,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
     double ultrasonicSensorVoltage = ultrasonicSensor.getVoltage();
-    double ultrasonicSensorDistance = (ultrasonicSensorVoltage  / 0.0977) / 2.54;
+    double ultrasonicSensorDistance = (ultrasonicSensorVoltage  / .00977) / 2.54;
+    //double rawValue = ultrasonicSensor.getValue();
+    //double voltageScaleFactor = 5 / ultrasonicSensor.getVoltage();
+    //double ultrasonicSensorDistance = rawValue * voltageScaleFactor * 0.0492;
+   
     SmartDashboard.putNumber("ultrasonicSensorDistance", ultrasonicSensorDistance);
-    SmartDashboard.putNumber("ultrasonicSensorVoltage",ultrasonicSensorVoltage);
+    SmartDashboard.putNumber("ultrasonicSensorVoltage", ultrasonicSensorVoltage);
 
   }
 }
