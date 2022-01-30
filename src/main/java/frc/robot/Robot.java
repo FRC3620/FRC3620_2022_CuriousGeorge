@@ -107,6 +107,7 @@ public class Robot extends TimedRobot {
     processRobotModeChange(RobotMode.AUTONOMOUS);
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    logger.info ("running {}", m_autonomousCommand);
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

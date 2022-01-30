@@ -218,8 +218,11 @@ public class RobotContainer {
     SmartDashboard.putData(new ZeroDriveEncodersCommand(driveSubsystem));
   
     SmartDashboard.putData("TestAuto", new TestAuto(driveSubsystem));
-    SmartDashboard.putData("5 Ball Auto", new FiveBallAuto(driveSubsystem));
-    SmartDashboard.putData("4 Ball Auto", new FourBallAuto(driveSubsystem));
+    SmartDashboard.putData("5 Ball Auto P", new FiveBallAuto(driveSubsystem));
+    SmartDashboard.putData("4 Ball Auto P", new FourBallAutoP(driveSubsystem));
+    SmartDashboard.putData("4 Ball Auto Q", new FourBallAutoP(driveSubsystem));
+    SmartDashboard.putData("3 Ball Auto Q", new ThreeBallAutoQ(driveSubsystem));
+
 
     SmartDashboard.putData("DougTestAutoDrive", new DougTestAutoDrive(driveSubsystem));
     SmartDashboard.putData("DougTestAutoSpin", new DougTestAutoSpin(driveSubsystem));
@@ -227,12 +230,17 @@ public class RobotContainer {
     SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
   }
 
+  
   SendableChooser<Command> chooser = new SendableChooser<>();
   public void setupAutonomousCommands() {
     SmartDashboard.putData("Auto mode", chooser);
 
     chooser.addOption("TestAuto", new TestAuto(driveSubsystem));
-    chooser.addOption("5 Ball Auto", new FiveBallAuto(driveSubsystem));
+    chooser.addOption("5 Ball P Auto", new FiveBallAuto(driveSubsystem));
+    chooser.addOption("4 Ball P Auto", new FourBallAutoP(driveSubsystem));
+    chooser.addOption("4 Ball Q Auto", new FourBallAutoQ(driveSubsystem));
+    chooser.addOption("3 Ball Q Auto", new ThreeBallAutoQ(driveSubsystem));
+
   }
   
   public static double getDriveVerticalJoystick() {
