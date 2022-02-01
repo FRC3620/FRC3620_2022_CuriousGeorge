@@ -228,7 +228,7 @@ public class RobotContainer {
     driverJoystick = new Joystick(DRIVER_JOYSTICK_PORT);
 
     JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
-    centerOnBallButton.whenPressed(new CenterOnBallCommand(driveSubsystem));
+    centerOnBallButton.whenPressed(new CenterOnBallCommand(driveSubsystem, visionSubsystem));
 
 
   }

@@ -4,31 +4,36 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.networktables.NetworkTable;
+/*import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableInstance; */
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.VisionSubSystem;
 
 public class CenterOnBallCommand extends CommandBase {
   /** Creates a new CenterOnBallCommand. */
   
   private DriveSubsystem driveSubsystem;
+  private VisionSubSystem visionSubsystem;
 
   static double BALL_LOCATION_TOLERANCE = 0.02;
-  static double MAX_ROTATE_SPEED=0.6;
+  static double MAX_ROTATE_SPEED=0.4;
   static double MIN_ROTATE_SPEED=0.3;
 
+  double targetX = 0;
   //Set Up Network Tables
-  private NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  private NetworkTable networkTable = inst.getTable("V/Target");
-  private NetworkTableEntry targetX = networkTable.getEntry("target.x");
+  //private NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  //private NetworkTable networkTable = inst.getTable("V/Target");
+  //private NetworkTableEntry targetX = networkTable.getEntry("target.x");
 
   
-  public CenterOnBallCommand(DriveSubsystem driveSubsystem) {
+  public CenterOnBallCommand(DriveSubsystem driveSubsystem, VisionSubSystem visionSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.driveSubsystem = driveSubsystem;
+    this.visionSubsystem = visionSubsystem;
+    SmartDashboard.putBoolean("CenterOnBall.running", false);
 
   }
 
@@ -37,6 +42,7 @@ public class CenterOnBallCommand extends CommandBase {
   public void initialize() {
 
     driveSubsystem.setForcedManualModeTrue();
+    SmartDashboard.putBoolean("CenterOnBall.running", true);
 
   }
 
@@ -45,32 +51,36 @@ public class CenterOnBallCommand extends CommandBase {
   public void execute() {
 
     double spinX = 0;
-    double targetXFromNetTable = targetX.getDouble(0.5);
+    
+    targetX = visionSubsystem.getBallXLocation();
 
-    if(targetX.getDouble(0)<0){
+    if(targetX < 0){
       // Vision doesn't see a ball - set spin to MAX_ROTATE_SPEED
-      spinX = MAX_ROTATE_SPEED;
+      //spinX = MAX_ROTATE_SPEED;
+      spinX = 0;
     } else {
 
       // Vision sees a ball; set power proportional to distanve to travel
       spinX = MIN_ROTATE_SPEED + (MAX_ROTATE_SPEED - MIN_ROTATE_SPEED)*(
-        (Math.abs(targetXFromNetTable - 0.5))*2);
+        (Math.abs(targetX - 0.5))*2);
 
-      if(targetXFromNetTable<0.5){spinX=-spinX;}
+      if(targetX<0.5){spinX=-spinX;}
       
         
     }
 
-    SmartDashboard.putNumber("CenterOnBall.targetX", targetXFromNetTable);
+    SmartDashboard.putNumber("CenterOnBall.targetX", targetX);
     SmartDashboard.putNumber("CenterOnBall.spinSpeed",spinX);
 
-    driveSubsystem.autoDrive(0,0,spinX);
+    //driveSubsystem.autoDrive(0,0,spinX);
+    //driveSubsystem.twoWheelRotation(spinX);
 
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    SmartDashboard.putBoolean("CenterOnBall.running", false);
 
     driveSubsystem.teleOpDrive(0,0,0);
     driveSubsystem.setForcedManualModeFalse();
@@ -83,7 +93,7 @@ public class CenterOnBallCommand extends CommandBase {
 
 
     // This method should return true when the the x-value from the network table reads 0.5 +/- TOLERANCE
-    if (Math.abs(targetX.getDouble(0.5)-0.5) <= BALL_LOCATION_TOLERANCE){
+    if (Math.abs(targetX-0.5) <= BALL_LOCATION_TOLERANCE){
       return true;
     }
 

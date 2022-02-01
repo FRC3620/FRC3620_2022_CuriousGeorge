@@ -585,7 +585,7 @@ public class DriveSubsystem extends SubsystemBase {
 			rightBackPositionPID.setReference(newVectors.rightBack.getDirection(), ControlType.kPosition);
 			
 			rightFrontVelPID.setReference(newVectors.rightFront.getMagnitude(), ControlType.kVelocity);
-			leftFrontVelPID.setReference(0, ControlType.kVelocity);
+			leftFrontVelPID.setReference(newVectors.leftFront.getMagnitude(), ControlType.kVelocity);
 			leftBackVelPID.setReference(0, ControlType.kVelocity);
 			rightBackVelPID.setReference(0, ControlType.kVelocity);
 		}
