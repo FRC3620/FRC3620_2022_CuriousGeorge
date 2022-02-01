@@ -43,8 +43,8 @@ public class Robot extends TimedRobot {
     logger = EventLogging.getLogger(Robot.class, Level.INFO);
     logger.info ("I'm alive! {}", GitNess.gitDescription());
 
-    PortForwarder.add (10080, "frcvision.local", 80);
-    PortForwarder.add (10022, "frcvision.local", 22);
+    PortForwarder.add (10080, "wpilibpi.local", 80);
+    PortForwarder.add (10022, "wpilibpi.local", 22);
 
     CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {//whenever a command initializes, the function declared bellow will run.
       public void accept(Command command) {
