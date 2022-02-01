@@ -27,10 +27,10 @@ public class TurretSubsystem extends SubsystemBase {
     turretEncoder.setVelocityConversionFactor(1);
 
     // set up PID for turretPID here
-    turretPID.setP(0.09);   
-    turretPID.setI(0.0);     
-    turretPID.setD(30);    
-    turretPID.setFF(0.0);      
+    turretPID.setP(0.09);   //0.09
+    turretPID.setI(0.000005);     //0.0
+    turretPID.setD(30);    //30
+    turretPID.setFF(0.0);      //0.0
   }
 
   @Override
