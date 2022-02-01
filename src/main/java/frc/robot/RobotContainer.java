@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Solenoid;
 //import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -70,7 +71,16 @@ public class RobotContainer {
   public static RelativeEncoder driveSubsystemRightFrontDriveEncoder;
   public static RelativeEncoder driveSubsystemRightFrontAzimuthEncoder;
   public static AnalogInput driveSubsystemRightFrontHomeEncoder;
-
+  
+  // shooter hardware verables are currently unknown so we need to change them 
+  public static WPI_TalonFX shooterSubsystemFalcon1;
+  public static WPI_TalonFX shooterSubsystemFalcon2;
+  public static CANSparkMax shooterSubsystemHoodMax;
+  public static RelativeEncoder shooterSubsystemHoodEncoder;
+  public static DigitalInput hoodLimitSwitch;
+ {
+  
+}
   
   public static CANSparkMax turretSubsystemturretSpinner;
   public static RelativeEncoder turretSubsystemturretEncoder;
@@ -102,9 +112,15 @@ public class RobotContainer {
   public static DriveSubsystem driveSubsystem;
   public static IntakeSubsystem intakeSubsystem;
   public static TurretSubsystem turretSubsystem;
+  public static VisionSubsystem visionSubsystem;
+  public static shooterSubsystem shooterSubsystem;
   // joysticks here....
   public static Joystick driverJoystick;
   public static Joystick operatorJoystick;
+//vision 
+public static Solenoid visionlight;
+
+
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -173,6 +189,11 @@ public class RobotContainer {
       turretSubsystemturretSpinner.setSmartCurrentLimit(10);
       turretSubsystemturretEncoder = turretSubsystemturretSpinner.getEncoder();
     }
+
+    {
+      //
+
+    }
   }
   
   void setupMotors() {
@@ -218,6 +239,7 @@ public class RobotContainer {
     driveSubsystem = new DriveSubsystem();
     intakeSubsystem = new IntakeSubsystem();
     turretSubsystem = new TurretSubsystem();
+    shooterSubsystem = new shooterSubsystem();
   }
 
   /**
