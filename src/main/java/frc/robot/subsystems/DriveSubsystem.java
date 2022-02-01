@@ -273,10 +273,7 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 
 		if (rightFrontDriveMaster  != null) {
-			updateVelocityPID(rightFrontVelPID);
-			updateVelocityPID(leftFrontVelPID);
-			updateVelocityPID(leftBackVelPID);
-			updateVelocityPID(rightBackVelPID);
+			updateVelocityPIDs(rightFrontVelPID, leftFrontVelPID, leftBackVelPID, rightBackVelPID);
 		}
 
 		drivePIDTuning = SmartDashboard.getBoolean("Are We Tuning Drive PID?", false);
@@ -616,8 +613,8 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 	}
 
-	public void updateVelocityPID(SparkMaxPIDController pidController) {
-		if (pidController != null) {
+	public void updateVelocityPIDs(SparkMaxPIDController... pidControllers) {
+		if (pidControllers[0] != null) {
 			double p = SmartDashboard.getNumber("P Gain Velocity", kVelocityP);
 			double i = SmartDashboard.getNumber("I Gain Velocity", kVelocityI);
 			double d = SmartDashboard.getNumber("D Gain Velocity", kVelocityD);
@@ -627,29 +624,39 @@ public class DriveSubsystem extends SubsystemBase {
 			double min = SmartDashboard.getNumber("Min Output Velocity", kVelocityMinOutput);
 
 			if((p != kVelocityP)) {
-				pidController.setP(p);
+				for (SparkMaxPIDController pidController: pidControllers) {
+					pidController.setP(p);
+				}
 				kVelocityP = p;	
-				//System.out.println("Updated P value");
-				//System.out.println(pidController.getP());
 			}
 			if((i != kVelocityI)) {
-				pidController.setI(i);
+				for (SparkMaxPIDController pidController: pidControllers) {
+					pidController.setI(i);
+				}
 				kVelocityI = i;	
 			}
 			if((d != kVelocityD)) {
-				pidController.setD(d);
+				for (SparkMaxPIDController pidController: pidControllers) {
+					pidController.setD(d);
+				}
 				kVelocityD = d;	
 			}
 			if((iz != kVelocityIz)) {
-				pidController.setIZone(iz);
+				for (SparkMaxPIDController pidController: pidControllers) {
+					pidController.setIZone(iz);
+				}
 				kVelocityIz = iz;	
 			}
 			if((ff != kVelocityFF)) {
-				pidController.setFF(ff);
+				for (SparkMaxPIDController pidController: pidControllers) {
+					pidController.setFF(ff);
+				}
 				kVelocityFF = ff;	
 			}
 			if((max != kVelocityMaxOutput) || (min != kVelocityMinOutput)) {
-				pidController.setOutputRange(min, max);
+				for (SparkMaxPIDController pidController: pidControllers) {
+					pidController.setOutputRange(min, max);
+				}
 				kVelocityMaxOutput = max;	
 				kVelocityMinOutput = min;	
 			}
@@ -657,7 +664,6 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public void updatePositionPID(SparkMaxPIDController pidController) {
-
 		double p = SmartDashboard.getNumber("P Position Gain", 0);
     	double i = SmartDashboard.getNumber("I Position Gain", 0);
     	double d = SmartDashboard.getNumber("D Position Gain", 0);
