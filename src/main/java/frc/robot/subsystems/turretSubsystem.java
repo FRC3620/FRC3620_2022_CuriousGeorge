@@ -28,7 +28,7 @@ public class TurretSubsystem extends SubsystemBase {
 
     // set up PID for turretPID here
     turretPID.setP(0.09);   //0.09
-    turretPID.setI(0.000005);     //0.0
+    turretPID.setI(0);     //0.0
     turretPID.setD(30);    //30
     turretPID.setFF(0.0);      //0.0
   }
