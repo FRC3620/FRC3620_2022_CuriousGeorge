@@ -95,6 +95,7 @@ public class RobotContainer {
 
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
+  public static VisionSubSystem visionSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -202,6 +203,7 @@ public class RobotContainer {
 
   void makeSubsystems() {
     driveSubsystem = new DriveSubsystem();
+    visionSubsystem = new VisionSubSystem();
   }
 
   /**
