@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubSystem;
 
-public class CenterOnBallCommand extends CommandBase {
+public class CenterOnBallCommandDONOTUSE extends CommandBase {
   /** Creates a new CenterOnBallCommand. */
   
   private DriveSubsystem driveSubsystem;
@@ -29,7 +29,7 @@ public class CenterOnBallCommand extends CommandBase {
   //private NetworkTableEntry targetX = networkTable.getEntry("target.x");
 
   
-  public CenterOnBallCommand(DriveSubsystem driveSubsystem, VisionSubSystem visionSubsystem) {
+  public CenterOnBallCommandDONOTUSE(DriveSubsystem driveSubsystem, VisionSubSystem visionSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.driveSubsystem = driveSubsystem;
     this.visionSubsystem = visionSubsystem;
@@ -51,35 +51,29 @@ public class CenterOnBallCommand extends CommandBase {
   public void execute() {
 
     double spinX = 0;
-    double spinDegrees = 0;
     
     targetX = visionSubsystem.getBallXLocation();
 
     if(targetX < 0){
       // Vision doesn't see a ball - set spin to MAX_ROTATE_SPEED
-      spinX = MAX_ROTATE_SPEED;
-      //spinX = 0;
+      //spinX = MAX_ROTATE_SPEED;
+      spinX = 0;
     } else {
 
       // Vision sees a ball; set power proportional to distanve to travel
-      spinDegrees = (Math.abs((targetX - 0.5)/0.0825)*5);
-
       spinX = MIN_ROTATE_SPEED + (MAX_ROTATE_SPEED - MIN_ROTATE_SPEED)*(
         (Math.abs(targetX - 0.5))*2);
 
-      if(targetX<0.5){
-          spinX=-spinX;
-          spinDegrees=-spinDegrees;
-        }     
+      if(targetX<0.5){spinX=-spinX;}
+      
+        
     }
 
     SmartDashboard.putNumber("CenterOnBall.targetX", targetX);
     SmartDashboard.putNumber("CenterOnBall.spinSpeed",spinX);
-    SmartDashboard.putNumber("CenterOnBall.spinDegrees", spinDegrees);
 
-    driveSubsystem.autoDrive(spinDegrees, 0, spinX);
+    //driveSubsystem.autoDrive(0,0,spinX);
     //driveSubsystem.twoWheelRotation(spinX);
-    //new AutoSpinCommand(.3, spinDegrees, driveSubsystem);
 
   }
 
