@@ -113,12 +113,14 @@ public class RobotContainer {
   public static IntakeSubsystem intakeSubsystem;
   public static TurretSubsystem turretSubsystem;
   public static VisionSubsystem visionSubsystem;
-  public static shooterSubsystem shooterSubsystem;
+  public static ShooterSubsystem shooterSubsystem;
+
   // joysticks here....
   public static Joystick driverJoystick;
   public static Joystick operatorJoystick;
-//vision 
-public static Solenoid visionlight;
+
+  //vision 
+  public static Solenoid visionlight;
 
 
 
@@ -182,17 +184,12 @@ public static Solenoid visionlight;
       driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
     }
 
-    //turret 
+    // turret 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 20, "turret") || iAmACompetitionRobot) {
       turretSubsystemturretSpinner = new CANSparkMax(20, MotorType.kBrushless);
       resetMaxToKnownState(turretSubsystemturretSpinner, true);
       turretSubsystemturretSpinner.setSmartCurrentLimit(10);
       turretSubsystemturretEncoder = turretSubsystemturretSpinner.getEncoder();
-    }
-
-    {
-      //
-
     }
   }
   
@@ -239,7 +236,7 @@ public static Solenoid visionlight;
     driveSubsystem = new DriveSubsystem();
     intakeSubsystem = new IntakeSubsystem();
     turretSubsystem = new TurretSubsystem();
-    shooterSubsystem = new shooterSubsystem();
+    shooterSubsystem = new ShooterSubsystem();
   }
 
   /**

@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
-public class shooterSubsystem extends SubsystemBase {
+public class ShooterSubsystem extends SubsystemBase {
   /**
    * Creates a new ShooterSubsystem.
    */
@@ -87,7 +87,7 @@ public class shooterSubsystem extends SubsystemBase {
   private double requestedTopShooterVelocity = 0;
   private double requestedBottomShooterVelocity = 0;
 
-  public shooterSubsystem() {
+  public ShooterSubsystem() {
     resetEncoder();
     if (falconTop != null) {
       //for PID you have to have a sensor to check on so you know the error
