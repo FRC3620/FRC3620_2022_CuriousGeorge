@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 //import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -103,6 +104,8 @@ public class RobotContainer {
   public static RelativeEncoder driveSubsystemRightBackDriveEncoder;
   public static RelativeEncoder driveSubsystemRightBackAzimuthEncoder;
   public static AnalogInput driveSubsystemRightBackHomeEncoder;
+
+  private static Solenoid ringLight;
 
   private static DigitalInput practiceBotJumper;
 
@@ -191,6 +194,14 @@ public class RobotContainer {
       turretSubsystemturretSpinner.setSmartCurrentLimit(10);
       turretSubsystemturretEncoder = turretSubsystemturretSpinner.getEncoder();
     }
+
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.CTRE_PCM, 0, "PCM") || iAmACompetitionRobot){
+      Compressor compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
+      compressor.disable();
+      ringLight = new Solenoid(PneumaticsModuleType.CTREPCM, 7);
+      ringLight.set(true);
+    }
+
   }
   
   void setupMotors() {
@@ -248,19 +259,21 @@ public class RobotContainer {
   private void configureButtonBindings() {
     driverJoystick = new Joystick(DRIVER_JOYSTICK_PORT);
 
-    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
-      .whenPressed(new MoveTurretCommand(turretSubsystem, 90));
+    JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
+    centerOnBallButton.whenPressed(new CenterOnBallCommand(driveSubsystem, visionSubsystem));
 
-    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B)
-      .whenPressed(new MoveTurretCommand(turretSubsystem, 180));
+
   }
 
   void setupSmartDashboardCommands() {
     SmartDashboard.putData(new ZeroDriveEncodersCommand(driveSubsystem));
   
     SmartDashboard.putData("TestAuto", new TestAuto(driveSubsystem));
-    SmartDashboard.putData("5 Ball Auto", new FiveBallAuto(driveSubsystem));
-    SmartDashboard.putData("4 Ball Auto", new FourBallAuto(driveSubsystem));
+    SmartDashboard.putData("5 Ball Auto P", new FiveBallAuto(driveSubsystem));
+    SmartDashboard.putData("4 Ball Auto P", new FourBallAutoP(driveSubsystem));
+    SmartDashboard.putData("4 Ball Auto Q", new FourBallAutoP(driveSubsystem));
+    SmartDashboard.putData("3 Ball Auto Q", new ThreeBallAutoQ(driveSubsystem));
+
 
     SmartDashboard.putData("DougTestAutoDrive", new DougTestAutoDrive(driveSubsystem));
     SmartDashboard.putData("DougTestAutoSpin", new DougTestAutoSpin(driveSubsystem));
@@ -268,12 +281,17 @@ public class RobotContainer {
     SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
   }
 
+  
   SendableChooser<Command> chooser = new SendableChooser<>();
   public void setupAutonomousCommands() {
     SmartDashboard.putData("Auto mode", chooser);
 
     chooser.addOption("TestAuto", new TestAuto(driveSubsystem));
-    chooser.addOption("5 Ball Auto", new FiveBallAuto(driveSubsystem));
+    chooser.addOption("5 Ball P Auto", new FiveBallAuto(driveSubsystem));
+    chooser.addOption("4 Ball P Auto", new FourBallAutoP(driveSubsystem));
+    chooser.addOption("4 Ball Q Auto", new FourBallAutoQ(driveSubsystem));
+    chooser.addOption("3 Ball Q Auto", new ThreeBallAutoQ(driveSubsystem));
+
   }
   
   public static double getDriveVerticalJoystick() {
