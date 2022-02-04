@@ -115,7 +115,7 @@ public class RobotContainer {
   public static DriveSubsystem driveSubsystem;
   public static IntakeSubsystem intakeSubsystem;
   public static TurretSubsystem turretSubsystem;
-  public static VisionSubsystem visionSubsystem;
+  public static VisionSubSystem visionSubsystem;
   public static ShooterSubsystem shooterSubsystem;
 
   // joysticks here....
