@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubSystem;
@@ -27,6 +28,7 @@ public class AutoDriveToCargoCommand extends CommandBase {
     private double desiredHeading;
     private double pathSpeed;
     private double targetX;
+    private double targetY;
 
     private Timer timer;
 
@@ -89,6 +91,7 @@ public class AutoDriveToCargoCommand extends CommandBase {
 
         // change heading if robot sees ball
         targetX = visionSubsystem.getBallXLocation();
+        targetY = visionSubsystem.getBallYLocation();
 
         if(targetX < 0){
             //robot doesn't see ball, do original heading
@@ -107,8 +110,6 @@ public class AutoDriveToCargoCommand extends CommandBase {
             driveSubsystem.setTargetHeading(driveSubsystem.getNavXFixedAngle() + desiredAngleRelativeToRobot);
         }
 
-
-
         // need to correct for what direction we are heading
         //double desiredAngleRelativeToRobot = desiredAngle - driveSubsystem.getNavXFixedAngle();
         //driveSubsystem.autoDrive(desiredAngleRelativeToRobot, pathSpeed, spinX);
@@ -124,12 +125,18 @@ public class AutoDriveToCargoCommand extends CommandBase {
         double distanceTravelledLeftBack = Math.abs(currentPositionLeftBack - initialPositionLeftBack);
 
         distanceTravelled = (distanceTravelledRightFront + distanceTravelledLeftFront + distanceTravelledRightBack + distanceTravelledLeftBack) / 4;
+        
+        if ((targetY >= 0.4) && (targetY <= 0.6)){
+            desiredDistance = distanceTravelled + (37 + ((0.6 - targetY)*1.65));
+        }
 
         if (autonomousLogger != null) {
           autonomousLogger.setCurrentDrivePositions(currentPositionLeftFront, currentPositionRightFront, currentPositionLeftBack, currentPositionRightBack);
           autonomousLogger.setElapsed(timer.get());
           autonomousLogger.doLog();
         }
+
+        SmartDashboard.putNumber("AutoDrive.desiredDistance", desiredDistance);
 
 
 
