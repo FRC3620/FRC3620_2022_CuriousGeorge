@@ -121,11 +121,10 @@ public class SwerveCalculator {
 		return diff;
 	}
 	
-	static double steeringCutoff = 20;
-	public static Vector determineNewVector (Vector calculated, Vector current) { //takes 2 vectors and calculates the angle between them and returns a new "fixed" vector
+	public static Vector determineNewVector (Vector calculated, Vector current, double steeringCutoff) { //takes 2 vectors and calculates the angle between them and returns a new "fixed" vector
 		double diff = calculateAngleDifference(current.getDirection(), calculated.getDirection());
 		if(Math.abs(diff) < 90 ) { // if the difference is greater than 90 degrees, the angle is normalized (see normalizeAngle()) and added 180 degrees 
-			if(Math.abs(calculated.getMagnitude())> steeringCutoff){
+			if(Math.abs(calculated.getMagnitude())>= steeringCutoff){
 				return new Vector(current.getDirection() + diff, calculated.getMagnitude());     //this also means that it is faster to invert the power on the motors and go to the angle 180 greater than the one returned by fancyCalc
 			}
 			else{
@@ -134,7 +133,7 @@ public class SwerveCalculator {
 		}
 		else {
 			if(diff>0) {
-				if(Math.abs(calculated.getMagnitude())> steeringCutoff){
+				if(Math.abs(calculated.getMagnitude())>= steeringCutoff){
 					return new Vector(current.getDirection() + diff - 180, -calculated.getMagnitude());     //this also means that it is faster to invert the power on the motors and go to the angle 180 greater than the one returned by fancyCalc
 				}
 				else{
@@ -142,7 +141,7 @@ public class SwerveCalculator {
 				}
 			}
 			else {
-				if(Math.abs(calculated.getMagnitude())> steeringCutoff){
+				if(Math.abs(calculated.getMagnitude())>= steeringCutoff){
 					return new Vector(current.getDirection() + diff + 180, -calculated.getMagnitude());     //this also means that it is faster to invert the power on the motors and go to the angle 180 greater than the one returned by fancyCalc
 				}
 				else{
@@ -155,10 +154,23 @@ public class SwerveCalculator {
 	public static DriveVectors fixVectors(DriveVectors calculatedVectors, DriveVectors currentVectors ) { //fixes every vector of the DriverVectors object and returns them
 		DriveVectors fixedVectors = new DriveVectors();
 		
-		fixedVectors.leftFront = determineNewVector(calculatedVectors.leftFront, currentVectors.leftFront);
-		fixedVectors.rightFront = determineNewVector(calculatedVectors.rightFront, currentVectors.rightFront);
-		fixedVectors.leftBack = determineNewVector(calculatedVectors.leftBack, currentVectors.leftBack);
-		fixedVectors.rightBack = determineNewVector(calculatedVectors.rightBack, currentVectors.rightBack);
+		fixedVectors.leftFront = determineNewVector(calculatedVectors.leftFront, currentVectors.leftFront, 20);
+		fixedVectors.rightFront = determineNewVector(calculatedVectors.rightFront, currentVectors.rightFront, 20);
+		fixedVectors.leftBack = determineNewVector(calculatedVectors.leftBack, currentVectors.leftBack, 20);
+		fixedVectors.rightBack = determineNewVector(calculatedVectors.rightBack, currentVectors.rightBack, 20);
+		
+		//System.out.println ("calculated: " + calculatedVectors.leftBack);
+		//System.out.println ("new: " + fixedVectors.leftBack);
+		
+		return fixedVectors;
+	}
+	public static DriveVectors fixVectors(DriveVectors calculatedVectors, DriveVectors currentVectors, double cutoff ) { //fixes every vector of the DriverVectors object and returns them
+		DriveVectors fixedVectors = new DriveVectors();
+		
+		fixedVectors.leftFront = determineNewVector(calculatedVectors.leftFront, currentVectors.leftFront, cutoff);
+		fixedVectors.rightFront = determineNewVector(calculatedVectors.rightFront, currentVectors.rightFront, cutoff);
+		fixedVectors.leftBack = determineNewVector(calculatedVectors.leftBack, currentVectors.leftBack, cutoff);
+		fixedVectors.rightBack = determineNewVector(calculatedVectors.rightBack, currentVectors.rightBack, cutoff);
 		
 		//System.out.println ("calculated: " + calculatedVectors.leftBack);
 		//System.out.println ("new: " + fixedVectors.leftBack);

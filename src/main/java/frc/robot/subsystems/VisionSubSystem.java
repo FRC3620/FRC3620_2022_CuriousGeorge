@@ -16,6 +16,7 @@ public class VisionSubSystem extends SubsystemBase {
   private NetworkTable networkTable = inst.getTable("V/Cargo");
   
   private NetworkTableEntry ballX = networkTable.getEntry("ball.x");
+  private NetworkTableEntry ballY = networkTable.getEntry("ball.y");
   private  NetworkTableEntry allianceColor = networkTable.getEntry("color");
   /** Creates a new VisionSubSystem. */
   public VisionSubSystem() {
@@ -35,5 +36,9 @@ public class VisionSubSystem extends SubsystemBase {
 
   public double getBallXLocation(){
     return ballX.getDouble(-1);
+  }
+
+  public double getBallYLocation(){
+    return ballY.getDouble(-1);
   }
 }
