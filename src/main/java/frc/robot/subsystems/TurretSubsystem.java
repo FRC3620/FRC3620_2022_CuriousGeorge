@@ -80,8 +80,14 @@ public class TurretSubsystem extends SubsystemBase {
 
   public void setTurretPosition (double angle) {
     if (encoderIsValid) {
+    if(angle<0) angle = 0;
+    if(angle>220) angle =220;
       turretPID.setReference(angle, ControlType.kPosition);
       SmartDashboard.putNumber("turretRequestedAngle", angle);
     }
+  }
+  public double getCurrentTurretPosition(){
+    return turretEncoder.getPosition();
+
   }
 }

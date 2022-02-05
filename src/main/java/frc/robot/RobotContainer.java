@@ -116,7 +116,6 @@ public class RobotContainer {
   public static IntakeSubsystem intakeSubsystem;
   public static TurretSubsystem turretSubsystem;
   public static VisionSubSystem visionSubsystem;
-  public static ShooterSubsystem shooterSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -247,7 +246,7 @@ public class RobotContainer {
     driveSubsystem = new DriveSubsystem();
     intakeSubsystem = new IntakeSubsystem();
     turretSubsystem = new TurretSubsystem();
-    shooterSubsystem = new ShooterSubsystem();
+    visionSubsystem = new VisionSubSystem();
   }
 
   /**
@@ -262,7 +261,7 @@ public class RobotContainer {
     JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
     centerOnBallButton.whenPressed(new CenterOnBallCommand(driveSubsystem, visionSubsystem));
 
-
+    
   }
 
   void setupSmartDashboardCommands() {
@@ -279,6 +278,7 @@ public class RobotContainer {
     SmartDashboard.putData("DougTestAutoSpin", new DougTestAutoSpin(driveSubsystem));
     SmartDashboard.putData("Reset NavX", new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
+    SmartDashboard.putData("Find target",new FindTargetCommand(turretSubsystem, visionSubsystem));
   }
 
   
