@@ -25,6 +25,9 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.motorcontrol.Victor;
+import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 //import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -93,9 +96,14 @@ public class RobotContainer {
 
   public static Compressor theCompressor;
 
+  public static DigitalInput climberStationaryHookContact;
+  public static Victor climberExtentionMotor; 
+  public static DoubleSolenoid climberArmTilt;
+
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
   public static VisionSubSystem visionSubsystem;
+  public static ClimberSubsystem climberSubsystem; 
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -158,8 +166,14 @@ public class RobotContainer {
       driveSubsystemRightBackAzimuth = new CANSparkMax(8, MotorType.kBrushless);
       driveSubsystemRightBackAzimuthEncoder = driveSubsystemRightBackAzimuth.getEncoder();
 
-      driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
+      driveSubsystemRightBackHomeEncoder = new AnalogInput(3); 
     }
+
+    climberStationaryHookContact = new DigitalInput(1);
+    climberExtentionMotor = new Victor(3);
+    climberExtentionMotor.setSafetyEnabled(true);
+    climberArmTilt = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+
   }
 
   void setupMotors() {
@@ -204,6 +218,7 @@ public class RobotContainer {
   void makeSubsystems() {
     driveSubsystem = new DriveSubsystem();
     visionSubsystem = new VisionSubSystem();
+    climberSubsystem = new ClimberSubsystem();
   }
 
   /**
@@ -230,6 +245,8 @@ public class RobotContainer {
     SmartDashboard.putData("DougTestAutoSpin", new DougTestAutoSpin(driveSubsystem));
     SmartDashboard.putData("Reset NavX", new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
+
+    SmartDashboard.putData("Climber Extention Motor", new ClimberTestCommand());
   }
 
   
