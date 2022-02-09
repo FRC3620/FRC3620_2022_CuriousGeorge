@@ -127,7 +127,7 @@ public class AutoDriveToCargoCommand extends CommandBase {
         distanceTravelled = (distanceTravelledRightFront + distanceTravelledLeftFront + distanceTravelledRightBack + distanceTravelledLeftBack) / 4;
         
         if ((targetY >= 0.4) && (targetY <= 0.6)){
-            desiredDistance = distanceTravelled + (34 + ((0.6 - targetY)*1.5));
+            desiredDistance = distanceTravelled + (34 + ((0.6 - targetY)*1.45));
         }
 
         if (autonomousLogger != null) {
