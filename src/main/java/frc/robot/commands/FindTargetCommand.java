@@ -12,12 +12,13 @@ import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class FindTargetCommand extends CommandBase {
   TurretSubsystem turretSubsystem;
   VisionSubSystem visionSubSystem;
-
+  Timer turretTimer = new Timer();
   
   /** Creates a new FindTargetCommand. */
   public FindTargetCommand(TurretSubsystem _subsystem, VisionSubSystem _vsubsystem) {
@@ -33,7 +34,27 @@ public class FindTargetCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    double spinTurretDegrees = 0;
+    spinTurret();
+turretTimer.reset();
+turretTimer.start();
+    }
+  
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    if (turretTimer.get() > 0.3){
+      //seconds
+      spinTurret();
+      turretTimer.reset(); 
+    }
+
+
+  }
+
+  public void spinTurret(){
+
+   double spinTurretDegrees = 0;
     double positionInFrame = visionSubSystem.getTargetXLocation();
     SmartDashboard.putNumber("target location",positionInFrame);
     double currentTurretPosition = turretSubsystem.getCurrentTurretPosition();
@@ -43,14 +64,7 @@ public class FindTargetCommand extends CommandBase {
        double  Targetx = spinTurretDegrees + currentTurretPosition;
        turretSubsystem.setTurretPosition(Targetx);
     }
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    
-
-  }
+}
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
@@ -60,7 +74,7 @@ public class FindTargetCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+   return false;
 }
 }
 
