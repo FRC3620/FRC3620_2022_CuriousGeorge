@@ -100,10 +100,16 @@ public class RobotContainer {
   public static Victor climberExtentionMotor; 
   public static DoubleSolenoid climberArmTilt;
 
+  public static CANSparkMax intakeWheelbar;
+  public static CANSparkMax intakeBelt;
+  
+  public static CANSparkMax shooterPreshooter;
+
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
   public static VisionSubSystem visionSubsystem;
   public static ClimberSubsystem climberSubsystem; 
+  public static IntakeSubsystem intakeSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -174,7 +180,22 @@ public class RobotContainer {
     climberExtentionMotor.setSafetyEnabled(true);
     climberArmTilt = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
 
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 25, "Intake Wheel Bar") || iAmACompetitionRobot){
+      intakeWheelbar = new CANSparkMax(25, MotorType.kBrushless);
+    }
+    /*
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 26, "Intake Belt") || iAmACompetitionRobot){
+      intakeBelt = new CANSparkMax(#, MotorType.UNDECIDED);
+    }
+   
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 27, "Shooter Preshooter") || iAmACompetitionRobot){
+      shooterPreshooter = new CANSparkMax(27, MotorType.UNDECIDED);
+    }
+    */
   }
+
+
+
 
   void setupMotors() {
     int kTimeoutMs = 0;
@@ -219,6 +240,7 @@ public class RobotContainer {
     driveSubsystem = new DriveSubsystem();
     visionSubsystem = new VisionSubSystem();
     climberSubsystem = new ClimberSubsystem();
+    intakeSubsystem = new IntakeSubsystem();
   }
 
   /**
@@ -247,6 +269,9 @@ public class RobotContainer {
     SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
 
     SmartDashboard.putData("Climber Extention Motor", new ClimberTestCommand());
+
+    SmartDashboard.putData("Eject Ball", new EjectBallCommand());
+    SmartDashboard.putData("Intake Ball", new IntakeBallCommand());
   }
 
   
