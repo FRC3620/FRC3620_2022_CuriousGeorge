@@ -10,6 +10,8 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.RelativeEncoder;
@@ -26,6 +28,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.motorcontrol.Victor;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 //import edu.wpi.first.wpilibj.XboxController;
@@ -97,8 +100,9 @@ public class RobotContainer {
   public static Compressor theCompressor;
 
   public static DigitalInput climberStationaryHookContact;
-  public static Victor climberExtentionMotor; 
+  public static TalonFX climberExtentionMotor; 
   public static DoubleSolenoid climberArmTilt;
+ 
 
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
@@ -170,9 +174,9 @@ public class RobotContainer {
     }
 
     climberStationaryHookContact = new DigitalInput(1);
-    climberExtentionMotor = new Victor(3);
-    climberExtentionMotor.setSafetyEnabled(true);
+    climberExtentionMotor = new TalonFX(40);
     climberArmTilt = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
+
 
   }
 
@@ -229,6 +233,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     driverJoystick = new Joystick(DRIVER_JOYSTICK_PORT);
+    operatorJoystick = new Joystick(OPERATOR_JOYSTICK_PORT);
   }
 
   void setupSmartDashboardCommands() {
@@ -246,7 +251,11 @@ public class RobotContainer {
     SmartDashboard.putData("Reset NavX", new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
 
-    SmartDashboard.putData("Climber Extention Motor", new ClimberTestCommand());
+    SmartDashboard.putData("Climber Extention Motor Up", new ClimberTestCommandUp());
+    SmartDashboard.putData("Climber Extention Motor Down", new ClimberTestCommandDown());
+    SmartDashboard.putData("Climber Tilt Out", new ClimberTiltTestCommandOut());
+    SmartDashboard.putData("Climber Tilt In", new ClimberTiltTestCommandIn());
+
   }
 
   

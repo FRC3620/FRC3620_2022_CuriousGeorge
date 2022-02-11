@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.RelativeEncoder;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -14,16 +18,19 @@ import frc.robot.RobotContainer;
 
 public class ClimberSubsystem extends SubsystemBase {
   DigitalInput climberStationaryHookContact = RobotContainer.climberStationaryHookContact; 
-  Victor climberExtentionMotor = RobotContainer.climberExtentionMotor; 
+  TalonFX climberExtentionMotor = RobotContainer.climberExtentionMotor; 
   DoubleSolenoid climberArmTilt = RobotContainer.climberArmTilt;
-
+ 
   /** Creates a new ClimberSubsystem. */
-  public ClimberSubsystem() {}
+  public ClimberSubsystem() {
+    climberExtentionMotor.setSelectedSensorPosition(0);
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("climber.doesstationaryhookhavebar", doesStationaryHookHaveBar());
+    SmartDashboard.putNumber("ShaftPosition", getShaftPosition());
   }
 
   public boolean doesStationaryHookHaveBar() {
@@ -31,8 +38,18 @@ public class ClimberSubsystem extends SubsystemBase {
     return rv; 
   }
 
+  /**
+   * Return the position of the climber extension
+   * @return position (expressed in furlongs)
+   */
+  public double getShaftPosition() {
+    double rv = climberExtentionMotor.getSelectedSensorPosition();
+    rv = rv/2048;
+    return rv; 
+  }
+
   public void spinClimberExtentionMotor(double speed) {
-    climberExtentionMotor.set(speed);
+    climberExtentionMotor.set(ControlMode.PercentOutput, speed);
   }
 
   public void climberArmTiltIn() {
@@ -43,4 +60,11 @@ public class ClimberSubsystem extends SubsystemBase {
     climberArmTilt.set(Value.kForward);
   }
 
+  public void climberArmTiltOff() {
+    climberArmTilt.set(Value.kOff);
+  }
+
+
 }
+
+
