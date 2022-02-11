@@ -234,6 +234,18 @@ public class RobotContainer {
   private void configureButtonBindings() {
     driverJoystick = new Joystick(DRIVER_JOYSTICK_PORT);
     operatorJoystick = new Joystick(OPERATOR_JOYSTICK_PORT);
+    
+    DPad driverDPad = new DPad(driverJoystick, 0);
+    DPad operatorDPad = new DPad(operatorJoystick, 0);
+    
+    JoystickButton climberTiltOutButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
+    climberTiltOutButton.whenPressed(new ClimberTiltTestCommandOut());
+    JoystickButton climberTiltInButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
+    climberTiltInButton.whenPressed(new ClimberTiltTestCommandIn());
+
+    operatorDPad.up().whenPressed(new ClimberTestCommandUp());
+    operatorDPad.down().whenPressed(new ClimberTestCommandDown());
+
   }
 
   void setupSmartDashboardCommands() {
