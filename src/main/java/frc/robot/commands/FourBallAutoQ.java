@@ -3,15 +3,15 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.VisionSubSystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 public class FourBallAutoQ extends SequentialCommandGroup {
-  public FourBallAutoQ(DriveSubsystem driveSubsystem, VisionSubSystem visionSubsystem) {
+  public FourBallAutoQ(DriveSubsystem driveSubsystem, VisionSubsystem VisionSubsystem) {
 
       addCommands(
       new setInitialNavXOffsetCommand(driveSubsystem, 145)
       ,
-      new AutoDriveToCargoCommand(4*12, 145, .3, 145, driveSubsystem, visionSubsystem)
+      new AutoDriveToCargoCommand(4*12, 145, .3, 145, driveSubsystem, VisionSubsystem)
       ,
       new WaitCommand(.5) //shoot 2 balls
       ,
@@ -21,7 +21,7 @@ public class FourBallAutoQ extends SequentialCommandGroup {
       ,
       new AutoDriveCommand(30, 135, 0.3, 130, driveSubsystem) 
       ,
-      new AutoDriveToCargoCommand(100, 135, .3, 135, driveSubsystem, visionSubsystem)
+      new AutoDriveToCargoCommand(100, 135, .3, 135, driveSubsystem, VisionSubsystem)
       ,
      // new AutoDriveCommand(220, 325, .3, 325, driveSubsystem)
      // ,
