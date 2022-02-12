@@ -115,7 +115,7 @@ public class RobotContainer {
   public static DriveSubsystem driveSubsystem;
   public static IntakeSubsystem intakeSubsystem;
   public static TurretSubsystem turretSubsystem;
-  public static VisionSubSystem visionSubsystem;
+  public static VisionSubsystem visionSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -246,7 +246,7 @@ public class RobotContainer {
     driveSubsystem = new DriveSubsystem();
     intakeSubsystem = new IntakeSubsystem();
     turretSubsystem = new TurretSubsystem();
-    visionSubsystem = new VisionSubSystem();
+    visionSubsystem = new VisionSubsystem();
   }
 
   /**
@@ -370,7 +370,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    //return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, visionSubsystem, intakeSubsystem);
+    //return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, VisionSubsystem, intakeSubsystem);
     return chooser.getSelected();
   }
 }

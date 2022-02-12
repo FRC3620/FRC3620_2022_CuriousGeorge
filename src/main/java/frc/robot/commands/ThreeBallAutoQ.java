@@ -4,10 +4,10 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.VisionSubSystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 public class ThreeBallAutoQ extends SequentialCommandGroup {
-  public ThreeBallAutoQ(DriveSubsystem driveSubsystem, VisionSubSystem visionSubsystem) {
+  public ThreeBallAutoQ(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
 
       addCommands(
       new setInitialNavXOffsetCommand(driveSubsystem, 145)

@@ -10,13 +10,13 @@ import edu.wpi.first.networktables.NetworkTableInstance; */
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.VisionSubSystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 public class CenterOnBallCommand extends CommandBase {
   /** Creates a new CenterOnBallCommand. */
   
   private DriveSubsystem driveSubsystem;
-  private VisionSubSystem visionSubsystem;
+  private VisionSubsystem visionSubsystem;
 
   static double BALL_LOCATION_TOLERANCE = 0.02;
   static double MAX_ROTATE_SPEED=0.4;
@@ -29,7 +29,7 @@ public class CenterOnBallCommand extends CommandBase {
   //private NetworkTableEntry targetX = networkTable.getEntry("target.x");
 
   
-  public CenterOnBallCommand(DriveSubsystem driveSubsystem, VisionSubSystem visionSubsystem) {
+  public CenterOnBallCommand(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.driveSubsystem = driveSubsystem;
     this.visionSubsystem = visionSubsystem;

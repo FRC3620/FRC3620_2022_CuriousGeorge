@@ -3,10 +3,10 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.VisionSubSystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 public class FiveBallAuto extends SequentialCommandGroup {
-  public FiveBallAuto(DriveSubsystem driveSubsystem, VisionSubSystem visionSubsystem) {
+  public FiveBallAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
 
       addCommands(
       new setInitialNavXOffsetCommand(driveSubsystem, 90)
@@ -15,7 +15,7 @@ public class FiveBallAuto extends SequentialCommandGroup {
       ,
       new AutoDriveCommand(40, 90, .3, 90, driveSubsystem)
       //,
-      //new AutoDriveToCargoCommand(3*12, 90, .3, 90, driveSubsystem, visionSubsystem) //drive to position A
+      //new AutoDriveToCargoCommand(3*12, 90, .3, 90, driveSubsystem, VisionSubsystem) //drive to position A
       ,
       new WaitCommand(.5) //shooting
       ,
