@@ -11,12 +11,12 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.VisionSubSystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 public class AutoDriveToCargoCommand extends CommandBase {
 
     private DriveSubsystem driveSubsystem;
-    private VisionSubSystem visionSubsystem;
+    private VisionSubsystem VisionSubsystem;
 
     private double initialPositionRightFront;
     private double initialPositionLeftFront;
@@ -36,14 +36,14 @@ public class AutoDriveToCargoCommand extends CommandBase {
     private String legName;
 
 
-    public AutoDriveToCargoCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem, VisionSubSystem visionSubsystem) {
-        this(distance, strafeAngle, speed, heading, driveSubsystem, visionSubsystem,null, null);
+    public AutoDriveToCargoCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem, VisionSubsystem VisionSubsystem) {
+        this(distance, strafeAngle, speed, heading, driveSubsystem, VisionSubsystem,null, null);
     }
 
-    public AutoDriveToCargoCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem, VisionSubSystem visionSubsystem, String legName, IAutonomousLogger autonomousLogger) {
+    public AutoDriveToCargoCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem, VisionSubsystem VisionSubsystem, String legName, IAutonomousLogger autonomousLogger) {
         this.driveSubsystem = driveSubsystem;
-        this.visionSubsystem = visionSubsystem;
-        addRequirements(driveSubsystem, visionSubsystem);
+        this.VisionSubsystem = VisionSubsystem;
+        addRequirements(driveSubsystem, VisionSubsystem);
 
         desiredDistance = distance;
         desiredAngle = strafeAngle;
@@ -90,8 +90,8 @@ public class AutoDriveToCargoCommand extends CommandBase {
         double spinX = driveSubsystem.getSpinPower();
 
         // change heading if robot sees ball
-        targetX = visionSubsystem.getBallXLocation();
-        targetY = visionSubsystem.getBallYLocation();
+        targetX = VisionSubsystem.getBallXLocation();
+        targetY = VisionSubsystem.getBallYLocation();
 
         if(targetX < 0){
             //robot doesn't see ball, do original heading

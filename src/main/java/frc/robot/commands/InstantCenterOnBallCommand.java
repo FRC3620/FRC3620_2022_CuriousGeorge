@@ -13,14 +13,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.miscellaneous.DriveVectors;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.VisionSubSystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class InstantCenterOnBallCommand extends CommandBase {
   private DriveSubsystem driveSubsystem;
-  private VisionSubSystem visionSubsystem;
+  private VisionSubsystem VisionSubsystem;
   private Logger logger;
 
   static double BALL_LOCATION_TOLERANCE = 0.02;
@@ -35,10 +35,10 @@ public class InstantCenterOnBallCommand extends CommandBase {
   //private NetworkTableEntry targetX = networkTable.getEntry("target.x");
 
   
-  public InstantCenterOnBallCommand(DriveSubsystem driveSubsystem, VisionSubSystem visionSubsystem) {
+  public InstantCenterOnBallCommand(DriveSubsystem driveSubsystem, VisionSubsystem VisionSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.driveSubsystem = driveSubsystem;
-    this.visionSubsystem = visionSubsystem;
+    this.VisionSubsystem = VisionSubsystem;
     SmartDashboard.putBoolean("CenterOnBall.running", false);
     logger = EventLogging.getLogger(InstantCenterOnBallCommand.class, Level.INFO);
   }
@@ -54,7 +54,7 @@ public class InstantCenterOnBallCommand extends CommandBase {
     double spinDegrees = 0;
     double spinHeading = 0;
     
-    targetX = visionSubsystem.getBallXLocation();
+    targetX = VisionSubsystem.getBallXLocation();
     startNavX = driveSubsystem.getNavXFixedAngle();
 
     if(targetX < 0){
