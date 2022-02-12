@@ -304,6 +304,7 @@ public class DriveSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("NavX heading", currentHeading);
 		SmartDashboard.putNumber("spin power", spinPower);
 
+		SmartDashboard.putBoolean("drive.autoSpinMode", autoSpinMode);
 		SmartDashboard.putBoolean("drive.field.relative", fieldRelative);
 
 		SmartDashboard.putNumber("driver.joy.x", RobotContainer.getDriveHorizontalJoystick());
@@ -431,6 +432,8 @@ public class DriveSubsystem extends SubsystemBase {
 		double vr = spinX*MAX_TURN;
 
 		DriveVectors newVectors = calculateEverything(vx, vy, vr);
+		String v1 = newVectors.toString();
+		SmartDashboard.putString("drive.teleop.dv.pre", v1);
 
 		//SmartDashboard.putNumber("Left Front Calculated Vectors", newVectors.leftBack.getDirection());
 		//System.out.println("Left Front Calculated Vectors: " + newVectors.leftBack.getDirection());
@@ -441,6 +444,8 @@ public class DriveSubsystem extends SubsystemBase {
 		//System.out.println("Left Front Current Vectors: " + currentDirections.leftBack.getDirection());
 
 		newVectors = SwerveCalculator.fixVectors(newVectors, currentDirections);
+		String v2 = newVectors.toString();
+		SmartDashboard.putString("drive.teleop.dv.post", v2);
 
 		if (rightFrontDriveMaster != null) {
 			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
@@ -513,10 +518,14 @@ public class DriveSubsystem extends SubsystemBase {
 	 */
 	public void autoDrive(double heading, double speed, double spin) {
 		DriveVectors newVectors = sc.calculateEverythingFromVector(heading, MAX_VELOCITY_IN_PER_SEC*speed, spin*MAX_TURN);
+		String v1 = newVectors.toString();
+		SmartDashboard.putString("drive.teleop.dv.pre", v1);
 
 		DriveVectors currentDirections = getCurrentVectors();
 
-		newVectors = SwerveCalculator.fixVectors(newVectors, currentDirections);
+		newVectors = SwerveCalculator.fixVectors(newVectors, currentDirections, 0);
+		String v2 = newVectors.toString();
+		SmartDashboard.putString("drive.teleop.dv.pre", v2);
 
 		if (rightFrontDriveMaster != null) {
 			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);

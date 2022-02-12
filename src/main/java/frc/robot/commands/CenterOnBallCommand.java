@@ -79,7 +79,6 @@ public class CenterOnBallCommand extends CommandBase {
 
     driveSubsystem.autoDrive(spinDegrees, 0, spinX);
     //driveSubsystem.twoWheelRotation(spinX);
-    //new AutoSpinCommand(.3, spinDegrees, driveSubsystem);
 
   }
 
