@@ -73,6 +73,20 @@ public class RobotContainer {
   public static RelativeEncoder driveSubsystemRightFrontAzimuthEncoder;
   public static AnalogInput driveSubsystemRightFrontHomeEncoder;
   
+  // shooter hardware verables are currently unknown so we need to change them 
+  public static WPI_TalonFX shooterSubsystemFalcon1;
+  public static WPI_TalonFX shooterSubsystemFalcon2;
+  public static CANSparkMax shooterSubsystemHoodMax;
+  public static RelativeEncoder shooterSubsystemHoodEncoder;
+  public static DigitalInput hoodLimitSwitch;
+ {
+  
+}
+  
+  public static CANSparkMax turretSubsystemturretSpinner;
+  public static RelativeEncoder turretSubsystemturretEncoder;
+
+  
   public static CANSparkMax driveSubsystemLeftFrontDrive;
   public static CANSparkMax driveSubsystemLeftFrontAzimuth;
   public static RelativeEncoder driveSubsystemLeftFrontDriveEncoder;
@@ -99,11 +113,18 @@ public class RobotContainer {
 
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
+  public static IntakeSubsystem intakeSubsystem;
+  public static TurretSubsystem turretSubsystem;
   public static VisionSubSystem visionSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
   public static Joystick operatorJoystick;
+
+  //vision 
+  public static Solenoid visionlight;
+
+
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -165,6 +186,14 @@ public class RobotContainer {
       driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
     }
 
+    // turret 
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 20, "turret") || iAmACompetitionRobot) {
+      turretSubsystemturretSpinner = new CANSparkMax(20, MotorType.kBrushless);
+      resetMaxToKnownState(turretSubsystemturretSpinner, true);
+      turretSubsystemturretSpinner.setSmartCurrentLimit(10);
+      turretSubsystemturretEncoder = turretSubsystemturretSpinner.getEncoder();
+    }
+
     if (canDeviceFinder.isDevicePresent(CANDeviceType.CTRE_PCM, 0, "PCM") || iAmACompetitionRobot){
       Compressor compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
       compressor.disable();
@@ -173,7 +202,7 @@ public class RobotContainer {
     }
 
   }
-
+  
   void setupMotors() {
     int kTimeoutMs = 0;
 
@@ -215,6 +244,8 @@ public class RobotContainer {
 
   void makeSubsystems() {
     driveSubsystem = new DriveSubsystem();
+    intakeSubsystem = new IntakeSubsystem();
+    turretSubsystem = new TurretSubsystem();
     visionSubsystem = new VisionSubSystem();
   }
 
@@ -230,7 +261,7 @@ public class RobotContainer {
     JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
     centerOnBallButton.whileHeld(new InstantCenterOnBallCommand(driveSubsystem, visionSubsystem));
 
-
+    
   }
 
   void setupSmartDashboardCommands() {
@@ -248,6 +279,7 @@ public class RobotContainer {
     SmartDashboard.putData("DougTestAutoSpin", new DougTestAutoSpin(driveSubsystem));
     SmartDashboard.putData("Reset NavX", new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
+    SmartDashboard.putData("Find target",new FindTargetCommand(turretSubsystem, visionSubsystem));
   }
 
   
@@ -342,3 +374,4 @@ public class RobotContainer {
     return chooser.getSelected();
   }
 }
+
