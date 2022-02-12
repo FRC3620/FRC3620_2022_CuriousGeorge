@@ -10,6 +10,8 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.RelativeEncoder;
@@ -27,6 +29,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 //import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -79,13 +82,9 @@ public class RobotContainer {
   public static CANSparkMax shooterSubsystemHoodMax;
   public static RelativeEncoder shooterSubsystemHoodEncoder;
   public static DigitalInput hoodLimitSwitch;
- {
-  
-}
   
   public static CANSparkMax turretSubsystemturretSpinner;
   public static RelativeEncoder turretSubsystemturretEncoder;
-
   
   public static CANSparkMax driveSubsystemLeftFrontDrive;
   public static CANSparkMax driveSubsystemLeftFrontAzimuth;
@@ -116,6 +115,7 @@ public class RobotContainer {
   public static IntakeSubsystem intakeSubsystem;
   public static TurretSubsystem turretSubsystem;
   public static VisionSubsystem VisionSubsystem;
+  public static ShooterSubsystem shooterSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -186,6 +186,12 @@ public class RobotContainer {
       driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
     }
 
+    // shooter motors
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 21, "top shooter") || iAmACompetitionRobot) {
+      // Shooter Motors 
+      shooterSubsystemFalcon1 = new WPI_TalonFX(21);
+    }
+
     // turret 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 20, "turret") || iAmACompetitionRobot) {
       turretSubsystemturretSpinner = new CANSparkMax(20, MotorType.kBrushless);
@@ -247,6 +253,7 @@ public class RobotContainer {
     intakeSubsystem = new IntakeSubsystem();
     turretSubsystem = new TurretSubsystem();
     VisionSubsystem = new VisionSubsystem();
+    shooterSubsystem = new ShooterSubsystem();
   }
 
   /**
@@ -260,6 +267,8 @@ public class RobotContainer {
 
     JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
     centerOnBallButton.whileHeld(new InstantCenterOnBallCommand(driveSubsystem, VisionSubsystem));
+
+    
 
     
   }
@@ -280,6 +289,8 @@ public class RobotContainer {
     SmartDashboard.putData("Reset NavX", new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
     SmartDashboard.putData("Find target",new FindTargetCommand(turretSubsystem, VisionSubsystem));
+
+    SmartDashboard.putData("Shooter Test Command", new ShooterTestCommand(shooterSubsystem));
   }
 
   
