@@ -11,15 +11,13 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -28,10 +26,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
-import edu.wpi.first.wpilibj.motorcontrol.Victor;
-import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
-//import edu.wpi.first.wpilibj.XboxController;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -100,7 +95,7 @@ public class RobotContainer {
   public static Compressor theCompressor;
 
   public static DigitalInput climberStationaryHookContact;
-  public static TalonFX climberExtentionMotor; 
+  public static WPI_TalonFX climberExtentionMotor; 
   public static DoubleSolenoid climberArmTilt;
  
 
@@ -174,7 +169,7 @@ public class RobotContainer {
     }
 
     climberStationaryHookContact = new DigitalInput(1);
-    climberExtentionMotor = new TalonFX(40);
+    climberExtentionMotor = new WPI_TalonFX(40);
     climberArmTilt = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
 
 
@@ -234,17 +229,21 @@ public class RobotContainer {
   private void configureButtonBindings() {
     driverJoystick = new Joystick(DRIVER_JOYSTICK_PORT);
     operatorJoystick = new Joystick(OPERATOR_JOYSTICK_PORT);
-    
+    //Dpad 
     DPad driverDPad = new DPad(driverJoystick, 0);
     DPad operatorDPad = new DPad(operatorJoystick, 0);
-    
+    //Climber Tilt Buttons
     JoystickButton climberTiltOutButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
     climberTiltOutButton.whenPressed(new ClimberTiltTestCommandOut());
     JoystickButton climberTiltInButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
     climberTiltInButton.whenPressed(new ClimberTiltTestCommandIn());
-
+    
     operatorDPad.up().whenPressed(new ClimberTestCommandUp());
     operatorDPad.down().whenPressed(new ClimberTestCommandDown());
+
+    
+
+
 
   }
 
@@ -327,6 +326,13 @@ public class RobotContainer {
     return -axisValue;
   }
 
+  public static double getOperatorVerticalJoystick() {
+    double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y);
+    if (axisValue < 0.15 && axisValue > -0.15) {
+      return 0;
+    }
+    return -axisValue;
+  }
   /**
    * Return the climbing joystick position. Return positive values if
    * the operator pushes the joystick up.
