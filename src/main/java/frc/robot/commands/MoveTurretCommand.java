@@ -22,7 +22,7 @@ public class MoveTurretCommand extends CommandBase {
     addRequirements(_subsystem);
     turretSubsystem = _subsystem;
     desiredAngle = _desiredAngle;
-  }
+  } 
 
   // Called when the command is initially scheduled.
   @Override
