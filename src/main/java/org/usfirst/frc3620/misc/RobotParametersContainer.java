@@ -33,9 +33,6 @@ public class RobotParametersContainer {
     }
 
     static <T extends RobotParameters> void readConfiguration(Class parametersClass, Path path) throws IOException {
-        if (path == null) {
-            path = Path.of("robot_config.json");
-        }
         String json = Files.readString(path);
         json = Minifier.minify(json);
         // https://stackoverflow.com/a/52296997
