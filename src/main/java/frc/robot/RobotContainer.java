@@ -34,11 +34,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
-import org.usfirst.frc3620.misc.CANDeviceFinder;
-import org.usfirst.frc3620.misc.DPad;
-import org.usfirst.frc3620.misc.TriggerButton;
-import org.usfirst.frc3620.misc.XBoxConstants;
-import org.usfirst.frc3620.misc.CANDeviceType;
+import org.usfirst.frc3620.misc.*;
 
 
 import frc.robot.commands.*;
@@ -66,6 +62,8 @@ public class RobotContainer {
   // need this
   static CANDeviceFinder canDeviceFinder;
 
+  static RobotParameters2022 robotParameters;
+
   // hardware here...
   public static CANSparkMax driveSubsystemRightFrontDrive;
   public static CANSparkMax driveSubsystemRightFrontAzimuth;
@@ -86,7 +84,6 @@ public class RobotContainer {
   public static CANSparkMax turretSubsystemturretSpinner;
   public static RelativeEncoder turretSubsystemturretEncoder;
 
-  
   public static CANSparkMax driveSubsystemLeftFrontDrive;
   public static CANSparkMax driveSubsystemLeftFrontAzimuth;
   public static RelativeEncoder driveSubsystemLeftFrontDriveEncoder;
@@ -124,14 +121,14 @@ public class RobotContainer {
   //vision 
   public static Solenoid visionlight;
 
-
-
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     canDeviceFinder = new CANDeviceFinder();
     logger.info ("CAN bus: " + canDeviceFinder.getDeviceSet());
+
+    robotParameters = (RobotParameters2022) RobotParametersContainer.getRobotParameters(RobotParameters2022.class);
 
     makeHardware();
     setupMotors();
@@ -347,21 +344,26 @@ public class RobotContainer {
    */
 
   /**
-   * Determine if this robot is a competition robot. It is if
-   * it's connected to an FMS.
-   * 
-   * We should probably also check for an "I am a test" file or jumper
-   * and return true if those are missing.
+   * Determine if this robot is a competition robot.
+   *
+   * It is if it's connected to an FMS.
+   *
+   * It is if it is missing a grounding jumper on DigitalInput 0.
+   *
+   * It is if the robot_parameters.json says so for this MAC address.
    * 
    * @return true if this robot is a competition robot.
    */
-
   public static boolean amIACompBot() {
     if (DriverStation.isFMSAttached()) {
       return true;
     }
 
     if(practiceBotJumper.get() == true){
+      return true;
+    }
+
+    if (robotParameters.isCompetitionRobot()) {
       return true;
     }
 
