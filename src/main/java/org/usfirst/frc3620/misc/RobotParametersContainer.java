@@ -15,10 +15,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RobotParametersContainer {
     public final static Logger logger = EventLogging.getLogger(RobotParameters.class, EventLogging.Level.INFO);
@@ -30,7 +27,7 @@ public class RobotParametersContainer {
     public static <T extends RobotParameters> Map<String, T> makeParameterMap(List<T> l) {
         Map<String, T> rv = new HashMap<>();
         for (T c : l) {
-            rv.put(c.macAddress, c);
+            rv.put(c.macAddress.toLowerCase(), c);
         }
         return rv;
     }
@@ -48,26 +45,29 @@ public class RobotParametersContainer {
         parameterMap = makeParameterMap(list);
     }
 
-    public static RobotParameters getRobotParameters (Class parametersClass, String filename) {
-        return getRobotParameters(parametersClass, filename, identifyRoboRIO());
+    @SuppressWarnings("unchecked")
+    public static <T extends RobotParameters> T getRobotParameters (Class parametersClass, String filename) {
+        return (T) getRobotParameters(parametersClass, filename, identifyRoboRIO());
     }
 
-    public static RobotParameters getRobotParameters (Class parametersClass) {
-        return getRobotParameters(parametersClass, null, identifyRoboRIO());
+    @SuppressWarnings("unchecked")
+    public static <T extends RobotParameters> T getRobotParameters (Class parametersClass) {
+        return (T) getRobotParameters(parametersClass, null, identifyRoboRIO());
     }
 
-    public static RobotParameters getRobotParameters (Class parametersClass, String filename, String mac) {
+    @SuppressWarnings("unchecked")
+    public static <T extends RobotParameters> T getRobotParameters (Class parametersClass, String filename, String mac) {
         if (! RobotParameters.class.isAssignableFrom(parametersClass)) {
             logger.error("getRobotParameters needs a subclass of RobotParameters, returning null");
             return null;
         }
         RobotParameters rv = null;
 
-        logger.info("reading robotParameters from {}", filename);
         if (parameterMap == null) {
             if (filename == null) {
-                filename = "robot_config.json";
+                filename = "robot_parameters.json";
             }
+            logger.info("reading robotParameters from {}", filename);
             try {
                 readConfiguration(parametersClass, Path.of(filename));
             } catch (IOException e) {
@@ -76,7 +76,7 @@ public class RobotParametersContainer {
             }
         }
         if (parameterMap != null) {
-            rv = parameterMap.get(mac);
+            rv = parameterMap.get(mac.toLowerCase());
             if (rv == null) {
                 logger.info ("no entry in {} for \"{}\"", filename, mac);
             }
@@ -98,7 +98,7 @@ public class RobotParametersContainer {
         if (rv != null) {
             logger.info("robot parameters {}: {}", rv.getClass(), gson.toJson(rv));
         }
-        return rv;
+        return (T) rv;
     }
 
     static String roboRIOMacAddress = null;

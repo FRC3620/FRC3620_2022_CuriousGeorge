@@ -83,7 +83,7 @@ public class RobotParametersTest {
         RobotParameters rb = RobotParametersContainer.getRobotParameters(RobotParameters.class, test_parameters_filename);
         System.out.println (rb);
 
-        rb = RobotParametersContainer.getRobotParameters(TestRobotParameters.class, test_parameters_filename);
-        System.out.println (rb);
+        TestRobotParameters trb = RobotParametersContainer.getRobotParameters(TestRobotParameters.class, test_parameters_filename);
+        System.out.println (trb);
     }
 }
