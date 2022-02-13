@@ -22,8 +22,6 @@ public class RobotParametersContainer {
 
     static Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 
-    static Map<String, ? extends RobotParameters> parameterMap = null;
-
     public static <T extends RobotParameters> Map<String, T> makeParameterMap(List<T> l) {
         Map<String, T> rv = new HashMap<>();
         for (T c : l) {
@@ -32,14 +30,14 @@ public class RobotParametersContainer {
         return rv;
     }
 
-    static <T extends RobotParameters> void readConfiguration(Class parametersClass, Path path) throws IOException {
+    static <T extends RobotParameters> Map<String, T> readConfiguration(Class parametersClass, Path path) throws IOException {
         String json = Files.readString(path);
         json = Minifier.minify(json);
         // https://stackoverflow.com/a/52296997
         Type parameterListType = TypeToken.getParameterized(List.class, parametersClass).getType();
         List<T> list = gson.fromJson(json, parameterListType);
 
-        parameterMap = makeParameterMap(list);
+        return makeParameterMap(list);
     }
 
     @SuppressWarnings("unchecked")
@@ -60,18 +58,18 @@ public class RobotParametersContainer {
         }
         RobotParameters rv = null;
 
-        if (parameterMap == null) {
-            if (filename == null) {
-                filename = "robot_parameters.json";
-            }
-            logger.info("reading robotParameters from {}", filename);
-            try {
-                readConfiguration(parametersClass, Path.of(filename));
-            } catch (IOException e) {
-                logger.error ("can't read configuration at {}", filename);
-                logger.error ("caused by", e);
-            }
+        Map<String, T> parameterMap = null;
+        if (filename == null) {
+            filename = "robot_parameters.json";
         }
+        logger.info("reading robotParameters from {}", filename);
+        try {
+            parameterMap = readConfiguration(parametersClass, Path.of(filename));
+        } catch (IOException e) {
+            logger.error ("can't read configuration at {}", filename);
+            logger.error ("caused by", e);
+        }
+
         if (parameterMap != null) {
             rv = parameterMap.get(mac.toLowerCase());
             if (rv == null) {
