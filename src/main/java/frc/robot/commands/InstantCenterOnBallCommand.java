@@ -19,8 +19,9 @@ import frc.robot.subsystems.VisionSubsystem;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class InstantCenterOnBallCommand extends CommandBase {
+  
   private DriveSubsystem driveSubsystem;
-  private VisionSubsystem VisionSubsystem;
+  private VisionSubsystem visionSubsystem;
   private Logger logger;
 
   static double BALL_LOCATION_TOLERANCE = 0.02;
@@ -35,10 +36,10 @@ public class InstantCenterOnBallCommand extends CommandBase {
   //private NetworkTableEntry targetX = networkTable.getEntry("target.x");
 
   
-  public InstantCenterOnBallCommand(DriveSubsystem driveSubsystem, VisionSubsystem VisionSubsystem) {
+  public InstantCenterOnBallCommand(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.driveSubsystem = driveSubsystem;
-    this.VisionSubsystem = VisionSubsystem;
+    this.visionSubsystem = visionSubsystem;
     SmartDashboard.putBoolean("CenterOnBall.running", false);
     logger = EventLogging.getLogger(InstantCenterOnBallCommand.class, Level.INFO);
   }
@@ -54,7 +55,7 @@ public class InstantCenterOnBallCommand extends CommandBase {
     double spinDegrees = 0;
     double spinHeading = 0;
     
-    targetX = VisionSubsystem.getBallXLocation();
+    targetX = visionSubsystem.getBallXLocation();
     startNavX = driveSubsystem.getNavXFixedAngle();
 
     if(targetX < 0){

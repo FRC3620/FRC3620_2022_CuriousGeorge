@@ -52,7 +52,6 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double getTargetXLocation(){
     double rv = targetX.getDouble(-3);
-
     return rv;
   }
   
