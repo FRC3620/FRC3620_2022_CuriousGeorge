@@ -30,7 +30,7 @@ public class RobotParametersContainer {
         return rv;
     }
 
-    static <T extends RobotParameters> Map<String, T> readConfiguration(Class parametersClass, Path path) throws IOException {
+    static <T extends RobotParameters> Map<String, T> readConfiguration(Class<T> parametersClass, Path path) throws IOException {
         String json = Files.readString(path);
         json = Minifier.minify(json);
         // https://stackoverflow.com/a/52296997
@@ -40,18 +40,16 @@ public class RobotParametersContainer {
         return makeParameterMap(list);
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends RobotParameters> T getRobotParameters (Class parametersClass, String filename) {
-        return (T) getRobotParameters(parametersClass, filename, identifyRoboRIO());
+    public static <T extends RobotParameters> T getRobotParameters (Class<T> parametersClass, String filename) {
+        return getRobotParameters(parametersClass, filename, identifyRoboRIO());
+    }
+
+    public static <T extends RobotParameters> T getRobotParameters (Class<T> parametersClass) {
+        return getRobotParameters(parametersClass, null, identifyRoboRIO());
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends RobotParameters> T getRobotParameters (Class parametersClass) {
-        return (T) getRobotParameters(parametersClass, null, identifyRoboRIO());
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T extends RobotParameters> T getRobotParameters (Class parametersClass, String filename, String mac) {
+    public static <T extends RobotParameters> T getRobotParameters (Class<T> parametersClass, String filename, String mac) {
         if (! RobotParameters.class.isAssignableFrom(parametersClass)) {
             logger.error("getRobotParameters needs a subclass of RobotParameters, returning null");
             return null;
