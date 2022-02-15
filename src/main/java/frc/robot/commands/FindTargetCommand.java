@@ -6,7 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.TurretSubsystem;
-import frc.robot.subsystems.VisionSubSystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
@@ -17,15 +17,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class FindTargetCommand extends CommandBase {
   TurretSubsystem turretSubsystem;
-  VisionSubSystem visionSubSystem;
+  VisionSubsystem visionSubsystem;
   Timer turretTimer = new Timer();
   
   /** Creates a new FindTargetCommand. */
-  public FindTargetCommand(TurretSubsystem _subsystem, VisionSubSystem _vsubsystem) {
+  public FindTargetCommand(TurretSubsystem _subsystem, VisionSubsystem _vsubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(_subsystem);
     turretSubsystem = _subsystem;
-    visionSubSystem = _vsubsystem;
+    visionSubsystem = _vsubsystem;
     SmartDashboard.putBoolean("Target Found", true);
      
    
@@ -55,7 +55,7 @@ turretTimer.start();
   public void spinTurret(){
 
    double spinTurretDegrees = 0;
-    double positionInFrame = visionSubSystem.getTargetXLocation();
+    double positionInFrame = visionSubsystem.getTargetXLocation();
     SmartDashboard.putNumber("target location",positionInFrame);
     double currentTurretPosition = turretSubsystem.getCurrentTurretPosition();
     if (positionInFrame>=0){
