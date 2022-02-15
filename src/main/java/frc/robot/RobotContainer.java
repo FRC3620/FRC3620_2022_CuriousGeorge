@@ -198,13 +198,12 @@ public class RobotContainer {
       driveSubsystemRightBackAzimuthEncoder = driveSubsystemRightBackAzimuth.getEncoder();
 
       driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
-    
-      climberStationaryHookContact = new DigitalInput(1);
-      climberExtentionMotor = new WPI_TalonFX(40);
-      climberArmTilt = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
-
     }
 
+    climberStationaryHookContact = new DigitalInput(1);
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 40, "climberExtentionMotor") || iAmACompetitionRobot) {
+      climberExtentionMotor = new WPI_TalonFX(40);
+    }
     // shooter motors
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 21, "top shooter 1") || iAmACompetitionRobot) {
       // Shooter Motors 
@@ -226,7 +225,9 @@ public class RobotContainer {
       compressor.disable();
       ringLight = new Solenoid(PneumaticsModuleType.CTREPCM, 7);
       ringLight.set(true);
+      climberArmTilt = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 0, 1);
     }
+
     // intake
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 25, "wheel bar") || iAmACompetitionRobot){
       intakeWheelbar = new CANSparkMax(25, MotorType.kBrushless);
@@ -305,9 +306,10 @@ public class RobotContainer {
     JoystickButton climberTiltInButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
     climberTiltInButton.whenPressed(new ClimberTiltTestCommandIn());
     
-    operatorDPad.up().whenPressed(new ClimberTestCommandUp());
-    operatorDPad.down().whenPressed(new ClimberTestCommandDown());
-
+    operatorDPad.up().whenPressed(new MoveTurretCommand(turretSubsystem, 0));
+    operatorDPad.down().whenPressed(new MoveTurretCommand(turretSubsystem, 180));
+    operatorDPad.left().whenPressed(new MoveTurretCommand(turretSubsystem, 270));
+    operatorDPad.right().whenPressed(new MoveTurretCommand(turretSubsystem, 90));
 
     JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
     centerOnBallButton.whileHeld(new InstantCenterOnBallCommand(driveSubsystem, visionSubsystem));
