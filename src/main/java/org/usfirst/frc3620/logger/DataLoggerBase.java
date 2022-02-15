@@ -63,6 +63,15 @@ abstract public class DataLoggerBase implements IDataLogger {
 	}
 
 	@Override
+	public void addMetadata(String s, String v) {
+		if (!started) {
+			metadata.put(s, v);
+		} else {
+			logger.error("Cannot addMetadata(...) after start()");
+		}
+	}
+
+	@Override
 	public void setInterval(double seconds) {
 		intervalInSeconds = seconds;
 	}

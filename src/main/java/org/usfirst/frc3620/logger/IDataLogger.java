@@ -19,6 +19,8 @@ public interface IDataLogger {
 
     public void addMetadata(String s, double d);
 
+    public void addMetadata(String s, String v);
+
     public String start();
 
 }

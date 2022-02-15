@@ -4,21 +4,32 @@
 
 package frc.robot.subsystems;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class VisionSubSystem extends SubsystemBase {
+public class VisionSubsystem extends SubsystemBase {
+
+ 
 
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
   private NetworkTable networkTable = inst.getTable("V/Cargo");
   
   private NetworkTableEntry ballX = networkTable.getEntry("ball.x");
+  private NetworkTableEntry ballY = networkTable.getEntry("ball.y");
   private  NetworkTableEntry allianceColor = networkTable.getEntry("color");
-  /** Creates a new VisionSubSystem. */
-  public VisionSubSystem() {
+
+  private NetworkTable networkTable2= inst.getTable("V/Target");
+  private NetworkTableEntry targetX = networkTable2.getEntry("target.x");
+  /** Creates a new VisionSubsystem. */
+  public VisionSubsystem() {
 
     
   }
@@ -31,9 +42,20 @@ public class VisionSubSystem extends SubsystemBase {
     } else {
       allianceColor.setString("blue");
     }
+
+    SmartDashboard.putNumber("vision.target.x", targetX.getDouble(-2));
   }
 
   public double getBallXLocation(){
     return ballX.getDouble(-1);
+  }
+
+  public double getTargetXLocation(){
+    double rv = targetX.getDouble(-3);
+    return rv;
+  }
+  
+  public double getBallYLocation(){
+    return ballY.getDouble(-1);
   }
 }
