@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
+import org.usfirst.frc3620.misc.AnalogJoystickButton;
 import org.usfirst.frc3620.misc.CANDeviceFinder;
 import org.usfirst.frc3620.misc.DPad;
 import org.usfirst.frc3620.misc.XBoxConstants;
@@ -309,8 +310,13 @@ public class RobotContainer {
     operatorDPad.left().whenPressed(new MoveTurretCommand(turretSubsystem, 270));
     operatorDPad.right().whenPressed(new MoveTurretCommand(turretSubsystem, 90));
 
-    JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
+    JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);
     centerOnBallButton.whileHeld(new InstantCenterOnBallCommand(driveSubsystem, visionSubsystem));
+
+    AnalogJoystickButton climberExtendUp = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y);
+    climberExtendUp.whileHeld(new ClimberTestCommandUp());
+    AnalogJoystickButton climberExtendDown = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y);
+    climberExtendDown.whileHeld(new ClimberTestCommandDown());
   }
 
   void setupSmartDashboardCommands() {
