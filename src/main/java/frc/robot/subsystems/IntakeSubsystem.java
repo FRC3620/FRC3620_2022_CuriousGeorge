@@ -11,8 +11,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
-
+import com.revrobotics.CANSparkMax;
+import frc.robot.RobotContainer;
 public class IntakeSubsystem extends SubsystemBase {
+  CANSparkMax intakeWheelbar = RobotContainer.intakeWheelbar;
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
   private final ColorMatch m_colorMatcher = new ColorMatch();
@@ -59,4 +61,14 @@ public class IntakeSubsystem extends SubsystemBase {
     }
     SmartDashboard.putString("Detected Color", colorString);
   }
+   /**
+   * Spin the intake wheel and intake belt.
+   * @param speed how fast to spin. positive is inward, negative is outward.
+   */
+  public void spinIntakeMotors(double speed) {
+    if (intakeWheelbar != null) {
+      intakeWheelbar.set(speed);
+ 
+     }  
+    }
 }

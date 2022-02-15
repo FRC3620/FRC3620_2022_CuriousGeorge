@@ -14,12 +14,13 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -104,7 +105,8 @@ public class RobotContainer {
   public static RelativeEncoder driveSubsystemRightBackDriveEncoder;
   public static RelativeEncoder driveSubsystemRightBackAzimuthEncoder;
   public static AnalogInput driveSubsystemRightBackHomeEncoder;
-
+  //intake
+  public static CANSparkMax intakeWheelbar;
   private static Solenoid ringLight;
 
   private static DigitalInput practiceBotJumper;
@@ -115,6 +117,11 @@ public class RobotContainer {
   public static WPI_TalonFX climberExtentionMotor; 
   public static DoubleSolenoid climberArmTilt;
  
+
+
+  public static CANSparkMax intakeBelt;
+  
+  public static CANSparkMax shooterPreshooter;
 
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
@@ -190,7 +197,7 @@ public class RobotContainer {
       driveSubsystemRightBackAzimuth = new CANSparkMax(8, MotorType.kBrushless);
       driveSubsystemRightBackAzimuthEncoder = driveSubsystemRightBackAzimuth.getEncoder();
 
-      driveSubsystemRightBackHomeEncoder = new AnalogInput(3); 
+      driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
     
       climberStationaryHookContact = new DigitalInput(1);
       climberExtentionMotor = new WPI_TalonFX(40);
@@ -199,11 +206,13 @@ public class RobotContainer {
     }
 
     // shooter motors
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 21, "top shooter") || iAmACompetitionRobot) {
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 21, "top shooter 1") || iAmACompetitionRobot) {
       // Shooter Motors 
       shooterSubsystemFalcon1 = new WPI_TalonFX(21);
     }
-
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 17, "top shooter 2") || iAmACompetitionRobot) {
+      shooterSubsystemFalcon2 = new WPI_TalonFX(17);
+    }
     // turret 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 20, "turret") || iAmACompetitionRobot) {
       turretSubsystemturretSpinner = new CANSparkMax(20, MotorType.kBrushless);
@@ -218,7 +227,15 @@ public class RobotContainer {
       ringLight = new Solenoid(PneumaticsModuleType.CTREPCM, 7);
       ringLight.set(true);
     }
-
+    // intake
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 25, "wheel bar") || iAmACompetitionRobot){
+      intakeWheelbar = new CANSparkMax(25, MotorType.kBrushless);
+    }
+    /*
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 26, "Intake Belt") || iAmACompetitionRobot){
+      intakeBelt = new CANSparkMax(#, MotorType.UNDECIDED);
+    }
+      */
   }
   
   void setupMotors() {
@@ -267,6 +284,7 @@ public class RobotContainer {
     intakeSubsystem = new IntakeSubsystem();
     turretSubsystem = new TurretSubsystem();
     shooterSubsystem = new ShooterSubsystem();
+
   }
 
   /**
@@ -290,7 +308,7 @@ public class RobotContainer {
     operatorDPad.up().whenPressed(new ClimberTestCommandUp());
     operatorDPad.down().whenPressed(new ClimberTestCommandDown());
 
-    
+
     JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
     centerOnBallButton.whileHeld(new InstantCenterOnBallCommand(driveSubsystem, visionSubsystem));
 
@@ -314,7 +332,14 @@ public class RobotContainer {
     SmartDashboard.putData("DougTestAutoSpin", new DougTestAutoSpin(driveSubsystem));
     SmartDashboard.putData("Reset NavX", new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
+    SmartDashboard.putData("Find target",new FindTargetCommand(turretSubsystem, visionSubsystem));
+
     SmartDashboard.putData("Shooter Test Command", new ShooterTestCommand(shooterSubsystem));
+
+
+    
+    SmartDashboard.putData("Eject Ball", new EjectBallCommand());
+    SmartDashboard.putData("Intake Ball", new IntakeBallCommand());
 
     SmartDashboard.putData("Climber Extention Motor Up", new ClimberTestCommandUp());
     SmartDashboard.putData("Climber Extention Motor Down", new ClimberTestCommandDown());
@@ -322,6 +347,7 @@ public class RobotContainer {
     SmartDashboard.putData("Climber Tilt In", new ClimberTiltTestCommandIn());
 
     SmartDashboard.putData("Find target",new FindTargetCommand(turretSubsystem, visionSubsystem));
+
   }
 
   
