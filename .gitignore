@@ -163,3 +163,4 @@ bin/
 
 ######## FRC3620 additions follow ########
 gitgraph*
+.idea/*
