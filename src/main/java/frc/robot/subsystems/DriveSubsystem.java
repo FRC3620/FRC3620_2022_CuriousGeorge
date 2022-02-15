@@ -102,10 +102,10 @@ public class DriveSubsystem extends SubsystemBase {
 	
 	private double kPositionMinOutput = -1;
 	
-	private double kVelocityP = 0.01;
+	private double kVelocityP = 0.01;  //0.01
 	private double kVelocityI = 0.000000;
-	private double kVelocityD = 0.1;
-	private double kVelocityFF = .006;
+	private double kVelocityD = 0.1;  //0.1
+	private double kVelocityFF = 0.0;
 	private double kVelocityIz = 0;
 	private double kVelocityMaxOutput = 1;
 	private double kVelocityMinOutput = -1;
@@ -115,9 +115,9 @@ public class DriveSubsystem extends SubsystemBase {
 	private boolean fieldRelative = true;
 
 	private PIDController spinPIDController;
-	private double kSpinP = 0.013;
-	private double kSpinI = 0.00001;
-	private double kSpinD = 0.003;
+	private double kSpinP = 0.010; //0.013
+	private double kSpinI = 0.00000; //0.00001
+	private double kSpinD = 0.000; //0.003
 	private boolean autoSpinMode;
 	private boolean forceManualMode = false;
 	private double currentHeading;

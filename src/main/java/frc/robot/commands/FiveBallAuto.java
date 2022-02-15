@@ -13,23 +13,25 @@ public class FiveBallAuto extends SequentialCommandGroup {
       ,
       new WaitCommand(.5) //shooting
       ,
-      new AutoDriveCommand(40, 90, .3, 90, driveSubsystem)
+      new AutoDriveCommand(40, 90, .8, 90, driveSubsystem)
       //,
       //new AutoDriveToCargoCommand(3*12, 90, .3, 90, driveSubsystem, VisionSubsystem) //drive to position A
       ,
       new WaitCommand(.5) //shooting
       ,
-      new AutoDriveCommand(12, 200, .3, 205, driveSubsystem)
+      new AutoSpinCommand(1, 200, driveSubsystem)
       ,
-      new AutoDriveToCargoCommand(10*12, 200, .3, 225, driveSubsystem, visionSubsystem) //drive to position B
+      new AutoDriveCommand(12, 200, 1, 205, driveSubsystem)
       ,
-      new WaitCommand(5) //shooting
+      new AutoDriveToCargoCommand(10*12, 200, .8, 225, driveSubsystem, visionSubsystem) //drive to position B
       ,
-      new AutoDriveCommand(11*12, 190, .3, 135, driveSubsystem)
+      new WaitCommand(2) //shooting
       ,
-      new AutoDriveCommand(10, 135, 0.3, 135, driveSubsystem) 
+      new AutoDriveCommand(150, 190, .8, 135, driveSubsystem)
       ,
-      new AutoDriveToCargoCommand(10*12, 135, .3, 135, driveSubsystem, visionSubsystem)
+      new AutoDriveCommand(10, 135, 1, 135, driveSubsystem) 
+      ,
+      new AutoDriveToCargoCommand(1*12, 135, .8, 135, driveSubsystem, visionSubsystem)
       ,
       new WaitCommand(.5) //shooting
       //new AutoDriveCommand(4*12, 270, .2, 180, driveSubsystem),*/
