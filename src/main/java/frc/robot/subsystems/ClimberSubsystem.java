@@ -32,36 +32,41 @@ public class ClimberSubsystem extends SubsystemBase {
 
   /** Creates a new ClimberSubsystem. */
   public ClimberSubsystem() {
-    climberExtentionMotor.setSelectedSensorPosition(0);
+    if(climberExtentionMotor != null) {
+       climberExtentionMotor.setSelectedSensorPosition(0);
+    }
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    double climberSpeed = climberExtentionMotor.getSelectedSensorVelocity();
-    
-    if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
-      if (!encoderIsValid) {
-        spinClimberExtentionMotor(-0.075);
 
-        if (calibrationTimer == null) {
-          calibrationTimer = new Timer();
-          calibrationTimer.reset();
-          calibrationTimer.start();
-        } else {
-          if (calibrationTimer.get() > 0.5){
-            if (Math.abs(climberSpeed) < 20) {
-              encoderIsValid = true;
-              spinClimberExtentionMotor(0.0);
-              climberExtentionMotor.setSelectedSensorPosition(0.0);
+    if (climberExtentionMotor != null) { 
+      double climberSpeed = climberExtentionMotor.getSelectedSensorVelocity();
+      
+      if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
+        if (!encoderIsValid) {
+          spinClimberExtentionMotor(-0.075);
+
+          if (calibrationTimer == null) {
+            calibrationTimer = new Timer();
+            calibrationTimer.reset(); 
+            calibrationTimer.start();
+          } else {
+            if (calibrationTimer.get() > 0.5){
+              if (Math.abs(climberSpeed) < 20) {
+                encoderIsValid = true;
+                spinClimberExtentionMotor(0.0);
+                climberExtentionMotor.setSelectedSensorPosition(0.0);
+              }
             }
           }
         }
       }
+      SmartDashboard.putBoolean("climber.doesstationaryhookhavebar", doesStationaryHookHaveBar());
+      SmartDashboard.putNumber("climber.encoder", getShaftPosition());
     }
-    SmartDashboard.putBoolean("climber.doesstationaryhookhavebar", doesStationaryHookHaveBar());
-    SmartDashboard.putNumber("climber.encoder", getShaftPosition());
   }
+    
 
   public boolean doesStationaryHookHaveBar() {
     boolean rv = !climberStationaryHookContact.get(); 
@@ -72,29 +77,39 @@ public class ClimberSubsystem extends SubsystemBase {
    * Return the position of the climber extension
    * @return position (expressed in furlongs)
    */
+
   public double getShaftPosition() {
-    double rv = climberExtentionMotor.getSelectedSensorPosition();
-    rv = rv/2048;
-    return rv; 
+    if (climberExtentionMotor != null) { 
+      double rv = climberExtentionMotor.getSelectedSensorPosition();
+      rv = rv/2048;
+      return rv; 
+    }
+    else {
+      return 0; 
+    }
   }
 
   public void spinClimberExtentionMotor(double speed) {
-    climberExtentionMotor.set(ControlMode.PercentOutput, speed);
+    if (climberExtentionMotor != null) { 
+      climberExtentionMotor.set(ControlMode.PercentOutput, speed);
+    }
   }
 
   public void climberArmTiltIn() {
-    climberArmTilt.set(Value.kReverse);
+    if (climberArmTilt != null) { 
+      climberArmTilt.set(Value.kReverse);
+    }
   }
 
   public void climberArmTiltOut() {
-    climberArmTilt.set(Value.kForward);
+    if (climberArmTilt != null) { 
+      climberArmTilt.set(Value.kForward);
+    }
   }
 
   public void climberArmTiltOff() {
-    climberArmTilt.set(Value.kOff);
+    if (climberArmTilt != null) { 
+      climberArmTilt.set(Value.kOff);
+    }
   }
-
-  
 }
-
-
