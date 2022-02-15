@@ -18,8 +18,8 @@ public class FiveBallAuto extends SequentialCommandGroup {
       //new AutoDriveToCargoCommand(3*12, 90, .3, 90, driveSubsystem, VisionSubsystem) //drive to position A
       ,
       new WaitCommand(.5) //shooting
-      ,
-      new AutoSpinCommand(1, 200, driveSubsystem)
+      // ,
+      //new AutoSpinCommand(1, 200, driveSubsystem)
       ,
       new AutoDriveCommand(12, 200, 1, 205, driveSubsystem)
       ,
