@@ -439,4 +439,3 @@ public class RobotContainer {
     //return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, VisionSubsystem, intakeSubsystem);
     return chooser.getSelected();
   }
-}
