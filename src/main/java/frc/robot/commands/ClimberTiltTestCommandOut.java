@@ -7,17 +7,19 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import edu.wpi.first.util.sendable.SendableRegistry;
 
 public class ClimberTiltTestCommandOut extends CommandBase {
   ClimberSubsystem climberSubsystem = RobotContainer.climberSubsystem;
+  ArmSubsystem armSubsystem = RobotContainer.armSubsystem;
   protected Timer m_timer = new Timer();
   
   
   /** Creates a new ClimberTiltTestCommandOut. */
   public ClimberTiltTestCommandOut() {
-    addRequirements(climberSubsystem);
+    addRequirements(armSubsystem);
 
     // Use addRequirements() here to declare subsystem dependencies.
   }

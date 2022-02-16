@@ -29,10 +29,11 @@ public class ClimberTestCommandDown extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-  climberSubsystem.spinClimberExtentionMotor(-0.1);
-  
-
+    if (climberSubsystem.getShaftPosition() >= 0) {
+      climberSubsystem.spinClimberExtentionMotor(-0.1);
+    }
   }
+  
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {

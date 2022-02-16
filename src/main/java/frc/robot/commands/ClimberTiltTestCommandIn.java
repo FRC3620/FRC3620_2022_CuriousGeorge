@@ -8,16 +8,18 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 
 public class ClimberTiltTestCommandIn extends CommandBase {
   ClimberSubsystem climberSubsystem = RobotContainer.climberSubsystem;
+  ArmSubsystem armSubsystem = RobotContainer.armSubsystem;
   protected Timer m_timer = new Timer();
   
   
   /** Creates a new ClimberTiltTestCommandOut. */
   public ClimberTiltTestCommandIn() {
-    addRequirements(climberSubsystem);
+     addRequirements(armSubsystem);
 
     // Use addRequirements() here to declare subsystem dependencies.
   }

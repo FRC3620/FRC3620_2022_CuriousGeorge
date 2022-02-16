@@ -119,6 +119,7 @@ public class RobotContainer {
   public static IntakeSubsystem intakeSubsystem;
   public static TurretSubsystem turretSubsystem;
   public static ShooterSubsystem shooterSubsystem;
+  public static ArmSubsystem armSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -283,6 +284,7 @@ public class RobotContainer {
     intakeSubsystem = new IntakeSubsystem();
     turretSubsystem = new TurretSubsystem();
     shooterSubsystem = new ShooterSubsystem();
+    armSubsystem = new ArmSubsystem();
   }
 
   /**
@@ -313,9 +315,9 @@ public class RobotContainer {
     JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);
     centerOnBallButton.whileHeld(new InstantCenterOnBallCommand(driveSubsystem, visionSubsystem));
 
-    AnalogJoystickButton climberExtendUp = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y);
+    AnalogJoystickButton climberExtendUp = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.2);
     climberExtendUp.whileHeld(new ClimberTestCommandUp());
-    AnalogJoystickButton climberExtendDown = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y);
+    AnalogJoystickButton climberExtendDown = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, 0.2);
     climberExtendDown.whileHeld(new ClimberTestCommandDown());
   }
 
