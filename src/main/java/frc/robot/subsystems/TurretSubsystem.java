@@ -7,15 +7,17 @@ import com.revrobotics.CANSparkMax.ControlType;
 
 import org.usfirst.frc3620.misc.RobotMode;
 
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.miscellaneous.CANSparkMaxSendable;
 
 public class TurretSubsystem extends SubsystemBase {
   boolean encoderIsValid = false;
-  CANSparkMax turretDrive = RobotContainer.turretSubsystemturretSpinner;
+  CANSparkMaxSendable turretDrive = RobotContainer.turretSubsystemturretSpinner;
   RelativeEncoder turretEncoder = RobotContainer.turretSubsystemturretEncoder;
   SparkMaxPIDController turretPID = null;
   Timer calibrationTimer;
@@ -24,6 +26,8 @@ public class TurretSubsystem extends SubsystemBase {
    */
   public TurretSubsystem() {
     if (turretDrive != null) {
+      SendableRegistry.addLW(turretDrive, getName(), "turret drive");
+
       turretPID = turretDrive.getPIDController();
 
       // set up PID for turretPID here

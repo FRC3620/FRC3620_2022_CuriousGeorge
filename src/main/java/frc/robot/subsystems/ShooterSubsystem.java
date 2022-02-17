@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -44,6 +45,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public ShooterSubsystem() {
     if (m_top1 != null) {
+      SendableRegistry.addLW(m_top1, getName(), "top1");
       setupMotor(m_top1);
       m_top1.setInverted(InvertType.InvertMotorOutput);
 
@@ -58,6 +60,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     if (m_top2 != null) {
+      SendableRegistry.addLW(m_top2, getName(), "top2");
       setupMotor(m_top2);
       
       m_top2.follow(m_top1);
@@ -65,6 +68,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     if (m_bottom != null) {
+      SendableRegistry.addLW(m_bottom, getName(), "bottom");
       setupMotor(m_bottom);
 
       //for PID you have to have a sensor to check on so you know the error

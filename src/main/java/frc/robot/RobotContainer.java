@@ -13,6 +13,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -36,6 +37,7 @@ import org.usfirst.frc3620.misc.XBoxConstants;
 import org.usfirst.frc3620.misc.CANDeviceType;
 
 import frc.robot.commands.*;
+import frc.robot.miscellaneous.CANSparkMaxSendable;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -64,47 +66,47 @@ public class RobotContainer {
   private static DigitalInput practiceBotJumper;
 
   // drive subsystem hardware
-  public static CANSparkMax driveSubsystemRightFrontDrive;
-  public static CANSparkMax driveSubsystemRightFrontAzimuth;
+  public static CANSparkMaxSendable driveSubsystemRightFrontDrive;
+  public static CANSparkMaxSendable driveSubsystemRightFrontAzimuth;
   public static RelativeEncoder driveSubsystemRightFrontDriveEncoder;
   public static RelativeEncoder driveSubsystemRightFrontAzimuthEncoder;
   public static AnalogInput driveSubsystemRightFrontHomeEncoder;
   
-  public static CANSparkMax driveSubsystemLeftFrontDrive;
-  public static CANSparkMax driveSubsystemLeftFrontAzimuth;
+  public static CANSparkMaxSendable driveSubsystemLeftFrontDrive;
+  public static CANSparkMaxSendable driveSubsystemLeftFrontAzimuth;
   public static RelativeEncoder driveSubsystemLeftFrontDriveEncoder;
   public static RelativeEncoder driveSubsystemLeftFrontAzimuthEncoder;
   public static AnalogInput driveSubsystemLeftFrontHomeEncoder;
   
-  public static CANSparkMax driveSubsystemLeftBackDrive;
-  public static CANSparkMax driveSubsystemLeftBackAzimuth;
+  public static CANSparkMaxSendable driveSubsystemLeftBackDrive;
+  public static CANSparkMaxSendable driveSubsystemLeftBackAzimuth;
   public static RelativeEncoder driveSubsystemLeftBackDriveEncoder;
   public static RelativeEncoder driveSubsystemLeftBackAzimuthEncoder;
   public static AnalogInput driveSubsystemLeftBackHomeEncoder;
   
-  public static CANSparkMax driveSubsystemRightBackDrive;
-  public static CANSparkMax driveSubsystemRightBackAzimuth;
+  public static CANSparkMaxSendable driveSubsystemRightBackDrive;
+  public static CANSparkMaxSendable driveSubsystemRightBackAzimuth;
   public static RelativeEncoder driveSubsystemRightBackDriveEncoder;
   public static RelativeEncoder driveSubsystemRightBackAzimuthEncoder;
   public static AnalogInput driveSubsystemRightBackHomeEncoder;
 
   //intake
-  public static CANSparkMax intakeWheelbar;
+  public static CANSparkMaxSendable intakeWheelbar;
   public static CANSparkMax intakeBelt;
 
   // vision
-  private static Solenoid ringLight;
+  public static Solenoid ringLight;
 
   // shooter hardware verables are currently unknown so we need to change them
   public static WPI_TalonFX shooterSubsystemFalcon1;
   public static WPI_TalonFX shooterSubsystemFalcon2;
-  public static CANSparkMax shooterSubsystemHoodMax;
+  public static CANSparkMaxSendable shooterSubsystemHoodMax;
   public static RelativeEncoder shooterSubsystemHoodEncoder;
   public static DigitalInput hoodLimitSwitch;
   public static CANSparkMax shooterPreshooter;
 
   // turret
-  public static CANSparkMax turretSubsystemturretSpinner;
+  public static CANSparkMaxSendable turretSubsystemturretSpinner;
   public static RelativeEncoder turretSubsystemturretEncoder;
 
   // climber
@@ -152,34 +154,34 @@ public class RobotContainer {
     // they do not put up unreasonable amounts of SPAM
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1, "Swerve") || iAmACompetitionRobot){
 
-      driveSubsystemRightFrontDrive = new CANSparkMax(1, MotorType.kBrushless);
+      driveSubsystemRightFrontDrive = new CANSparkMaxSendable(1, MotorType.kBrushless);
       driveSubsystemRightFrontDriveEncoder = driveSubsystemRightFrontDrive.getEncoder();
       
-      driveSubsystemRightFrontAzimuth = new CANSparkMax(2, MotorType.kBrushless);
+      driveSubsystemRightFrontAzimuth = new CANSparkMaxSendable(2, MotorType.kBrushless);
       driveSubsystemRightFrontAzimuthEncoder = driveSubsystemRightFrontAzimuth.getEncoder();
 
       driveSubsystemRightFrontHomeEncoder = new AnalogInput(0);
               
-      driveSubsystemLeftFrontDrive = new CANSparkMax(3, MotorType.kBrushless);
+      driveSubsystemLeftFrontDrive = new CANSparkMaxSendable(3, MotorType.kBrushless);
       driveSubsystemLeftFrontDriveEncoder = driveSubsystemLeftFrontDrive.getEncoder();
               
-      driveSubsystemLeftFrontAzimuth = new CANSparkMax(4, MotorType.kBrushless);
+      driveSubsystemLeftFrontAzimuth = new CANSparkMaxSendable(4, MotorType.kBrushless);
       driveSubsystemLeftFrontAzimuthEncoder = driveSubsystemLeftFrontAzimuth.getEncoder();
 
       driveSubsystemLeftFrontHomeEncoder = new AnalogInput(1);
       
-      driveSubsystemLeftBackDrive = new CANSparkMax(5, MotorType.kBrushless);
+      driveSubsystemLeftBackDrive = new CANSparkMaxSendable(5, MotorType.kBrushless);
       driveSubsystemLeftBackDriveEncoder = driveSubsystemLeftBackDrive.getEncoder();
               
-      driveSubsystemLeftBackAzimuth = new CANSparkMax(6, MotorType.kBrushless);
+      driveSubsystemLeftBackAzimuth = new CANSparkMaxSendable(6, MotorType.kBrushless);
       driveSubsystemLeftBackAzimuthEncoder = driveSubsystemLeftBackAzimuth.getEncoder();
 
       driveSubsystemLeftBackHomeEncoder = new AnalogInput(2);
               
-      driveSubsystemRightBackDrive = new CANSparkMax(7, MotorType.kBrushless);
+      driveSubsystemRightBackDrive = new CANSparkMaxSendable(7, MotorType.kBrushless);
       driveSubsystemRightBackDriveEncoder = driveSubsystemRightBackDrive.getEncoder();
       
-      driveSubsystemRightBackAzimuth = new CANSparkMax(8, MotorType.kBrushless);
+      driveSubsystemRightBackAzimuth = new CANSparkMaxSendable(8, MotorType.kBrushless);
       driveSubsystemRightBackAzimuthEncoder = driveSubsystemRightBackAzimuth.getEncoder();
 
       driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
@@ -202,7 +204,7 @@ public class RobotContainer {
 
     // turret 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 20, "turret") || iAmACompetitionRobot) {
-      turretSubsystemturretSpinner = new CANSparkMax(20, MotorType.kBrushless);
+      turretSubsystemturretSpinner = new CANSparkMaxSendable(20, MotorType.kBrushless);
       resetMaxToKnownState(turretSubsystemturretSpinner, true);
       turretSubsystemturretSpinner.setSmartCurrentLimit(10);
       turretSubsystemturretEncoder = turretSubsystemturretSpinner.getEncoder();
@@ -229,7 +231,7 @@ public class RobotContainer {
 
     // intake
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 25, "wheel bar") || iAmACompetitionRobot){
-      intakeWheelbar = new CANSparkMax(25, MotorType.kBrushless);
+      intakeWheelbar = new CANSparkMaxSendable(25, MotorType.kBrushless);
     }
     /*
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 26, "Intake Belt") || iAmACompetitionRobot){
