@@ -27,13 +27,15 @@ public class EjectBallCommand extends CommandBase {
   }
 
   public void ejectBall() {
-    intakeSubsystem.spinIntakeMotors(-0.1);
+    intakeSubsystem.spinIntakeWheelBar(-0.1);
+    intakeSubsystem.spinIntakeBelt(-0.1);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intakeSubsystem.spinIntakeMotors(0.0);
+    intakeSubsystem.spinIntakeWheelBar(0.0);
+    intakeSubsystem.spinIntakeBelt(0.0);
   }
 
   // Returns true when the command should end.

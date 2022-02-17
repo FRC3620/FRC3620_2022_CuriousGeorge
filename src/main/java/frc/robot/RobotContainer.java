@@ -231,11 +231,11 @@ public class RobotContainer {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 25, "wheel bar") || iAmACompetitionRobot){
       intakeWheelbar = new CANSparkMax(25, MotorType.kBrushless);
     }
-    /*
+    
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 26, "Intake Belt") || iAmACompetitionRobot){
-      intakeBelt = new CANSparkMax(#, MotorType.UNDECIDED);
+      intakeBelt = new CANSparkMax(26, MotorType.kBrushless);
     }
-      */
+      
   }
   
   void setupMotors() {

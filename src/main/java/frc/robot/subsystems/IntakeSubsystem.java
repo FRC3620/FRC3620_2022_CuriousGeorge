@@ -13,11 +13,15 @@ import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.CANSparkMax;
 import frc.robot.RobotContainer;
+
 public class IntakeSubsystem extends SubsystemBase {
   CANSparkMax intakeWheelbar = RobotContainer.intakeWheelbar;
+  CANSparkMax intakeBelt = RobotContainer.intakeBelt;
+
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
   private final ColorMatch m_colorMatcher = new ColorMatch();
+  
   private final Color kBlueTarget = new Color(0.22, 0.43, 0.35);
   //Light on: private final Color kBlueTarget = new Color(0.18, 0.42, 0.40);
   //private final Color kBlueTarget = new Color(0.143, 0.427, 0.429);
@@ -25,6 +29,7 @@ public class IntakeSubsystem extends SubsystemBase {
   //Light on: private final Color kRedTarget = new Color(0.38, 0.43, 0.19);
   //private final Color kRedTarget = new Color(0.561, 0.232, 0.114);
   /** Creates a new IntakeSubsystem. */
+  
   public IntakeSubsystem() {
     m_colorMatcher.setConfidenceThreshold(0.95);
     m_colorMatcher.addColorMatch(kBlueTarget);
@@ -65,10 +70,14 @@ public class IntakeSubsystem extends SubsystemBase {
    * Spin the intake wheel and intake belt.
    * @param speed how fast to spin. positive is inward, negative is outward.
    */
-  public void spinIntakeMotors(double speed) {
+  public void spinIntakeWheelBar(double speed) {
     if (intakeWheelbar != null) {
       intakeWheelbar.set(speed);
- 
      }  
     }
+  public void spinIntakeBelt(double speed) {
+    if (intakeBelt != null) {
+      intakeBelt.set(speed);
+    }
+  }
 }
