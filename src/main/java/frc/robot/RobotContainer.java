@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import java.sql.Driver;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax;
@@ -305,10 +307,10 @@ public class RobotContainer {
     JoystickButton climberTiltInButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
     climberTiltInButton.whenPressed(new ClimberTiltTestCommandIn());
     
-    operatorDPad.up().whenPressed(new MoveTurretCommand(turretSubsystem, 0));
-    operatorDPad.down().whenPressed(new MoveTurretCommand(turretSubsystem, 180));
-    operatorDPad.left().whenPressed(new MoveTurretCommand(turretSubsystem, 270));
-    operatorDPad.right().whenPressed(new MoveTurretCommand(turretSubsystem, 90));
+    driverDPad.up().whenPressed(new MoveTurretCommand(turretSubsystem, 0));
+    driverDPad.down().whenPressed(new MoveTurretCommand(turretSubsystem, 180));
+    driverDPad.left().whenPressed(new MoveTurretCommand(turretSubsystem, 270));
+    driverDPad.right().whenPressed(new MoveTurretCommand(turretSubsystem, 90));
 
     JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);
     centerOnBallButton.whileHeld(new InstantCenterOnBallCommand(driveSubsystem, visionSubsystem));
@@ -439,3 +441,4 @@ public class RobotContainer {
     //return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, VisionSubsystem, intakeSubsystem);
     return chooser.getSelected();
   }
+}

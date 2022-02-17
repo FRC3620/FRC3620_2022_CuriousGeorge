@@ -45,7 +45,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("vision.target.x", targetX.getDouble(-2));
   }
-
+ 
   public double getBallXLocation(){
     return ballX.getDouble(-1);
   }

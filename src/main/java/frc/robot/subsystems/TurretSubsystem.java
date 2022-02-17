@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.commands.FindTargetCommand;
 
 public class TurretSubsystem extends SubsystemBase {
   boolean encoderIsValid = false;
@@ -27,9 +28,9 @@ public class TurretSubsystem extends SubsystemBase {
       turretPID = turretDrive.getPIDController();
 
       // set up PID for turretPID here
-      turretPID.setP(0.09);   //0.09
-      turretPID.setI(0.0);     //0.0
-      turretPID.setD(30);    //30
+      turretPID.setP(0.50);   //0.09
+      turretPID.setI(0.0005);     //0.0  
+      turretPID.setD(70);    //30
       turretPID.setFF(0.0);      //0.0
     }
 
@@ -38,6 +39,9 @@ public class TurretSubsystem extends SubsystemBase {
       turretEncoder.setVelocityConversionFactor(1);
     }
 
+
+
+    setDefaultCommand(new FindTargetCommand(this,RobotContainer.visionSubsystem));
   }
 
   @Override
