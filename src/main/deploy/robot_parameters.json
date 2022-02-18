@@ -1,7 +1,7 @@
 [
   {
     // 2021 competition robot
-    "macAddress": "00-80-2F-18-5C-5F",
+    "macAddress": "00-80-2F-17-EB-08",
     "competitionRobot": false,
     // azimuth home encoders
     "swerve.he.rf": 38.75,   // right front
@@ -13,7 +13,7 @@
   },
   {
     // "toad" robot
-    "macAddress": "00:11:22:33:44:55",
+    "macAddress": "00-80-2F-18-5C-5F",
     "competitionRobot": false,
     // azimuth home encoders
     "swerve.he.rf": -173.67, // right front

@@ -6,6 +6,9 @@ import com.google.gson.reflect.TypeToken;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 
+import edu.wpi.first.wpilibj.Filesystem;
+
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -15,6 +18,7 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class RobotParametersContainer {
@@ -41,15 +45,17 @@ public class RobotParametersContainer {
     }
 
     public static <T extends RobotParameters> T getRobotParameters (Class<T> parametersClass, String filename) {
-        return getRobotParameters(parametersClass, filename, identifyRoboRIO());
+        Path path = Paths.get(filename);
+        return getRobotParameters(parametersClass, path, identifyRoboRIO());
     }
 
     public static <T extends RobotParameters> T getRobotParameters (Class<T> parametersClass) {
-        return getRobotParameters(parametersClass, null, identifyRoboRIO());
+        File file = new File(Filesystem.getDeployDirectory(), "robot_parameters.json");
+        return getRobotParameters(parametersClass, file.toPath(), identifyRoboRIO());
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends RobotParameters> T getRobotParameters (Class<T> parametersClass, String filename, String mac) {
+    public static <T extends RobotParameters> T getRobotParameters (Class<T> parametersClass, Path path, String mac) {
         if (! RobotParameters.class.isAssignableFrom(parametersClass)) {
             logger.error("getRobotParameters needs a subclass of RobotParameters, returning null");
             return null;
@@ -57,21 +63,18 @@ public class RobotParametersContainer {
         RobotParameters rv = null;
 
         Map<String, T> parameterMap = null;
-        if (filename == null) {
-            filename = "robot_parameters.json";
-        }
-        logger.info("reading robotParameters from {}", filename);
+        logger.info("reading robotParameters from {}", path);
         try {
-            parameterMap = readConfiguration(parametersClass, Path.of(filename));
+            parameterMap = readConfiguration(parametersClass, path);
         } catch (IOException e) {
-            logger.error ("can't read configuration at {}", filename);
+            logger.error ("can't read configuration at {}", path);
             logger.error ("caused by", e);
         }
 
         if (parameterMap != null) {
             rv = parameterMap.get(mac.toLowerCase());
             if (rv == null) {
-                logger.info ("no entry in {} for \"{}\"", filename, mac);
+                logger.info ("no entry in {} for \"{}\"", path, mac);
             }
         }
         if (rv == null) {
