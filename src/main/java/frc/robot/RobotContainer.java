@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.sensors.WPI_CANCoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -76,9 +77,11 @@ public class RobotContainer {
   public static RelativeEncoder driveSubsystemRightFrontAzimuthEncoder;
   public static AnalogInput driveSubsystemRightFrontHomeEncoder;
   
-  // shooter hardware verables are currently unknown so we need to change them 
+  // shooter hardware variables are currently unknown so we need to change them 
   public static WPI_TalonFX shooterSubsystemFalcon1;
   public static WPI_TalonFX shooterSubsystemFalcon2;
+  public static CANSparkMax shooterSubsystemPreshooter;
+  public static WPI_TalonFX shooterSubsystemBackShooter;
   public static CANSparkMax shooterSubsystemHoodMax;
   public static RelativeEncoder shooterSubsystemHoodEncoder;
   public static DigitalInput hoodLimitSwitch;
@@ -187,9 +190,17 @@ public class RobotContainer {
     }
 
     // shooter motors
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 21, "top shooter") || iAmACompetitionRobot) {
-      // Shooter Motors 
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 21, "top shooter 1") || iAmACompetitionRobot) { 
       shooterSubsystemFalcon1 = new WPI_TalonFX(21);
+    }
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 17, "top shooter 2") || iAmACompetitionRobot) {
+      shooterSubsystemFalcon2 = new WPI_TalonFX(17);
+    }
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 27, "preshooter") || iAmACompetitionRobot) {
+      shooterSubsystemPreshooter = new CANSparkMax(27, MotorType.kBrushless);
+    }
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 28, "back shooter") || iAmACompetitionRobot) {
+      shooterSubsystemBackShooter = new WPI_TalonFX(28);
     }
 
     // turret 
