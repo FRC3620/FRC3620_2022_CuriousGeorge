@@ -17,7 +17,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
-import org.usfirst.frc3620.misc.ConfigurationItem;
+import org.usfirst.frc3620.misc.RobotParametersContainer;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.math.controller.PIDController;
@@ -136,7 +136,7 @@ public class DriveSubsystem extends SubsystemBase {
 	DriveVectors oldVectors;
 
   	public DriveSubsystem() {
-		String macAddress = ConfigurationItem.identifyRoboRIO();
+		String macAddress = RobotParametersContainer.identifyRoboRIO();
 		logger.info("ETHERNET MAC address: {}", macAddress);
 		if (macAddress.equals("00-80-2F-18-5C-5F")) {
 			logger.info("I THINK IM A PRACTICE BOT");
