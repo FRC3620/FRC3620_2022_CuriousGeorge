@@ -21,10 +21,12 @@ import org.usfirst.frc3620.misc.RobotParametersContainer;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.commands.TeleOpDriveCommand;
+import frc.robot.miscellaneous.CANSparkMaxSendable;
 import frc.robot.miscellaneous.DriveVectors;
 import frc.robot.miscellaneous.SwerveCalculator;
 import frc.robot.miscellaneous.Vector;
@@ -34,32 +36,32 @@ public class DriveSubsystem extends SubsystemBase {
 
 	Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
   
-    public final CANSparkMax rightFrontDriveMaster = RobotContainer.driveSubsystemRightFrontDrive;
-	public final CANSparkMax rightFrontAzimuth = RobotContainer.driveSubsystemRightFrontAzimuth;
+    public final CANSparkMaxSendable rightFrontDriveMaster = RobotContainer.driveSubsystemRightFrontDrive;
+	public final CANSparkMaxSendable rightFrontAzimuth = RobotContainer.driveSubsystemRightFrontAzimuth;
 	public final RelativeEncoder rightFrontDriveEncoder = RobotContainer.driveSubsystemRightFrontDriveEncoder;
 	public final RelativeEncoder rightFrontAzimuthEncoder = RobotContainer.driveSubsystemRightFrontAzimuthEncoder;
 	public final AnalogInput rightFrontHomeEncoder = RobotContainer.driveSubsystemRightFrontHomeEncoder;
 	public SparkMaxPIDController rightFrontVelPID; // don't assign unless we have the motor controller
 	public SparkMaxPIDController rightFrontPositionPID;
 
-	public final CANSparkMax leftFrontDriveMaster = RobotContainer.driveSubsystemLeftFrontDrive;
-	public final CANSparkMax leftFrontAzimuth = RobotContainer.driveSubsystemLeftFrontAzimuth;
+	public final CANSparkMaxSendable leftFrontDriveMaster = RobotContainer.driveSubsystemLeftFrontDrive;
+	public final CANSparkMaxSendable leftFrontAzimuth = RobotContainer.driveSubsystemLeftFrontAzimuth;
 	public final RelativeEncoder leftFrontDriveEncoder = RobotContainer.driveSubsystemLeftFrontDriveEncoder;
 	public final RelativeEncoder leftFrontAzimuthEncoder = RobotContainer.driveSubsystemLeftFrontAzimuthEncoder;
 	public final AnalogInput leftFrontHomeEncoder = RobotContainer.driveSubsystemLeftFrontHomeEncoder;
 	public SparkMaxPIDController leftFrontVelPID;
 	public SparkMaxPIDController leftFrontPositionPID;
 
-	public final CANSparkMax leftBackDriveMaster = RobotContainer.driveSubsystemLeftBackDrive;
-	public final CANSparkMax leftBackAzimuth = RobotContainer.driveSubsystemLeftBackAzimuth;
+	public final CANSparkMaxSendable leftBackDriveMaster = RobotContainer.driveSubsystemLeftBackDrive;
+	public final CANSparkMaxSendable leftBackAzimuth = RobotContainer.driveSubsystemLeftBackAzimuth;
 	public final RelativeEncoder leftBackDriveEncoder = RobotContainer.driveSubsystemLeftBackDriveEncoder;
 	public final RelativeEncoder leftBackAzimuthEncoder = RobotContainer.driveSubsystemLeftBackAzimuthEncoder;
 	public final AnalogInput leftBackHomeEncoder = RobotContainer.driveSubsystemLeftBackHomeEncoder;
 	public SparkMaxPIDController leftBackVelPID;
 	public SparkMaxPIDController leftBackPositionPID;
 
-	public final CANSparkMax rightBackDriveMaster = RobotContainer.driveSubsystemRightBackDrive;
-	public final CANSparkMax rightBackAzimuth = RobotContainer.driveSubsystemRightBackAzimuth;
+	public final CANSparkMaxSendable rightBackDriveMaster = RobotContainer.driveSubsystemRightBackDrive;
+	public final CANSparkMaxSendable rightBackAzimuth = RobotContainer.driveSubsystemRightBackAzimuth;
 	public final RelativeEncoder rightBackDriveEncoder = RobotContainer.driveSubsystemRightBackDriveEncoder;
 	public final RelativeEncoder rightBackAzimuthEncoder = RobotContainer.driveSubsystemRightBackAzimuthEncoder;
 	public final AnalogInput rightBackHomeEncoder = RobotContainer.driveSubsystemRightBackHomeEncoder;
@@ -151,6 +153,15 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 
 		if (rightFrontDriveMaster != null) {
+			SendableRegistry.addLW(rightFrontDriveMaster, getName(), "right front drive");
+			SendableRegistry.addLW(leftFrontDriveMaster, getName(), "left front drive");
+			SendableRegistry.addLW(leftBackDriveMaster, getName(), "left back drive");
+			SendableRegistry.addLW(rightBackDriveMaster, getName(), "right back drive");
+			SendableRegistry.addLW(rightFrontAzimuth, getName(), "right front azimuth");
+			SendableRegistry.addLW(leftFrontAzimuth, getName(), "left front azimuth");
+			SendableRegistry.addLW(leftBackAzimuth, getName(), "left back azimuth");
+			SendableRegistry.addLW(rightBackAzimuth, getName(), "right back azimuth");
+
 			rightFrontVelPID = rightFrontDriveMaster.getPIDController();
 			rightFrontPositionPID = rightFrontAzimuth.getPIDController();
 			leftFrontVelPID = leftFrontDriveMaster.getPIDController();
