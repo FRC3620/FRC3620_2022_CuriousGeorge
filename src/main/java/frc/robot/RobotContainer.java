@@ -134,6 +134,7 @@ public class RobotContainer {
     logger.info ("CAN bus: " + canDeviceFinder.getDeviceSet());
 
     robotParameters = (RobotParameters2022) RobotParametersContainer.getRobotParameters(RobotParameters2022.class);
+    logger.info ("got parameters for chassis '{}'", robotParameters.getName());
 
     makeHardware();
     setupMotors();
