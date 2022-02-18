@@ -6,7 +6,7 @@ import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO
 
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2022.1.1"
+    id "edu.wpi.first.GradleRIO" version "2022.3.1"
     id "com.gorylenko.gradle-git-properties" version "2.3.2"
 }
 
@@ -23,9 +23,10 @@ test {
         // run this if nothing else so only this runs
         includeTestsMatching 'DummyTest'
 
-        // includeTestsMatching 'ConfigurationTest.testMinifier'
+        // includeTestsMatching 'SwerveCalcTest'
+
+        // includeTestsMatching 'RobotParameters2022Test'
         // includeTestsMatching 'SillyTests'
-        // includeTestsMatching 'GitNessTest'
     }
 }
 
