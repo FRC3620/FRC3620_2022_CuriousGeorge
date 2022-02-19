@@ -14,12 +14,12 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
-import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -30,9 +30,10 @@ public class ShooterSubsystem extends SubsystemBase {
   WPI_TalonFX m_top1 = RobotContainer.shooterSubsystemFalcon1;
   WPI_TalonFX m_top2 = RobotContainer.shooterSubsystemFalcon2;
   WPI_TalonFX m_back = RobotContainer.shooterSubsystemBackShooter;
-
+  private final CANSparkMax hoodMotor = RobotContainer.shooterSubsystemHoodMax;
+  RelativeEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
   CANSparkMax preshooter = RobotContainer.shooterSubsystemPreshooter;
-
+  private SparkMaxPIDController anglePID;
   private final int kTimeoutMs = 0;
   private final int kVelocitySlotIdx = 0;
 
@@ -48,6 +49,11 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double bIVelocity = 0.00;//0.0000001
   private final double bDVelocity = 0;//7.5
 
+  //hood
+  private final double hoodP = 0;
+  private final double hoodI = 0;
+  private final double hoodD = 0;
+  private double hoodPosition = 0;
 
   public ShooterSubsystem() {
     if (m_top1 != null) {
@@ -207,6 +213,18 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber(prefix + ".rpm.actual", s.actualRPM);
     SmartDashboard.putNumber(prefix + ".current.stator", s.statorCurrent);
     SmartDashboard.putNumber(prefix + ".current.supply", s.supplyCurrent);
+    SmartDashboard.putNumber("Hood Position", hoodPosition);
+
+    if (hoodMotor != null) {
+      anglePID = hoodMotor.getPIDController();
+      hoodEncoder = hoodMotor.getEncoder();
+      anglePID.setReference(hoodPosition, ControlType.kPosition);
+      anglePID.setP(hoodP);
+      anglePID.setI(hoodI);
+      anglePID.setD(hoodD);
+      anglePID.setOutputRange(-0.5, 0.5);
+    }
+    
   }
   
   @Override

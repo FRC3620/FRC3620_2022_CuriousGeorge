@@ -6,6 +6,7 @@ TalonFX 21 - Top Shooter 1
 TalonFX 17 - Top Shooter 2
 SparkMAX 27 - Preshooter
 TalonFX 28 - Back Shooter
+sparkMAX 29 - hoood 
 
 SparkMAX 25 - intake wheel/wheel bar
 SparkMAX 26 - intake belt

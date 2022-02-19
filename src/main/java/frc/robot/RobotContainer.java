@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax;
@@ -84,6 +85,7 @@ public class RobotContainer {
   public static WPI_TalonFX shooterSubsystemBackShooter;
   public static CANSparkMax shooterSubsystemHoodMax;
   public static RelativeEncoder shooterSubsystemHoodEncoder;
+  
   public static DigitalInput hoodLimitSwitch;
   
   public static CANSparkMax turretSubsystemturretSpinner;
@@ -203,6 +205,8 @@ public class RobotContainer {
       shooterSubsystemBackShooter = new WPI_TalonFX(28);
     }
 
+
+    
     // turret 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 20, "turret") || iAmACompetitionRobot) {
       turretSubsystemturretSpinner = new CANSparkMax(20, MotorType.kBrushless);
@@ -217,7 +221,13 @@ public class RobotContainer {
       ringLight = new Solenoid(PneumaticsModuleType.CTREPCM, 7);
       ringLight.set(true);
     }
-
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 29)){
+      shooterSubsystemHoodMax = new CANSparkMax(29, MotorType.kBrushless);
+      shooterSubsystemHoodMax.setIdleMode(IdleMode.kCoast);
+      shooterSubsystemHoodMax.setOpenLoopRampRate(.3);
+      shooterSubsystemHoodMax.setClosedLoopRampRate(.3);
+      shooterSubsystemHoodMax.setSmartCurrentLimit(10);
+      }
   }
   
   void setupMotors() {
