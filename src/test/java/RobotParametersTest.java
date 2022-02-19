@@ -29,7 +29,7 @@ public class RobotParametersTest {
 
         @Override
         public String toString() {
-            return "MyConfig [" + macAddress + "," + competitionRobot + "," + offset + "]";
+            return "MyConfig [" + macAddress + "," + makeAllCANDevices + "," + offset + "]";
         }
     }
 
