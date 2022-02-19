@@ -17,7 +17,6 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
-import org.usfirst.frc3620.misc.RobotParametersContainer;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.math.controller.PIDController;
@@ -25,12 +24,12 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.RobotParameters2022;
 import frc.robot.commands.TeleOpDriveCommand;
 import frc.robot.miscellaneous.CANSparkMaxSendable;
 import frc.robot.miscellaneous.DriveVectors;
 import frc.robot.miscellaneous.SwerveCalculator;
 import frc.robot.miscellaneous.Vector;
-import frc.robot.miscellaneous.HomeEncoders;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -74,8 +73,10 @@ public class DriveSubsystem extends SubsystemBase {
 	//                    MUST MAKE SURE THESE VALUES ARE RIGHT BEFORE RUNNING SWERVE CODE
 	//***********************************************************************************************************
 
-	private final double CHASIS_WIDTH = 22.25; //inches
-	private final double CHASIS_LENGTH = 24.25; //inches
+	// these will get overwritten from the robot_parameters.json. Putting something here so that we don't get
+	// divide by zero errors if the dimensions are missing in the .json.
+	private double CHASIS_WIDTH = 22.25; //inches
+	private double CHASIS_LENGTH = 24.25; //inches
 
 	private final double AZIMUTH_ENCODER_CONVERSION_FACTOR = (1/(11.7))*235; //units are tics*motor revolutions
 	private final double SPEED_ENCODER_TICS = 42;
@@ -128,29 +129,26 @@ public class DriveSubsystem extends SubsystemBase {
 
 	private double NavXOffset = 0;  
 
-
 	//***********************************************************************************************************
 	//***********************************************************************************************************
 
-	SwerveCalculator sc = new SwerveCalculator(CHASIS_WIDTH, CHASIS_LENGTH, MAX_VELOCITY_IN_PER_SEC);
+	SwerveCalculator sc;
 	DriveVectors oldVectors;
 
   	public DriveSubsystem() {
-		String macAddress = RobotParametersContainer.identifyRoboRIO();
-		logger.info("ETHERNET MAC address: {}", macAddress);
-		if (macAddress.equals("00-80-2F-18-5C-5F")) {
-			logger.info("I THINK IM A PRACTICE BOT");
-			RIGHT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_RIGHT_FRONT_ABSOLUTE_OFFSET;
-			LEFT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_LEFT_FRONT_ABSOLUTE_OFFSET;
-			RIGHT_BACK_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_RIGHT_BACK_ABSOLUTE_OFFSET;
-			LEFT_BACK_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_LEFT_BACK_ABSOLUTE_OFFSET;
+		RobotParameters2022 p = RobotContainer.robotParameters;
+		String missingSwerveParameters = p.whichSwerveParametersAreMissing();
+		if (missingSwerveParameters != null) {
+			logger.error("missing swerve parameters: {}", missingSwerveParameters);
 		} else {
-			logger.info("I THINK IM A COMPETITION BOT");
-			RIGHT_BACK_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_RIGHT_BACK_ABSOLUTE_OFFSET;
-			LEFT_BACK_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_LEFT_BACK_ABSOLUTE_OFFSET;
-			RIGHT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_RIGHT_FRONT_ABSOLUTE_OFFSET;
-			LEFT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_LEFT_FRONT_ABSOLUTE_OFFSET;
+			RIGHT_BACK_ABSOLUTE_OFFSET = p.getRightBackAbsoluteOffset();
+			LEFT_BACK_ABSOLUTE_OFFSET = p.getLeftBackAbsoluteOffset();
+			RIGHT_FRONT_ABSOLUTE_OFFSET = p.getRightFrontAbsoluteOffset();
+			LEFT_FRONT_ABSOLUTE_OFFSET = p.getLeftFrontAbsoluteOffset();
+			CHASIS_LENGTH = p.getChassisLength();
+			CHASIS_WIDTH = p.getChassisWidth();
 		}
+		sc = new SwerveCalculator(CHASIS_WIDTH, CHASIS_LENGTH, MAX_VELOCITY_IN_PER_SEC);
 
 		if (rightFrontDriveMaster != null) {
 			SendableRegistry.addLW(rightFrontDriveMaster, getName(), "right front drive");
