@@ -1,5 +1,18 @@
 [
   {
+    "name": "2022 competition",
+    "macAddress": "(unknown)",
+    "makeAllCANDevices": true,
+    // azimuth home encoders
+    "swerve.he.rf": 0,   // right front
+    "swerve.he.lf": 0,  // left front
+    "swerve.he.lb": 0, // left back
+    "swerve.he.rb": 0,  // right back
+    //
+    "swerve.chassis_width": 23.00,  // inches
+    "swerve.chassis_length": 23.00
+  },
+  {
     "name": "2021 competition",
     "macAddress": "00-80-2F-17-EB-08",
     "makeAllCANDevices": false,
