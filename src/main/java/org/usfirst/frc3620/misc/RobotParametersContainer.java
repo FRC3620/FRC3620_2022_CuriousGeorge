@@ -3,6 +3,7 @@ package org.usfirst.frc3620.misc;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import frc.robot.Robot;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 
@@ -101,32 +102,34 @@ public class RobotParametersContainer {
 
     public static String identifyRoboRIO() {
         if (roboRIOMacAddress == null) {
-            String rv = "";
-            try {
-                for (Enumeration<NetworkInterface> e = NetworkInterface
-                        .getNetworkInterfaces(); e.hasMoreElements(); ) {
-                    NetworkInterface network = e.nextElement();
-                    byte[] mac = network.getHardwareAddress();
-                    if (mac == null) {
-                        logger.info("found network {}, no MAC", network.getName());
-                    } else {
-                        StringBuilder sb = new StringBuilder();
-                        for (int i = 0; i < mac.length; i++) {
-                            sb.append(String.format("%02X%s", mac[i],
-                                    (i < mac.length - 1) ? "-" : ""));
-                        }
-                        String macString = sb.toString();
-                        logger.info("found network {}, MAC address {}", network.getName(), macString);
-                        if (network.getName().equals("eth0")) {
-                            rv = macString;
+            String rv = "(unknown)";
+            if (Robot.isSimulation()) {
+                rv = "(simulation)";
+            } else {
+                try {
+                    for (Enumeration<NetworkInterface> e = NetworkInterface
+                            .getNetworkInterfaces(); e.hasMoreElements(); ) {
+                        NetworkInterface network = e.nextElement();
+                        byte[] mac = network.getHardwareAddress();
+                        if (mac == null) {
+                            logger.info("found network {}, no MAC", network.getName());
+                        } else {
+                            StringBuilder sb = new StringBuilder();
+                            for (int i = 0; i < mac.length; i++) {
+                                sb.append(String.format("%02X%s", mac[i],
+                                        (i < mac.length - 1) ? "-" : ""));
+                            }
+                            String macString = sb.toString();
+                            logger.info("found network {}, MAC address {}", network.getName(), macString);
+                            if (network.getName().equals("eth0")) {
+                                rv = macString;
+                                break;
+                            }
                         }
                     }
+                } catch (SocketException e) {
+                    e.printStackTrace();
                 }
-            } catch (SocketException e) {
-                e.printStackTrace();
-            }
-            if (rv.length() == 0) {
-                rv = "(unknown)";
             }
             roboRIOMacAddress = rv;
         }
