@@ -100,7 +100,7 @@ public class RobotContainer {
   public static CANSparkMaxSendable shooterSubsystemHoodMax;
   public static RelativeEncoder shooterSubsystemHoodEncoder;
   public static DigitalInput hoodLimitSwitch;
-  public static CANSparkMax shooterPreshooter;
+  public static CANSparkMaxSendable shooterPreshooter;
 
   // turret
   public static CANSparkMaxSendable turretSubsystemturretSpinner;
@@ -132,7 +132,6 @@ public class RobotContainer {
     logger.info ("CAN bus: " + canDeviceFinder.getDeviceSet());
 
     robotParameters = (RobotParameters2022) RobotParametersContainer.getRobotParameters(RobotParameters2022.class);
-    logger.info ("got parameters for chassis '{}'", robotParameters.getName());
 
     makeHardware();
     setupMotors();
@@ -188,26 +187,52 @@ public class RobotContainer {
     }
 
     climberStationaryHookContact = new DigitalInput(1);
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 40, "climberExtentionMotor") || shouldMakeAllCANDevices) {
-      climberExtentionMotor = new WPI_TalonFX(40);
+    if (robotParameters.hasClimber()) {
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 40, "climberExtentionMotor") || shouldMakeAllCANDevices) {
+        climberExtentionMotor = new WPI_TalonFX(40);
+      }
+    } else {
+      logger.info ("robot parameters say no climber, so skipping");
     }
 
     // shooter motors
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 21, "top shooter 1") || shouldMakeAllCANDevices) {
-      // Shooter Motors 
-      shooterSubsystemFalcon1 = new WPI_TalonFX(21);
+    if (robotParameters.hasShooter()) {
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 21, "top shooter 1") || shouldMakeAllCANDevices) {
+        // Shooter Motors
+        shooterSubsystemFalcon1 = new WPI_TalonFX(21);
+      }
+
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 17, "top shooter 2") || shouldMakeAllCANDevices) {
+        shooterSubsystemFalcon2 = new WPI_TalonFX(17);
+      }
+    } else {
+      logger.info ("robot parameters say no shooter, so skipping");
     }
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 17, "top shooter 2") || shouldMakeAllCANDevices) {
-      shooterSubsystemFalcon2 = new WPI_TalonFX(17);
+    // turret
+    if (robotParameters.hasTurret()){
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 20, "turret") || shouldMakeAllCANDevices) {
+        turretSubsystemturretSpinner = new CANSparkMaxSendable(20, MotorType.kBrushless);
+        resetMaxToKnownState(turretSubsystemturretSpinner, true);
+        turretSubsystemturretSpinner.setSmartCurrentLimit(10);
+        turretSubsystemturretEncoder = turretSubsystemturretSpinner.getEncoder();
+      }
+    } else {
+      logger.info ("robot parameters say no turret, so skipping");
     }
 
-    // turret 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 20, "turret") || shouldMakeAllCANDevices) {
-      turretSubsystemturretSpinner = new CANSparkMaxSendable(20, MotorType.kBrushless);
-      resetMaxToKnownState(turretSubsystemturretSpinner, true);
-      turretSubsystemturretSpinner.setSmartCurrentLimit(10);
-      turretSubsystemturretEncoder = turretSubsystemturretSpinner.getEncoder();
+    // intake
+    if (robotParameters.hasIntake()) {
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 25, "wheel bar") || shouldMakeAllCANDevices) {
+        intakeWheelbar = new CANSparkMaxSendable(25, MotorType.kBrushless);
+      }
+      /*
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 26, "Intake Belt") || iAmACompetitionRobot){
+        intakeBelt = new CANSparkMax(#, MotorType.UNDECIDED);
+      }
+        */
+    } else {
+      logger.info ("robot parameters say no intake, so skipping");
     }
 
     PneumaticsModuleType pneumaticModuleType = null;
@@ -218,26 +243,20 @@ public class RobotContainer {
       pneumaticModuleType = PneumaticsModuleType.CTREPCM;
     }
 
-    if (pneumaticModuleType == PneumaticsModuleType.CTREPCM) {
-      Compressor compressor = new Compressor(pneumaticModuleType);
-      compressor.disable();
-    }
-
     if (pneumaticModuleType != null) {
+      if (! robotParameters.shouldRunCompressor()) {
+        logger.info ("disabling the compressor because of robot_parameters");
+        Compressor compressor = new Compressor(pneumaticModuleType);
+        compressor.disable();
+      }
+
       ringLight = new Solenoid(pneumaticModuleType, 7);
       ringLight.set(true);
-      climberArmTilt = new DoubleSolenoid(pneumaticModuleType, 0, 1);
+      if (robotParameters.hasClimber()){
+        climberArmTilt = new DoubleSolenoid(pneumaticModuleType, 0, 1);
+      }
     }
 
-    // intake
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 25, "wheel bar") || shouldMakeAllCANDevices){
-      intakeWheelbar = new CANSparkMaxSendable(25, MotorType.kBrushless);
-    }
-    /*
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 26, "Intake Belt") || iAmACompetitionRobot){
-      intakeBelt = new CANSparkMax(#, MotorType.UNDECIDED);
-    }
-      */
   }
   
   void setupMotors() {

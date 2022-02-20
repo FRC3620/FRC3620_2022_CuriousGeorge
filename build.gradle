@@ -25,7 +25,7 @@ test {
 
         // includeTestsMatching 'SwerveCalcTest'
 
-        includeTestsMatching 'RobotParametersTest'
+        // includeTestsMatching 'RobotParametersTest'
         includeTestsMatching 'RobotParameters2022Test'
     }
 }

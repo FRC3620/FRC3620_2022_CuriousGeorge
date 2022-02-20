@@ -1,7 +1,7 @@
 [
   {
     "name": "2022 competition",
-    "macAddress": "(unknown)",
+    "macAddress": "(2022compbot)",
     "makeAllCANDevices": true,
     // azimuth home encoders
     "swerve.he.rf": 0,   // right front
@@ -10,7 +10,14 @@
     "swerve.he.rb": 0,  // right back
     //
     "swerve.chassis_width": 23.00,  // inches
-    "swerve.chassis_length": 23.00
+    "swerve.chassis_length": 23.00,
+
+    "has_climber": true,
+    "has_intake": true,
+    "has_shooter": true,
+    "has_turret": true,
+
+    "should_run_compressor": true
   },
   {
     "name": "2021 competition",
@@ -39,8 +46,8 @@
     "swerve.chassis_length": 24.25
   },
   {
-    "name": "missing swerve",
-    "macAddress": "00-11-22-33-44-55",
+    "name": "simulator",
+    "macAddress": "(simulator)",
     "makeAllCANDevices": false
   }
 ]
