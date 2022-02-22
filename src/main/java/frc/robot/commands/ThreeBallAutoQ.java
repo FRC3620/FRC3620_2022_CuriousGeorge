@@ -20,7 +20,6 @@ public class ThreeBallAutoQ extends SequentialCommandGroup {
       ,
       new AutoDriveCommand(145, 185, .3, 135, driveSubsystem  )
       ,
-
       new AutoDriveToCargoCommand(10*12, 135, .3, 135, driveSubsystem, visionSubsystem)
       );
 
