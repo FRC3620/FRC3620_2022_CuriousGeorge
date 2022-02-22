@@ -1,12 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
-
-import org.slf4j.Logger;
-import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -16,22 +8,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
-
- 
-
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
   private NetworkTable networkTable = inst.getTable("V/Cargo");
   
   private NetworkTableEntry ballX = networkTable.getEntry("ball.x");
   private NetworkTableEntry ballY = networkTable.getEntry("ball.y");
-  private  NetworkTableEntry allianceColor = networkTable.getEntry("color");
+  private NetworkTableEntry allianceColor = networkTable.getEntry("color");
 
   private NetworkTable networkTable2= inst.getTable("V/Target");
   private NetworkTableEntry targetX = networkTable2.getEntry("target.x");
+
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
-
-    
   }
 
   @Override
@@ -52,7 +40,6 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double getTargetXLocation(){
     double rv = targetX.getDouble(-3);
-
     return rv;
   }
   

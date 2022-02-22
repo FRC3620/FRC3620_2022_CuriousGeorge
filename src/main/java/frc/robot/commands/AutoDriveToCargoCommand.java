@@ -16,7 +16,7 @@ import frc.robot.subsystems.VisionSubsystem;
 public class AutoDriveToCargoCommand extends CommandBase {
 
     private DriveSubsystem driveSubsystem;
-    private VisionSubsystem VisionSubsystem;
+    private VisionSubsystem visionSubsystem;
 
     private double initialPositionRightFront;
     private double initialPositionLeftFront;
@@ -42,7 +42,7 @@ public class AutoDriveToCargoCommand extends CommandBase {
 
     public AutoDriveToCargoCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem, VisionSubsystem VisionSubsystem, String legName, IAutonomousLogger autonomousLogger) {
         this.driveSubsystem = driveSubsystem;
-        this.VisionSubsystem = VisionSubsystem;
+        this.visionSubsystem = VisionSubsystem;
         addRequirements(driveSubsystem, VisionSubsystem);
 
         desiredDistance = distance;
@@ -90,9 +90,9 @@ public class AutoDriveToCargoCommand extends CommandBase {
         double spinX = driveSubsystem.getSpinPower();
 
         // change heading if robot sees ball
-        targetX = VisionSubsystem.getBallXLocation();
-        targetY = VisionSubsystem.getBallYLocation();
-
+        targetX = visionSubsystem.getBallXLocation();
+        targetY = visionSubsystem.getBallYLocation();
+        
         if(targetX < 0){
             //robot doesn't see ball, do original heading
             double desiredAngleRelativeToRobot = desiredAngle - driveSubsystem.getNavXFixedAngle();

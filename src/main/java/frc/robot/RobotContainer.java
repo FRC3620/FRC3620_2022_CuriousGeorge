@@ -8,10 +8,6 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -21,7 +17,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -31,22 +26,18 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
-//import edu.wpi.first.wpilibj.XboxController;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
-import org.usfirst.frc3620.misc.CANDeviceFinder;
-import org.usfirst.frc3620.misc.DPad;
-import org.usfirst.frc3620.misc.TriggerButton;
-import org.usfirst.frc3620.misc.XBoxConstants;
-import org.usfirst.frc3620.misc.CANDeviceType;
 
+import org.usfirst.frc3620.misc.*;
 
 import frc.robot.commands.*;
+import frc.robot.miscellaneous.CANSparkMaxSendable;
 import frc.robot.subsystems.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -69,67 +60,74 @@ public class RobotContainer {
   public final static double AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT = 0.3;
 
   // need this
-  static CANDeviceFinder canDeviceFinder;
+  public static CANDeviceFinder canDeviceFinder;
+  public static RobotParameters2022 robotParameters;
 
   // hardware here...
-  public static CANSparkMax driveSubsystemRightFrontDrive;
-  public static CANSparkMax driveSubsystemRightFrontAzimuth;
+  private static DigitalInput practiceBotJumper;
+
+  // drive subsystem hardware
+  public static CANSparkMaxSendable driveSubsystemRightFrontDrive;
+  public static CANSparkMaxSendable driveSubsystemRightFrontAzimuth;
   public static RelativeEncoder driveSubsystemRightFrontDriveEncoder;
   public static RelativeEncoder driveSubsystemRightFrontAzimuthEncoder;
   public static AnalogInput driveSubsystemRightFrontHomeEncoder;
   
-  // shooter hardware variables are currently unknown so we need to change them 
-  public static WPI_TalonFX shooterSubsystemFalcon1;
-  public static WPI_TalonFX shooterSubsystemFalcon2;
-  public static CANSparkMax shooterSubsystemPreshooter;
-  public static WPI_TalonFX shooterSubsystemBackShooter;
-  public static CANSparkMax shooterSubsystemHoodMax;
-  public static RelativeEncoder shooterSubsystemHoodEncoder;
-  
-  public static DigitalInput hoodLimitSwitch;
-  
-  public static CANSparkMax turretSubsystemturretSpinner;
-  public static RelativeEncoder turretSubsystemturretEncoder;
-  
-  public static CANSparkMax driveSubsystemLeftFrontDrive;
-  public static CANSparkMax driveSubsystemLeftFrontAzimuth;
+  public static CANSparkMaxSendable driveSubsystemLeftFrontDrive;
+  public static CANSparkMaxSendable driveSubsystemLeftFrontAzimuth;
   public static RelativeEncoder driveSubsystemLeftFrontDriveEncoder;
   public static RelativeEncoder driveSubsystemLeftFrontAzimuthEncoder;
   public static AnalogInput driveSubsystemLeftFrontHomeEncoder;
   
-  public static CANSparkMax driveSubsystemLeftBackDrive;
-  public static CANSparkMax driveSubsystemLeftBackAzimuth;
+  public static CANSparkMaxSendable driveSubsystemLeftBackDrive;
+  public static CANSparkMaxSendable driveSubsystemLeftBackAzimuth;
   public static RelativeEncoder driveSubsystemLeftBackDriveEncoder;
   public static RelativeEncoder driveSubsystemLeftBackAzimuthEncoder;
   public static AnalogInput driveSubsystemLeftBackHomeEncoder;
   
-  public static CANSparkMax driveSubsystemRightBackDrive;
-  public static CANSparkMax driveSubsystemRightBackAzimuth;
+  public static CANSparkMaxSendable driveSubsystemRightBackDrive;
+  public static CANSparkMaxSendable driveSubsystemRightBackAzimuth;
   public static RelativeEncoder driveSubsystemRightBackDriveEncoder;
   public static RelativeEncoder driveSubsystemRightBackAzimuthEncoder;
   public static AnalogInput driveSubsystemRightBackHomeEncoder;
 
-  private static Solenoid ringLight;
+  //intake
+  public static CANSparkMaxSendable intakeWheelbar;
+  public static CANSparkMaxSendable intakeBelt;
 
-  private static DigitalInput practiceBotJumper;
+  // vision
+  public static Solenoid ringLight;
 
-  public static Compressor theCompressor;
+  // shooter hardware verables are currently unknown so we need to change them
+  public static WPI_TalonFX shooterSubsystemTop1;
+  public static WPI_TalonFX shooterSubsystemTop2;
+  public static WPI_TalonFX shooterSubsystemBackShooter;
+  public static CANSparkMaxSendable shooterSubsystemHoodMax;
+  public static RelativeEncoder shooterSubsystemHoodEncoder;
+  public static DigitalInput hoodLimitSwitch;
+  public static CANSparkMaxSendable shooterSubsystemPreshooter;
+
+  // turret
+  public static CANSparkMaxSendable turretSubsystemturretSpinner;
+  public static RelativeEncoder turretSubsystemturretEncoder;
+
+  // climber
+  public static DigitalInput climberStationaryHookContact;
+  public static WPI_TalonFX climberExtentionMotor; 
+  public static DoubleSolenoid climberArmTilt;
 
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
+  public static VisionSubsystem visionSubsystem;
+  public static ClimberSubsystem climberSubsystem; 
   public static IntakeSubsystem intakeSubsystem;
   public static TurretSubsystem turretSubsystem;
-  public static VisionSubsystem VisionSubsystem;
   public static ShooterSubsystem shooterSubsystem;
+  public static ArmSubsystem armSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
   public static Joystick operatorJoystick;
-
-  //vision 
-  public static Solenoid visionlight;
-
-
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -137,6 +135,8 @@ public class RobotContainer {
   public RobotContainer() {
     canDeviceFinder = new CANDeviceFinder();
     logger.info ("CAN bus: " + canDeviceFinder.getDeviceSet());
+
+    robotParameters = (RobotParameters2022) RobotParametersContainer.getRobotParameters(RobotParameters2022.class);
 
     makeHardware();
     setupMotors();
@@ -149,85 +149,134 @@ public class RobotContainer {
 
   void makeHardware() {
     practiceBotJumper = new DigitalInput(0);
-    boolean iAmACompetitionRobot = amIACompBot();
-    if (!iAmACompetitionRobot) {
-      logger.warn ("this is a test chassis, will try to deal with missing hardware!");
+    boolean shouldMakeAllCANDevices = shouldMakeAllCANDevices();
+    if (!shouldMakeAllCANDevices) {
+      logger.warn ("will try to deal with missing hardware!");
     }
 
-    // we don't need to use the canDeviceFinder for CAN Talons because
+    // we don't *need* to use the canDeviceFinder for CAN Talons because
     // they do not put up unreasonable amounts of SPAM
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1, "Swerve") || iAmACompetitionRobot){
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1, "Swerve") || shouldMakeAllCANDevices){
 
-      driveSubsystemRightFrontDrive = new CANSparkMax(1, MotorType.kBrushless);
+      driveSubsystemRightFrontDrive = new CANSparkMaxSendable(1, MotorType.kBrushless);
       driveSubsystemRightFrontDriveEncoder = driveSubsystemRightFrontDrive.getEncoder();
       
-      driveSubsystemRightFrontAzimuth = new CANSparkMax(2, MotorType.kBrushless);
+      driveSubsystemRightFrontAzimuth = new CANSparkMaxSendable(2, MotorType.kBrushless);
       driveSubsystemRightFrontAzimuthEncoder = driveSubsystemRightFrontAzimuth.getEncoder();
 
       driveSubsystemRightFrontHomeEncoder = new AnalogInput(0);
               
-      driveSubsystemLeftFrontDrive = new CANSparkMax(3, MotorType.kBrushless);
+      driveSubsystemLeftFrontDrive = new CANSparkMaxSendable(3, MotorType.kBrushless);
       driveSubsystemLeftFrontDriveEncoder = driveSubsystemLeftFrontDrive.getEncoder();
               
-      driveSubsystemLeftFrontAzimuth = new CANSparkMax(4, MotorType.kBrushless);
+      driveSubsystemLeftFrontAzimuth = new CANSparkMaxSendable(4, MotorType.kBrushless);
       driveSubsystemLeftFrontAzimuthEncoder = driveSubsystemLeftFrontAzimuth.getEncoder();
 
       driveSubsystemLeftFrontHomeEncoder = new AnalogInput(1);
       
-      driveSubsystemLeftBackDrive = new CANSparkMax(5, MotorType.kBrushless);
+      driveSubsystemLeftBackDrive = new CANSparkMaxSendable(5, MotorType.kBrushless);
       driveSubsystemLeftBackDriveEncoder = driveSubsystemLeftBackDrive.getEncoder();
               
-      driveSubsystemLeftBackAzimuth = new CANSparkMax(6, MotorType.kBrushless);
+      driveSubsystemLeftBackAzimuth = new CANSparkMaxSendable(6, MotorType.kBrushless);
       driveSubsystemLeftBackAzimuthEncoder = driveSubsystemLeftBackAzimuth.getEncoder();
 
       driveSubsystemLeftBackHomeEncoder = new AnalogInput(2);
               
-      driveSubsystemRightBackDrive = new CANSparkMax(7, MotorType.kBrushless);
+      driveSubsystemRightBackDrive = new CANSparkMaxSendable(7, MotorType.kBrushless);
       driveSubsystemRightBackDriveEncoder = driveSubsystemRightBackDrive.getEncoder();
       
-      driveSubsystemRightBackAzimuth = new CANSparkMax(8, MotorType.kBrushless);
+      driveSubsystemRightBackAzimuth = new CANSparkMaxSendable(8, MotorType.kBrushless);
       driveSubsystemRightBackAzimuthEncoder = driveSubsystemRightBackAzimuth.getEncoder();
 
       driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
     }
 
-    // shooter motors
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 21, "top shooter 1") || iAmACompetitionRobot) { 
-      shooterSubsystemFalcon1 = new WPI_TalonFX(21);
-    }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 17, "top shooter 2") || iAmACompetitionRobot) {
-      shooterSubsystemFalcon2 = new WPI_TalonFX(17);
-    }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 27, "preshooter") || iAmACompetitionRobot) {
-      shooterSubsystemPreshooter = new CANSparkMax(27, MotorType.kBrushless);
-    }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 28, "back shooter") || iAmACompetitionRobot) {
-      shooterSubsystemBackShooter = new WPI_TalonFX(28);
-    }
-
-
-    
-    // turret 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 20, "turret") || iAmACompetitionRobot) {
-      turretSubsystemturretSpinner = new CANSparkMax(20, MotorType.kBrushless);
-      resetMaxToKnownState(turretSubsystemturretSpinner, true);
-      turretSubsystemturretSpinner.setSmartCurrentLimit(10);
-      turretSubsystemturretEncoder = turretSubsystemturretSpinner.getEncoder();
-    }
-
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.CTRE_PCM, 0, "PCM") || iAmACompetitionRobot){
-      Compressor compressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
-      compressor.disable();
-      ringLight = new Solenoid(PneumaticsModuleType.CTREPCM, 7);
-      ringLight.set(true);
-    }
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 29)){
-      shooterSubsystemHoodMax = new CANSparkMax(29, MotorType.kBrushless);
-      shooterSubsystemHoodMax.setIdleMode(IdleMode.kCoast);
-      shooterSubsystemHoodMax.setOpenLoopRampRate(.3);
-      shooterSubsystemHoodMax.setClosedLoopRampRate(.3);
-      shooterSubsystemHoodMax.setSmartCurrentLimit(10);
+    climberStationaryHookContact = new DigitalInput(1);
+    if (robotParameters.hasClimber()) {
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 40, "climberExtentionMotor") || shouldMakeAllCANDevices) {
+        climberExtentionMotor = new WPI_TalonFX(40);
       }
+    } else {
+      logger.info ("robot parameters say no climber, so skipping");
+    }
+
+    // shooter motors
+    if (robotParameters.hasShooter()) {
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 21, "top shooter 1") || shouldMakeAllCANDevices) {
+        // Shooter Motors
+        shooterSubsystemTop1 = new WPI_TalonFX(21);
+      }
+
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 17, "top shooter 2") || shouldMakeAllCANDevices) {
+        shooterSubsystemTop2 = new WPI_TalonFX(17);
+      }
+
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 27, "preshooter") || shouldMakeAllCANDevices) {
+        shooterSubsystemPreshooter = new CANSparkMaxSendable(27, MotorType.kBrushless);
+      }
+
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 28, "back shooter") || shouldMakeAllCANDevices) {
+        shooterSubsystemBackShooter = new WPI_TalonFX(28);
+      }
+
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 29)){
+        shooterSubsystemHoodMax = new CANSparkMaxSendable(29, MotorType.kBrushless);
+        shooterSubsystemHoodMax.setIdleMode(IdleMode.kCoast);
+        shooterSubsystemHoodMax.setOpenLoopRampRate(.3);
+        shooterSubsystemHoodMax.setClosedLoopRampRate(.3);
+        shooterSubsystemHoodMax.setSmartCurrentLimit(10);
+      }
+    } else {
+      logger.info ("robot parameters say no shooter, so skipping");
+    }
+
+    // turret
+    if (robotParameters.hasTurret()){
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 20, "turret") || shouldMakeAllCANDevices) {
+        turretSubsystemturretSpinner = new CANSparkMaxSendable(20, MotorType.kBrushless);
+        resetMaxToKnownState(turretSubsystemturretSpinner, true);
+        turretSubsystemturretSpinner.setSmartCurrentLimit(10);
+        turretSubsystemturretEncoder = turretSubsystemturretSpinner.getEncoder();
+      }
+    } else {
+      logger.info ("robot parameters say no turret, so skipping");
+    }
+
+    // intake
+    if (robotParameters.hasIntake()) {
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 25, "wheel bar") || shouldMakeAllCANDevices) {
+        intakeWheelbar = new CANSparkMaxSendable(25, MotorType.kBrushless);
+      }
+      /*
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 26, "Intake Belt") || iAmACompetitionRobot){
+        intakeBelt = new CANSparkMax(#, MotorType.UNDECIDED);
+      }
+        */
+    } else {
+      logger.info ("robot parameters say no intake, so skipping");
+    }
+
+    PneumaticsModuleType pneumaticModuleType = null;
+
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.REV_PH, 1, "REV PH") || shouldMakeAllCANDevices) {
+      pneumaticModuleType = PneumaticsModuleType.REVPH;
+    } else if (canDeviceFinder.isDevicePresent(CANDeviceType.CTRE_PCM, 0, "CTRE PCM")) {
+      pneumaticModuleType = PneumaticsModuleType.CTREPCM;
+    }
+
+    if (pneumaticModuleType != null) {
+      if (! robotParameters.shouldRunCompressor()) {
+        logger.info ("disabling the compressor because of robot_parameters");
+        Compressor compressor = new Compressor(pneumaticModuleType);
+        compressor.disable();
+      }
+
+      ringLight = new Solenoid(pneumaticModuleType, 7);
+      ringLight.set(true);
+      if (robotParameters.hasClimber()){
+        climberArmTilt = new DoubleSolenoid(pneumaticModuleType, 0, 1);
+      }
+    }
   }
   
   void setupMotors() {
@@ -259,6 +308,25 @@ public class RobotContainer {
       resetMaxToKnownState(driveSubsystemRightBackAzimuth, false);
       driveSubsystemRightBackAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
     }
+    if (shooterSubsystemTop1 != null) {
+      shooterSubsystemTop1.configFactoryDefault();
+      shooterSubsystemTop1.setInverted(InvertType.InvertMotorOutput);
+    }
+
+    if (shooterSubsystemTop2 != null) {
+      shooterSubsystemTop2.configFactoryDefault();
+      shooterSubsystemTop2.follow(shooterSubsystemTop1);
+      shooterSubsystemTop2.setInverted(InvertType.OpposeMaster);
+    }
+
+    if (shooterSubsystemBackShooter != null) {
+      shooterSubsystemBackShooter.configFactoryDefault();
+      shooterSubsystemBackShooter.setInverted(InvertType.InvertMotorOutput);
+    }
+
+    if(shooterSubsystemPreshooter != null) {
+      shooterSubsystemPreshooter.setInverted(false);
+    }
   }
 
   static void resetMaxToKnownState(CANSparkMax x, boolean inverted) {
@@ -271,61 +339,87 @@ public class RobotContainer {
 
   void makeSubsystems() {
     driveSubsystem = new DriveSubsystem();
+    visionSubsystem = new VisionSubsystem();
+    climberSubsystem = new ClimberSubsystem();
     intakeSubsystem = new IntakeSubsystem();
     turretSubsystem = new TurretSubsystem();
-    VisionSubsystem = new VisionSubsystem();
     shooterSubsystem = new ShooterSubsystem();
+    armSubsystem = new ArmSubsystem();
   }
 
   /**
    * Use this method to define your button->command mappings.  Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a
+   * edu.wpi.first.wpilibj.Joystick} or {@link edu.wpi.first.wpilibj.XboxController}), and then passing it to a
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
     driverJoystick = new Joystick(DRIVER_JOYSTICK_PORT);
+    operatorJoystick = new Joystick(OPERATOR_JOYSTICK_PORT);
 
-    JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A);
-    centerOnBallButton.whileHeld(new InstantCenterOnBallCommand(driveSubsystem, VisionSubsystem));
+    //Dpad 
+    DPad driverDPad = new DPad(driverJoystick, 0);
+    DPad operatorDPad = new DPad(operatorJoystick, 0);
 
+    //Climber Tilt Buttons
+    JoystickButton climberTiltOutButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
+    climberTiltOutButton.whenPressed(new ClimberTiltTestCommandOut());
+    JoystickButton climberTiltInButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
+    climberTiltInButton.whenPressed(new ClimberTiltTestCommandIn());
     
+    operatorDPad.up().whenPressed(new MoveTurretCommand(turretSubsystem, 0));
+    operatorDPad.down().whenPressed(new MoveTurretCommand(turretSubsystem, 180));
+    operatorDPad.left().whenPressed(new MoveTurretCommand(turretSubsystem, 270));
+    operatorDPad.right().whenPressed(new MoveTurretCommand(turretSubsystem, 90));
 
-    
+    JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);
+    centerOnBallButton.whileHeld(new InstantCenterOnBallCommand(driveSubsystem, visionSubsystem));
+
+    AnalogJoystickButton climberExtendUp = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.2);
+    climberExtendUp.whileHeld(new ClimberTestCommandUp());
+    AnalogJoystickButton climberExtendDown = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, 0.2);
+    climberExtendDown.whileHeld(new ClimberTestCommandDown());
   }
 
   void setupSmartDashboardCommands() {
     SmartDashboard.putData(new ZeroDriveEncodersCommand(driveSubsystem));
   
     SmartDashboard.putData("TestAuto", new TestAuto(driveSubsystem));
-    SmartDashboard.putData("AutoDriveToCargo Test", new DriveToCargoTestAuto(driveSubsystem, VisionSubsystem));
-    SmartDashboard.putData("5 Ball Auto P", new FiveBallAuto(driveSubsystem, VisionSubsystem));
-    SmartDashboard.putData("4 Ball Auto P", new FourBallAutoP(driveSubsystem, VisionSubsystem));
-    SmartDashboard.putData("4 Ball Auto Q", new FourBallAutoQ(driveSubsystem, VisionSubsystem));
-    SmartDashboard.putData("3 Ball Auto Q", new ThreeBallAutoQ(driveSubsystem,  VisionSubsystem));
-
+    SmartDashboard.putData("AutoDriveToCargo Test", new DriveToCargoTestAuto(driveSubsystem, visionSubsystem));
+    SmartDashboard.putData("5 Ball Auto P", new FiveBallAuto(driveSubsystem, visionSubsystem));
+    SmartDashboard.putData("4 Ball Auto P", new FourBallAutoP(driveSubsystem, visionSubsystem));
+    SmartDashboard.putData("4 Ball Auto Q", new FourBallAutoQ(driveSubsystem, visionSubsystem));
+    SmartDashboard.putData("3 Ball Auto Q", new ThreeBallAutoQ(driveSubsystem,  visionSubsystem));
 
     SmartDashboard.putData("DougTestAutoDrive", new DougTestAutoDrive(driveSubsystem));
     SmartDashboard.putData("DougTestAutoSpin", new DougTestAutoSpin(driveSubsystem));
     SmartDashboard.putData("Reset NavX", new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
-    SmartDashboard.putData("Find target",new FindTargetCommand(turretSubsystem, VisionSubsystem));
+    SmartDashboard.putData("Find target",new FindTargetCommand(turretSubsystem, visionSubsystem));
 
     SmartDashboard.putData("Shooter Test Command", new ShooterTestCommand(shooterSubsystem));
+
+    SmartDashboard.putData("Eject Ball", new EjectBallCommand());
+    SmartDashboard.putData("Intake Ball", new IntakeBallCommand());
+
+    SmartDashboard.putData("Climber Extention Motor Up", new ClimberTestCommandUp());
+    SmartDashboard.putData("Climber Extention Motor Down", new ClimberTestCommandDown());
+    SmartDashboard.putData("Climber Tilt Out", new ClimberTiltTestCommandOut());
+    SmartDashboard.putData("Climber Tilt In", new ClimberTiltTestCommandIn());
+
+    SmartDashboard.putData("Find target",new FindTargetCommand(turretSubsystem, visionSubsystem));
   }
 
-  
   SendableChooser<Command> chooser = new SendableChooser<>();
   public void setupAutonomousCommands() {
     SmartDashboard.putData("Auto mode", chooser);
 
     chooser.addOption("TestAuto", new TestAuto(driveSubsystem));
-    chooser.addOption("AutoDriveToCargo Test", new DriveToCargoTestAuto(driveSubsystem, VisionSubsystem));
-    chooser.addOption("5 Ball P Auto", new FiveBallAuto(driveSubsystem, VisionSubsystem));
-    chooser.addOption("4 Ball P Auto", new FourBallAutoP(driveSubsystem, VisionSubsystem));
-    chooser.addOption("4 Ball Q Auto", new FourBallAutoQ(driveSubsystem, VisionSubsystem));
-    chooser.addOption("3 Ball Q Auto", new ThreeBallAutoQ(driveSubsystem, VisionSubsystem));
-
+    chooser.addOption("AutoDriveToCargo Test", new DriveToCargoTestAuto(driveSubsystem, visionSubsystem));
+    chooser.addOption("5 Ball P Auto", new FiveBallAuto(driveSubsystem, visionSubsystem));
+    chooser.addOption("4 Ball P Auto", new FourBallAutoP(driveSubsystem, visionSubsystem));
+    chooser.addOption("4 Ball Q Auto", new FourBallAutoQ(driveSubsystem, visionSubsystem));
+    chooser.addOption("3 Ball Q Auto", new ThreeBallAutoQ(driveSubsystem, visionSubsystem));
   }
   
   public static double getDriveVerticalJoystick() {
@@ -372,28 +466,36 @@ public class RobotContainer {
     return -axisValue;
   }
 
-  /**
-   * Return the climbing joystick position. Return positive values if
-   * the operator pushes the joystick up.
-   * @return
-   */
+  public static double getOperatorVerticalJoystick() {
+    double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y);
+    if (axisValue < 0.15 && axisValue > -0.15) {
+      return 0;
+    }
+    return -axisValue;
+  }
 
   /**
-   * Determine if this robot is a competition robot. It is if
-   * it's connected to an FMS.
+   * Determine if we should make software objects, even if the device does 
+   * not appear on the CAN bus.
+   *
+   * We should if it's connected to an FMS.
+   *
+   * We should if it is missing a grounding jumper on DigitalInput 0.
+   *
+   * We should if the robot_parameters.json says so for this MAC address.
    * 
-   * We should probably also check for an "I am a test" file or jumper
-   * and return true if those are missing.
-   * 
-   * @return true if this robot is a competition robot.
+   * @return true if we should make all software objects for CAN devices
    */
-
-  public static boolean amIACompBot() {
+  public static boolean shouldMakeAllCANDevices() {
     if (DriverStation.isFMSAttached()) {
       return true;
     }
 
     if(practiceBotJumper.get() == true){
+      return true;
+    }
+
+    if (robotParameters.shouldMakeAllCANDevices()) {
       return true;
     }
 
@@ -406,4 +508,3 @@ public class RobotContainer {
     return chooser.getSelected();
   }
 }
-

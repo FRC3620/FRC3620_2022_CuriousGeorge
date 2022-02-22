@@ -6,12 +6,12 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class FourBallAutoQ extends SequentialCommandGroup {
-  public FourBallAutoQ(DriveSubsystem driveSubsystem, VisionSubsystem VisionSubsystem) {
+  public FourBallAutoQ(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
 
       addCommands(
       new setInitialNavXOffsetCommand(driveSubsystem, 145)
       ,
-      new AutoDriveToCargoCommand(4*12, 145, .3, 145, driveSubsystem, VisionSubsystem)
+      new AutoDriveToCargoCommand(4*12, 145, .3, 145, driveSubsystem, visionSubsystem)
       ,
       new WaitCommand(.5) //shoot 2 balls
       ,
@@ -21,7 +21,7 @@ public class FourBallAutoQ extends SequentialCommandGroup {
       ,
       new AutoDriveCommand(30, 135, 0.3, 130, driveSubsystem) 
       ,
-      new AutoDriveToCargoCommand(100, 135, .3, 135, driveSubsystem, VisionSubsystem)
+      new AutoDriveToCargoCommand(100, 135, .3, 135, driveSubsystem, visionSubsystem)
       ,
      // new AutoDriveCommand(220, 325, .3, 325, driveSubsystem)
      // ,

@@ -6,7 +6,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class FiveBallAuto extends SequentialCommandGroup {
-  public FiveBallAuto(DriveSubsystem driveSubsystem, VisionSubsystem VisionSubsystem) {
+  public FiveBallAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
 
       addCommands(
       new setInitialNavXOffsetCommand(driveSubsystem, 90)
@@ -19,17 +19,17 @@ public class FiveBallAuto extends SequentialCommandGroup {
       ,
       new WaitCommand(.5) //shooting
       ,
-      new AutoDriveCommand(12, 180, .3, 205, driveSubsystem)
+      new AutoDriveCommand(12, 200, .3, 205, driveSubsystem)
       ,
-      new AutoDriveToCargoCommand(10*12, 200, .3, 225, driveSubsystem, VisionSubsystem) //drive to position B
+      new AutoDriveToCargoCommand(10*12, 200, .3, 225, driveSubsystem, visionSubsystem) //drive to position B
       ,
       new WaitCommand(5) //shooting
       ,
-      new AutoDriveCommand(11*12, 190, .3, 205, driveSubsystem)
+      new AutoDriveCommand(11*12, 190, .3, 135, driveSubsystem)
       ,
       new AutoDriveCommand(10, 135, 0.3, 135, driveSubsystem) 
       ,
-      new AutoDriveToCargoCommand(10*12, 135, .3, 135, driveSubsystem, VisionSubsystem)
+      new AutoDriveToCargoCommand(10*12, 135, .3, 135, driveSubsystem, visionSubsystem)
       ,
       new WaitCommand(.5) //shooting
       //new AutoDriveCommand(4*12, 270, .2, 180, driveSubsystem),*/

@@ -16,7 +16,7 @@ public class CenterOnBallCommandDONOTUSE extends CommandBase {
   /** Creates a new CenterOnBallCommand. */
   
   private DriveSubsystem driveSubsystem;
-  private VisionSubsystem VisionSubsystem;
+  private VisionSubsystem visionSubsystem;
 
   static double BALL_LOCATION_TOLERANCE = 0.02;
   static double MAX_ROTATE_SPEED=0.4;
@@ -29,10 +29,10 @@ public class CenterOnBallCommandDONOTUSE extends CommandBase {
   //private NetworkTableEntry targetX = networkTable.getEntry("target.x");
 
   
-  public CenterOnBallCommandDONOTUSE(DriveSubsystem driveSubsystem, VisionSubsystem VisionSubsystem) {
+  public CenterOnBallCommandDONOTUSE(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.driveSubsystem = driveSubsystem;
-    this.VisionSubsystem = VisionSubsystem;
+    this.visionSubsystem = visionSubsystem;
     SmartDashboard.putBoolean("CenterOnBall.running", false);
 
   }
@@ -52,7 +52,7 @@ public class CenterOnBallCommandDONOTUSE extends CommandBase {
 
     double spinX = 0;
     
-    targetX = VisionSubsystem.getBallXLocation();
+    targetX = visionSubsystem.getBallXLocation();
 
     if(targetX < 0){
       // Vision doesn't see a ball - set spin to MAX_ROTATE_SPEED

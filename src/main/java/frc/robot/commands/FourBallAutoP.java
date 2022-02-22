@@ -6,7 +6,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class FourBallAutoP extends SequentialCommandGroup {
-  public FourBallAutoP(DriveSubsystem driveSubsystem, VisionSubsystem VisionSubsystem) {
+  public FourBallAutoP(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
 
       addCommands(
       new setInitialNavXOffsetCommand(driveSubsystem, 90)
@@ -17,7 +17,7 @@ public class FourBallAutoP extends SequentialCommandGroup {
       ,
       new AutoDriveCommand(21.5*12, 183, .3, 135, driveSubsystem) //drive to position D
       ,
-      new AutoDriveToCargoCommand(2*12, 135, .3, 135, driveSubsystem, VisionSubsystem)
+      new AutoDriveToCargoCommand(2*12, 135, .3, 135, driveSubsystem, visionSubsystem)
       ,
       new WaitCommand(.5) //shooting
       //new AutoDriveCommand(4*12, 270, .2, 180, driveSubsystem),*/
