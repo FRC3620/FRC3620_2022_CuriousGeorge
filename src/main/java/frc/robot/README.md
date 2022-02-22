@@ -1,13 +1,15 @@
-= Motor Assignments
+Motor Assignments
 
 TalonFX 40 - climber
 
-TalonFx 21 - Top Shooter 1
-TalonFx 17 - Top Shooter 2
+TalonFX 21 - Top Shooter 1
+TalonFX 17 - Top Shooter 2
+SparkMAX 27 - Preshooter
+TalonFX 28 - Back Shooter
+sparkMAX 29 - hoood 
 
 SparkMAX 25 - intake wheel/wheel bar
 SparkMAX 26 - intake belt
-SparkMAX 27 - preshooter
 
 SparkMAX 20 - Turret
 

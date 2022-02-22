@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
@@ -11,12 +13,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
-import com.revrobotics.CANSparkMax;
 import frc.robot.RobotContainer;
+import frc.robot.miscellaneous.CANSparkMaxSendable;
 
 public class IntakeSubsystem extends SubsystemBase {
-  CANSparkMax intakeWheelbar = RobotContainer.intakeWheelbar;
-  CANSparkMax intakeBelt = RobotContainer.intakeBelt;
+  CANSparkMaxSendable intakeWheelbar = RobotContainer.intakeWheelbar;
+  CANSparkMaxSendable intakeBelt = RobotContainer.intakeBelt;
 
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
@@ -28,6 +30,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private final Color kRedTarget = new Color(0.65, 0.29, 0.06);
   //Light on: private final Color kRedTarget = new Color(0.38, 0.43, 0.19);
   //private final Color kRedTarget = new Color(0.561, 0.232, 0.114);
+
   /** Creates a new IntakeSubsystem. */
   
   public IntakeSubsystem() {
@@ -36,6 +39,10 @@ public class IntakeSubsystem extends SubsystemBase {
     //m_colorMatcher.addColorMatch(kGreenTarget);
     m_colorMatcher.addColorMatch(kRedTarget);
     //m_colorMatcher.addColorMatch(kYellowTarget);
+
+    if (intakeWheelbar != null) {
+      SendableRegistry.addLW(intakeWheelbar, getName(), "intakewheelbar");
+    }
   }
 
   @Override
