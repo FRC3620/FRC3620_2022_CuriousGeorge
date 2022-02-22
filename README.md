@@ -7,16 +7,8 @@
 
 ## Operator Controls
 
-
-* DPad Up - Hood forward
-* DPad Down - Hood backward
 ---
-**!!!!**
-
-Dpad Up and Down are also defined as Turret Front and Rear; which is it?
-
----
-* Dpad Left + Right - Turret left and right
+* Dpad - Turret left and right
 * X - Shooter ("fire up")
 * Right Stick - Climber up + down
 * A - Climber tilt out
