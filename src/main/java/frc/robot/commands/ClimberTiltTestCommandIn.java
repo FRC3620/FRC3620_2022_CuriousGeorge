@@ -14,7 +14,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 public class ClimberTiltTestCommandIn extends CommandBase {
   ClimberSubsystem climberSubsystem = RobotContainer.climberSubsystem;
   ArmSubsystem armSubsystem = RobotContainer.armSubsystem;
-  protected Timer m_timer = new Timer();
+
   
   
   /** Creates a new ClimberTiltTestCommandOut. */
@@ -28,8 +28,7 @@ public class ClimberTiltTestCommandIn extends CommandBase {
   @Override
   public void initialize() {
     climberSubsystem.climberArmTiltIn();
-    m_timer.reset();
-    m_timer.start();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,14 +38,13 @@ public class ClimberTiltTestCommandIn extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_timer.stop();
-    climberSubsystem.climberArmTiltOff();
+
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_timer.hasElapsed(5);
+    return true;
     
   }
 }

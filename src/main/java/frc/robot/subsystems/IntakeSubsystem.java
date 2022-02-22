@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,6 +20,7 @@ import frc.robot.miscellaneous.CANSparkMaxSendable;
 public class IntakeSubsystem extends SubsystemBase {
   CANSparkMaxSendable intakeWheelbar = RobotContainer.intakeWheelbar;
   CANSparkMaxSendable intakeBelt = RobotContainer.intakeBelt;
+  Solenoid intakeArm = RobotContainer.intakeArm;
 
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
@@ -85,6 +87,17 @@ public class IntakeSubsystem extends SubsystemBase {
   public void spinIntakeBelt(double speed) {
     if (intakeBelt != null) {
       intakeBelt.set(speed);
+    }
+  }
+
+  public void extendIntake() {
+    if (intakeArm != null) {
+      intakeArm.set(true);
+    }
+  }
+  public void retractIntake() {
+    if (intakeArm != null) {
+      intakeArm.set(false);
     }
   }
 }

@@ -14,7 +14,6 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 public class ClimberTiltTestCommandOut extends CommandBase {
   ClimberSubsystem climberSubsystem = RobotContainer.climberSubsystem;
   ArmSubsystem armSubsystem = RobotContainer.armSubsystem;
-  protected Timer m_timer = new Timer();
   
   
   /** Creates a new ClimberTiltTestCommandOut. */
@@ -28,8 +27,7 @@ public class ClimberTiltTestCommandOut extends CommandBase {
   @Override
   public void initialize() {
     climberSubsystem.climberArmTiltOut();
-    m_timer.reset();
-    m_timer.start();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,14 +37,13 @@ public class ClimberTiltTestCommandOut extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_timer.stop();
-    climberSubsystem.climberArmTiltOff();
+    
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_timer.hasElapsed(5);
+    return true;
     
   }
 }

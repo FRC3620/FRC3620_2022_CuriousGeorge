@@ -2,12 +2,12 @@
 
 ## Driver Controls
 * A - X Mode
-* LB - Intake arm up and down plus roller (clockwise)
+* LB - Intake arm up and down plus roller and belt (clockwise)
 * RT - Fire
 
 ## Operator Controls
 
-
+* RB - Eject ball
 * DPad Up - Hood forward
 * DPad Down - Hood backward
 ---
@@ -46,4 +46,5 @@ Dpad Up and Down are also defined as Turret Front and Rear; which is it?
 * SparkMAX 8 - right back azimuth
 <br></br>
 * PCM 7 - RingLight
-* PCM 0,1 - ClimberTilt
+* PCM 0 - ClimberTilt
+* PCM 1 - IntakeArm

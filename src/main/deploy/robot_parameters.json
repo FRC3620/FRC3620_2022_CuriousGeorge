@@ -46,6 +46,13 @@
     "swerve.chassis_length": 24.25
   },
   {
+    "name": "Fancy Mule Board",
+    "macAddress": "00-80-2F-21-B0-58",
+    "makeAllCANDevices": false,
+    "has_intake": true,
+    "has_climber": true
+  },
+  {
     "name": "simulator",
     "macAddress": "(simulator)",
     "makeAllCANDevices": false

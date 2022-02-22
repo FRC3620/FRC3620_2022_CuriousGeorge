@@ -94,6 +94,8 @@ public class RobotContainer {
   //intake
   public static CANSparkMaxSendable intakeWheelbar;
   public static CANSparkMaxSendable intakeBelt;
+  public static Solenoid intakeArm;
+
 
   // vision
   public static Solenoid ringLight;
@@ -114,7 +116,7 @@ public class RobotContainer {
   // climber
   public static DigitalInput climberStationaryHookContact;
   public static WPI_TalonFX climberExtentionMotor; 
-  public static DoubleSolenoid climberArmTilt;
+  public static Solenoid climberArmTilt;
 
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
@@ -273,7 +275,10 @@ public class RobotContainer {
       ringLight = new Solenoid(pneumaticModuleType, 7);
       ringLight.set(true);
       if (robotParameters.hasClimber()){
-        climberArmTilt = new DoubleSolenoid(pneumaticModuleType, 0, 1);
+        climberArmTilt = new Solenoid(pneumaticModuleType, 0);
+      }
+      if (robotParameters.hasIntake()){
+        intakeArm = new Solenoid(pneumaticModuleType, 1);
       }
     }
 
@@ -381,6 +386,11 @@ public class RobotContainer {
     climberExtendUp.whileHeld(new ClimberTestCommandUp());
     AnalogJoystickButton climberExtendDown = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, 0.2);
     climberExtendDown.whileHeld(new ClimberTestCommandDown());
+
+    JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
+    intakeButton.toggleWhenPressed(new IntakeBallCommand());
+    JoystickButton ejectButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    ejectButton.whileHeld(new EjectBallCommand());
   }
 
   void setupSmartDashboardCommands() {
