@@ -10,7 +10,7 @@ public class ThreeBallAutoQ extends SequentialCommandGroup {
   public ThreeBallAutoQ(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
 
       addCommands(
-      new setInitialNavXOffsetCommand(driveSubsystem, 145)
+      new setInitialNavXOffsetCommand(driveSubsystem, 153)
       //,
       //new AutoDriveCommand(20, 195, .4, 150, driveSubsystem)
       ,
@@ -18,7 +18,7 @@ public class ThreeBallAutoQ extends SequentialCommandGroup {
       ,
       new WaitCommand(.5)       //Picks up the ball in front of it and shoots 2 balls 
       ,
-      new AutoDriveCommand(145, 185, .3, 135, driveSubsystem  )
+      new AutoDriveCommand(130, 185, .3, 130, driveSubsystem  )
       ,
       new AutoDriveToCargoCommand(10*12, 135, .3, 135, driveSubsystem, visionSubsystem)
       );
