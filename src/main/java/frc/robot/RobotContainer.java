@@ -193,8 +193,8 @@ public class RobotContainer {
 
     climberStationaryHookContact = new DigitalInput(1);
     if (robotParameters.hasClimber()) {
-      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 40, "climberExtentionMotor") || shouldMakeAllCANDevices) {
-        climberExtentionMotor = new WPI_TalonFX(40);
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 16, "climberExtentionMotor") || shouldMakeAllCANDevices) {
+        climberExtentionMotor = new WPI_TalonFX(16);
       }
     } else {
       logger.info ("robot parameters say no climber, so skipping");
@@ -202,21 +202,21 @@ public class RobotContainer {
 
     // shooter motors
     if (robotParameters.hasShooter()) {
-      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 21, "top shooter 1") || shouldMakeAllCANDevices) {
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 13, "top shooter 1") || shouldMakeAllCANDevices) {
         // Shooter Motors
-        shooterSubsystemTop1 = new WPI_TalonFX(21);
+        shooterSubsystemTop1 = new WPI_TalonFX(13);
       }
 
-      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 17, "top shooter 2") || shouldMakeAllCANDevices) {
-        shooterSubsystemTop2 = new WPI_TalonFX(17);
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 14, "top shooter 2") || shouldMakeAllCANDevices) {
+        shooterSubsystemTop2 = new WPI_TalonFX(14);
       }
 
-      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 27, "preshooter") || shouldMakeAllCANDevices) {
-        shooterSubsystemPreshooter = new CANSparkMaxSendable(27, MotorType.kBrushless);
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11, "preshooter") || shouldMakeAllCANDevices) {
+        shooterSubsystemPreshooter = new CANSparkMaxSendable(11, MotorType.kBrushless);
       }
 
-      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 28, "back shooter") || shouldMakeAllCANDevices) {
-        shooterSubsystemBackShooter = new WPI_TalonFX(28);
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 15, "back shooter") || shouldMakeAllCANDevices) {
+        shooterSubsystemBackShooter = new WPI_TalonFX(15);
       }
 
       if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 29)){
@@ -232,8 +232,8 @@ public class RobotContainer {
 
     // turret
     if (robotParameters.hasTurret()){
-      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 20, "turret") || shouldMakeAllCANDevices) {
-        turretSubsystemturretSpinner = new CANSparkMaxSendable(20, MotorType.kBrushless);
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 12, "turret") || shouldMakeAllCANDevices) {
+        turretSubsystemturretSpinner = new CANSparkMaxSendable(12, MotorType.kBrushless);
         resetMaxToKnownState(turretSubsystemturretSpinner, true);
         turretSubsystemturretSpinner.setSmartCurrentLimit(10);
         turretSubsystemturretEncoder = turretSubsystemturretSpinner.getEncoder();
@@ -242,16 +242,16 @@ public class RobotContainer {
       logger.info ("robot parameters say no turret, so skipping");
     }
 
-    // intake
+    
     if (robotParameters.hasIntake()) {
-      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 25, "wheel bar") || shouldMakeAllCANDevices) {
-        intakeWheelbar = new CANSparkMaxSendable(25, MotorType.kBrushless);
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9, "wheel bar") || shouldMakeAllCANDevices) {
+        intakeWheelbar = new CANSparkMaxSendable(9, MotorType.kBrushless);
       }
-      /*
-      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 26, "Intake Belt") || iAmACompetitionRobot){
-        intakeBelt = new CANSparkMax(#, MotorType.UNDECIDED);
+      
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10, "Intake Belt") || shouldMakeAllCANDevices) {
+        intakeBelt = new CANSparkMaxSendable(10, MotorType.kBrushless);
       }
-        */
+        
     } else {
       logger.info ("robot parameters say no intake, so skipping");
     }
