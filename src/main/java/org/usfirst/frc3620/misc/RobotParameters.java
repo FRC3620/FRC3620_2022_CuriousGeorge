@@ -5,18 +5,29 @@ package org.usfirst.frc3620.misc;
  */
 public class RobotParameters {
     protected String macAddress;
-    protected boolean competitionRobot;
+    protected boolean makeAllCANDevices;
+    protected String name;
 
     public RobotParameters() {
         macAddress = "";
-        competitionRobot = false;
+        makeAllCANDevices = false;
     }
 
     public String getMacAddress() {
         return macAddress;
     }
 
-    public boolean isCompetitionRobot() {
-        return competitionRobot;
+    public boolean shouldMakeAllCANDevices() {
+        return makeAllCANDevices;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return "RobotParameters [" + name + "," + macAddress + "," + makeAllCANDevices + "]";
+    }
+
 }

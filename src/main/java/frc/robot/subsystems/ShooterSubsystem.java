@@ -11,6 +11,10 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
@@ -24,10 +28,13 @@ import frc.robot.RobotContainer;
 public class ShooterSubsystem extends SubsystemBase {
   public final static Logger logger = EventLogging.getLogger(ShooterSubsystem.class, Level.INFO);
 
-  WPI_TalonFX m_top1 = RobotContainer.shooterSubsystemFalcon1;
-  WPI_TalonFX m_top2 = RobotContainer.shooterSubsystemFalcon2;
-  WPI_TalonFX m_bottom = null;
-
+  WPI_TalonFX m_top1 = RobotContainer.shooterSubsystemTop1;
+  WPI_TalonFX m_top2 = RobotContainer.shooterSubsystemTop2;
+  WPI_TalonFX m_back = RobotContainer.shooterSubsystemBackShooter;
+  private final CANSparkMax hoodMotor = RobotContainer.shooterSubsystemHoodMax;
+  RelativeEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
+  CANSparkMax preshooter = RobotContainer.shooterSubsystemPreshooter;
+  private SparkMaxPIDController anglePID;
   private final int kTimeoutMs = 0;
   private final int kVelocitySlotIdx = 0;
 
@@ -42,6 +49,12 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double bPVelocity = 0.1; //.45
   private final double bIVelocity = 0.00;//0.0000001
   private final double bDVelocity = 0;//7.5
+
+  //hood
+  private final double hoodP = 0;
+  private final double hoodI = 0;
+  private final double hoodD = 0;
+  private double hoodPosition = 0;
 
   public ShooterSubsystem() {
     if (m_top1 != null) {
@@ -67,18 +80,26 @@ public class ShooterSubsystem extends SubsystemBase {
       m_top2.setInverted(InvertType.OpposeMaster);
     }
 
-    if (m_bottom != null) {
-      SendableRegistry.addLW(m_bottom, getName(), "bottom");
-      setupMotor(m_bottom);
+    if (m_back != null) {
+      setupMotor(m_back);
+      SendableRegistry.addLW(m_back, getName(), "back");
 
       //for PID you have to have a sensor to check on so you know the error
-      m_bottom.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kVelocitySlotIdx, kTimeoutMs);
+      m_back.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kVelocitySlotIdx, kTimeoutMs);
 
       //set up the bottomfalcon for using FPID
-      m_bottom.config_kF(kVelocitySlotIdx, bFVelocity, kTimeoutMs);
-      m_bottom.config_kP(kVelocitySlotIdx, bPVelocity, kTimeoutMs);
-      m_bottom.config_kI(kVelocitySlotIdx, bIVelocity, kTimeoutMs);
-      m_bottom.config_kD(kVelocitySlotIdx, bDVelocity, kTimeoutMs);
+      m_back.config_kF(kVelocitySlotIdx, bFVelocity, kTimeoutMs);
+      m_back.config_kP(kVelocitySlotIdx, bPVelocity, kTimeoutMs);
+      m_back.config_kI(kVelocitySlotIdx, bIVelocity, kTimeoutMs);
+      m_back.config_kD(kVelocitySlotIdx, bDVelocity, kTimeoutMs);
+    }
+
+    if (preshooter != null) {
+      SparkMaxPIDController preshooterPid = preshooter.getPIDController();
+
+      preshooterPid.setFF(0);
+      // etc etc for rest of PID
+
     }
   }
 
@@ -114,23 +135,49 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber(s.name + ".velocity.target", targetVelocity);
   }
 
+  void setRpm(CANSparkMax m, double r, Status s) {
+    double targetVelocity = 0;
+    if (m != null) {
+      if (r == 0) {
+        m.set(0);
+      } else {
+        targetVelocity = r;
+        m.getPIDController().setReference(r, CANSparkMax.ControlType.kVelocity);
+      }
+    }
+    //logger.info ("setRpm {} {}", s.name, r);
+    s.requestedRPM = r;
+    s.requestedSensorVelocity = targetVelocity;
+    SmartDashboard.putNumber(s.name + ".rpm.target", r);
+    SmartDashboard.putNumber(s.name + ".velocity.target", targetVelocity);
+  }
+
   public void setTopRPM(double r) {
     setRpm(m_top1, r, s_top);
   }
 
-  public void setBottomRPM(double r) {
-    setRpm(m_bottom, r, s_bottom);
+  public void setBackRPM(double r) {
+    setRpm(m_back, r, s_back);
+  }
+
+  public void setPreshooterRPM(double r) {
+    setRpm(preshooter, r, s_preshooter);
   }
 
   Status s_top = new Status("top");
-  Status s_bottom = new Status("bottom");
+  Status s_back = new Status("back");
+  Status s_preshooter = new Status("preshooter");
 
   public Status getTopStatus() {
     return s_top;
   }
 
-  public Status getBottomStatus() {
-    return s_bottom;
+  public Status getBackStatus() {
+    return s_back;
+  }
+
+  public Status getPreshooterStatus() {
+    return s_preshooter;
   }
 
   void gatherActuals(Status s, TalonFX m, String prefix) {
@@ -152,11 +199,44 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber(prefix + ".current.supply", s.supplyCurrent);
   }
 
+  void gatherActuals(Status s, CANSparkMax m, String prefix) {
+    if (m != null) {
+      RelativeEncoder encoder = m.getEncoder();
+      s.actualSensorVelocity = encoder.getVelocity();
+      s.actualRPM = s.actualSensorVelocity;
+      s.statorCurrent = m.getOutputCurrent();
+      s.supplyCurrent = -1;
+    } else {
+      s.actualSensorVelocity = -1;
+      s.actualRPM = -1;
+      s.statorCurrent = -1;
+      s.supplyCurrent = -1;
+    }
+
+    SmartDashboard.putNumber(prefix + ".velocity.actual", s.actualSensorVelocity);
+    SmartDashboard.putNumber(prefix + ".rpm.actual", s.actualRPM);
+    SmartDashboard.putNumber(prefix + ".current.stator", s.statorCurrent);
+    SmartDashboard.putNumber(prefix + ".current.supply", s.supplyCurrent);
+    SmartDashboard.putNumber("Hood Position", hoodPosition);
+
+    if (hoodMotor != null) {
+      anglePID = hoodMotor.getPIDController();
+      hoodEncoder = hoodMotor.getEncoder();
+      anglePID.setReference(hoodPosition, ControlType.kPosition);
+      anglePID.setP(hoodP);
+      anglePID.setI(hoodI);
+      anglePID.setD(hoodD);
+      anglePID.setOutputRange(-0.5, 0.5);
+    }
+    
+  }
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     gatherActuals(s_top, m_top1, "top");
-    gatherActuals(s_bottom, m_bottom, "bottom");
+    gatherActuals(s_back, m_back, "back");
+    gatherActuals(s_preshooter, preshooter, "preshooter");
   }
 
   @Override

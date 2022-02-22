@@ -17,7 +17,6 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
-import org.usfirst.frc3620.misc.RobotParametersContainer;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.math.controller.PIDController;
@@ -25,12 +24,12 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.RobotParameters2022;
 import frc.robot.commands.TeleOpDriveCommand;
 import frc.robot.miscellaneous.CANSparkMaxSendable;
 import frc.robot.miscellaneous.DriveVectors;
 import frc.robot.miscellaneous.SwerveCalculator;
 import frc.robot.miscellaneous.Vector;
-import frc.robot.miscellaneous.HomeEncoders;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -74,8 +73,10 @@ public class DriveSubsystem extends SubsystemBase {
 	//                    MUST MAKE SURE THESE VALUES ARE RIGHT BEFORE RUNNING SWERVE CODE
 	//***********************************************************************************************************
 
-	private final double CHASIS_WIDTH = 22.25; //inches
-	private final double CHASIS_LENGTH = 24.25; //inches
+	// these will get overwritten from the robot_parameters.json. Putting something here so that we don't get
+	// divide by zero errors if the dimensions are missing in the .json.
+	private double CHASIS_WIDTH = 22.25; //inches
+	private double CHASIS_LENGTH = 24.25; //inches
 
 	private final double AZIMUTH_ENCODER_CONVERSION_FACTOR = (1/(11.7))*235; //units are tics*motor revolutions
 	private final double SPEED_ENCODER_TICS = 42;
@@ -126,31 +127,30 @@ public class DriveSubsystem extends SubsystemBase {
 	private double targetHeading;
 	private double spinPower;
 
-	private double NavXOffset = 0;  
+	private double NavXOffset = 0;
 
+	private boolean putDriveVectorsInNetworkTables = false;
 
 	//***********************************************************************************************************
 	//***********************************************************************************************************
 
-	SwerveCalculator sc = new SwerveCalculator(CHASIS_WIDTH, CHASIS_LENGTH, MAX_VELOCITY_IN_PER_SEC);
+	SwerveCalculator sc;
 	DriveVectors oldVectors;
 
   	public DriveSubsystem() {
-		String macAddress = RobotParametersContainer.identifyRoboRIO();
-		logger.info("ETHERNET MAC address: {}", macAddress);
-		if (macAddress.equals("00-80-2F-18-5C-5F")) {
-			logger.info("I THINK IM A PRACTICE BOT");
-			RIGHT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_RIGHT_FRONT_ABSOLUTE_OFFSET;
-			LEFT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_LEFT_FRONT_ABSOLUTE_OFFSET;
-			RIGHT_BACK_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_RIGHT_BACK_ABSOLUTE_OFFSET;
-			LEFT_BACK_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_LEFT_BACK_ABSOLUTE_OFFSET;
+		RobotParameters2022 p = RobotContainer.robotParameters;
+		String missingSwerveParameters = p.whichSwerveParametersAreMissing();
+		if (missingSwerveParameters != null) {
+			logger.error("missing swerve parameters: {}", missingSwerveParameters);
 		} else {
-			logger.info("I THINK IM A COMPETITION BOT");
-			RIGHT_BACK_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_RIGHT_BACK_ABSOLUTE_OFFSET;
-			LEFT_BACK_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_LEFT_BACK_ABSOLUTE_OFFSET;
-			RIGHT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_RIGHT_FRONT_ABSOLUTE_OFFSET;
-			LEFT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_LEFT_FRONT_ABSOLUTE_OFFSET;
+			RIGHT_BACK_ABSOLUTE_OFFSET = p.getRightBackAbsoluteOffset();
+			LEFT_BACK_ABSOLUTE_OFFSET = p.getLeftBackAbsoluteOffset();
+			RIGHT_FRONT_ABSOLUTE_OFFSET = p.getRightFrontAbsoluteOffset();
+			LEFT_FRONT_ABSOLUTE_OFFSET = p.getLeftFrontAbsoluteOffset();
+			CHASIS_LENGTH = p.getChassisLength();
+			CHASIS_WIDTH = p.getChassisWidth();
 		}
+		sc = new SwerveCalculator(CHASIS_WIDTH, CHASIS_LENGTH, MAX_VELOCITY_IN_PER_SEC);
 
 		if (rightFrontDriveMaster != null) {
 			SendableRegistry.addLW(rightFrontDriveMaster, getName(), "right front drive");
@@ -272,7 +272,6 @@ public class DriveSubsystem extends SubsystemBase {
 			SmartDashboard.putNumber("Left Back Azimuth fixed", getFixedPosition(leftBackAzimuthEncoder));
 			SmartDashboard.putNumber("Left Back Home Encoder", getHomeEncoderHeading(leftBackHomeEncoder));
 			SmartDashboard.putNumber("Left Back Drive Current Draw", leftBackDriveMaster.getOutputCurrent());
-
 		}
 		if (rightBackDriveEncoder != null) {
 			SmartDashboard.putNumber("Right Back Velocity", rightBackDriveEncoder.getVelocity());
@@ -321,10 +320,7 @@ public class DriveSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("driver.joy.x", RobotContainer.getDriveHorizontalJoystick());
 		SmartDashboard.putNumber("driver.joy.y", RobotContainer.getDriveVerticalJoystick());
 		SmartDashboard.putNumber("driver.joy.spin", RobotContainer.getDriveSpinJoystick());	
-		SmartDashboard.putNumber("driver.joy.c", joystick_count++);
 	}
-
-	int joystick_count = 0;
 
   	public void periodicManualSpinMode(){
 		setTargetHeading(currentHeading);
@@ -400,8 +396,8 @@ public class DriveSubsystem extends SubsystemBase {
 			leftBackPositionPID.setReference(newVectors.leftBack.getDirection(), ControlType.kPosition);
 			rightBackPositionPID.setReference(newVectors.rightBack.getDirection(), ControlType.kPosition);
 		}
-		SmartDashboard.putNumber("Commanded Azimuth Left Back", newVectors.leftBack.getDirection());
-			//SmartDashboard.putBoolean("Change Test Heading", false);
+		//SmartDashboard.putNumber("Commanded Azimuth Left Back", newVectors.leftBack.getDirection());
+		//SmartDashboard.putBoolean("Change Test Heading", false);
 	}
 
 	/**
@@ -420,9 +416,6 @@ public class DriveSubsystem extends SubsystemBase {
 	DriveVectors calculateEverything (double vx, double vy, double vr, boolean doFieldRelative) {
 		double strafeVectorAngle = SwerveCalculator.calculateStrafeAngle(vx, vy);
 		double strafeVectorMagnitude = SwerveCalculator.calculateStrafeVectorMagnitude(vx, vy);
-		SmartDashboard.putNumber("drive.vx", vx);
-		SmartDashboard.putNumber("drive.vy", vy);
-		SmartDashboard.putNumber("drive.strafeVectorAngle", strafeVectorAngle);
 		if (doFieldRelative) {
 			double robotHeading = getNavXFixedAngle();
 			 //get NavX heading in degrees (from -180 to 180)
@@ -431,8 +424,13 @@ public class DriveSubsystem extends SubsystemBase {
 			// not sure this is wise!
 			strafeVectorAngle = SwerveCalculator.normalizeAngle(strafeVectorAngle);
 		}
-		SmartDashboard.putNumber("drive.strafeVectorAngle+correction", strafeVectorAngle);
-		SmartDashboard.putNumber("drive.strafeVectorMagnitude", strafeVectorMagnitude);
+		if (putDriveVectorsInNetworkTables) {
+			SmartDashboard.putNumber("drive.vx", vx);
+			SmartDashboard.putNumber("drive.vy", vy);
+			SmartDashboard.putNumber("drive.strafeVectorAngle", strafeVectorAngle);
+			SmartDashboard.putNumber("drive.strafeVectorAngle+correction", strafeVectorAngle);
+			SmartDashboard.putNumber("drive.strafeVectorMagnitude", strafeVectorMagnitude);
+		}
 
 		return sc.calculateEverythingFromVector(strafeVectorAngle, strafeVectorMagnitude, vr);
 	}
@@ -443,20 +441,16 @@ public class DriveSubsystem extends SubsystemBase {
 		double vr = spinX*MAX_TURN;
 
 		DriveVectors newVectors = calculateEverything(vx, vy, vr);
-		String v1 = newVectors.toString();
-		SmartDashboard.putString("drive.teleop.dv.pre", v1);
-
-		//SmartDashboard.putNumber("Left Front Calculated Vectors", newVectors.leftBack.getDirection());
-		//System.out.println("Left Front Calculated Vectors: " + newVectors.leftBack.getDirection());
+		if (putDriveVectorsInNetworkTables) {
+			SmartDashboard.putString("drive.teleop.dv.pre", newVectors.toString());
+		}
 
 		DriveVectors currentDirections = getCurrentVectors();
 
-		//SmartDashboard.putNumber("Left Front Current Vectors", currentDirections.leftBack.getDirection());
-		//System.out.println("Left Front Current Vectors: " + currentDirections.leftBack.getDirection());
-
 		newVectors = SwerveCalculator.fixVectors(newVectors, currentDirections);
-		String v2 = newVectors.toString();
-		SmartDashboard.putString("drive.teleop.dv.post", v2);
+		if (putDriveVectorsInNetworkTables) {
+			SmartDashboard.putString("drive.teleop.dv.post", newVectors.toString());
+		}
 
 		if (rightFrontDriveMaster != null) {
 			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
@@ -529,14 +523,16 @@ public class DriveSubsystem extends SubsystemBase {
 	 */
 	public void autoDrive(double heading, double speed, double spin) {
 		DriveVectors newVectors = sc.calculateEverythingFromVector(heading, MAX_VELOCITY_IN_PER_SEC*speed, spin*MAX_TURN);
-		String v1 = newVectors.toString();
-		SmartDashboard.putString("drive.teleop.dv.pre", v1);
+		if (putDriveVectorsInNetworkTables) {
+			SmartDashboard.putString("drive.auto.dv.pre", newVectors.toString());
+		}
 
 		DriveVectors currentDirections = getCurrentVectors();
 
 		newVectors = SwerveCalculator.fixVectors(newVectors, currentDirections, 0);
-		String v2 = newVectors.toString();
-		SmartDashboard.putString("drive.teleop.dv.pre", v2);
+		if (putDriveVectorsInNetworkTables) {
+			SmartDashboard.putString("drive.auto.dv.post", newVectors.toString());
+		}
 
 		if (rightFrontDriveMaster != null) {
 			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
@@ -551,8 +547,13 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 	}
 
-	public void setWheelsToStrafe(double strafeAngle){            // degrees are from -180 to 180 degrees with 0 degrees pointing east
-		double vx = Math.cos(Math.toRadians(strafeAngle))*MAX_VELOCITY_IN_PER_SEC;  //both spin and speed are set as a decimal from 0 to 1 that represents the percentage of the maximum strafe or turn speed
+	/**
+	 * Set the wheels to point in a direction to strafe, but do not move the robot.
+	 * @param strafeAngle degrees are from -180 to 180 degrees with 0 degrees pointing to the robot's right
+	 */
+	public void setWheelsToStrafe(double strafeAngle){
+		// need to have non-zero velocity so that fixVectors actually changes azimuth
+		double vx = Math.cos(Math.toRadians(strafeAngle))*MAX_VELOCITY_IN_PER_SEC;
 		double vy = Math.sin(Math.toRadians(strafeAngle))*MAX_VELOCITY_IN_PER_SEC;
 		double vr = 0;
 
@@ -590,7 +591,7 @@ public class DriveSubsystem extends SubsystemBase {
 		 
 		DriveVectors newVectors = new DriveVectors();
 
-		// need to have non-zero velocity so that fixVectors actual changes azimuth.
+		// need to have non-zero velocity so that fixVectors actually changes azimuth.
 		newVectors.leftFront = new Vector (leftFrontAngle, turnSpeed);
 		newVectors.rightFront = new Vector(rightFrontAngle, turnSpeed);
 		newVectors.leftBack = new Vector(leftBackAngle, turnSpeed);  // we will fix the velocity for rear below
@@ -1000,7 +1001,7 @@ public class DriveSubsystem extends SubsystemBase {
 		setOneDriveClosedLoopRampRate(rightBackDriveMaster, secondsToFullThrottle, null);
 	}
 
-	private void setOneDriveIdle (CANSparkMax d, IdleMode idleMode, String name) {
+	private void setOneDriveIdle (CANSparkMax d, IdleMode idleMode) {
 		if (d != null) {
 			d.setIdleMode(idleMode);
 		}
@@ -1008,18 +1009,18 @@ public class DriveSubsystem extends SubsystemBase {
 
 	public void setDriveToBrake() {
 		IdleMode idleMode = IdleMode.kBrake;
-		setOneDriveIdle(leftFrontDriveMaster, idleMode, "LF");
-		setOneDriveIdle(rightFrontDriveMaster, idleMode, "RF");
-		setOneDriveIdle(leftBackDriveMaster, idleMode, "LB");
-		setOneDriveIdle(rightBackDriveMaster, idleMode, "RB");
+		setOneDriveIdle(leftFrontDriveMaster, idleMode);
+		setOneDriveIdle(rightFrontDriveMaster, idleMode);
+		setOneDriveIdle(leftBackDriveMaster, idleMode);
+		setOneDriveIdle(rightBackDriveMaster, idleMode);
 	}
 
 	public void setDriveToCoast() {
 		IdleMode idleMode = IdleMode.kCoast;
-		setOneDriveIdle(leftFrontDriveMaster, idleMode, "LF");
-		setOneDriveIdle(rightFrontDriveMaster, idleMode, "RF");
-		setOneDriveIdle(leftBackDriveMaster, idleMode, "LB");
-		setOneDriveIdle(rightBackDriveMaster, idleMode, "RB");
+		setOneDriveIdle(leftFrontDriveMaster, idleMode);
+		setOneDriveIdle(rightFrontDriveMaster, idleMode);
+		setOneDriveIdle(leftBackDriveMaster, idleMode);
+		setOneDriveIdle(rightBackDriveMaster, idleMode);
 	}
 
 }

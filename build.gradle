@@ -21,12 +21,12 @@ test {
         setFailOnNoMatchingTests(false)
 
         // run this if nothing else so only this runs
-        includeTestsMatching 'DummyTest'
+        // includeTestsMatching 'DummyTest'
 
         // includeTestsMatching 'SwerveCalcTest'
 
-        // includeTestsMatching 'RobotParameters2022Test'
-        // includeTestsMatching 'SillyTests'
+        // includeTestsMatching 'RobotParametersTest'
+        includeTestsMatching 'RobotParameters2022Test'
     }
 }
 

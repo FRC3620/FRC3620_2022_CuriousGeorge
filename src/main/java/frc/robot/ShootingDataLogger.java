@@ -39,7 +39,7 @@ public class ShootingDataLogger {
         dataLogger.addDataProvider("battery_voltage", () -> RobotController.getBatteryVoltage());
 
         addDataProviders(dataLogger, shooterSubsystem.getTopStatus());
-        addDataProviders(dataLogger, shooterSubsystem.getBottomStatus());
+       
 
         return dataLogger;
     }

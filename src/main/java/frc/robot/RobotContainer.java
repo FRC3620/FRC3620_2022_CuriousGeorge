@@ -7,13 +7,16 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.WPI_CANCoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -57,9 +60,8 @@ public class RobotContainer {
   public final static double AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT = 0.3;
 
   // need this
-  static CANDeviceFinder canDeviceFinder;
-
-  static RobotParameters2022 robotParameters;
+  public static CANDeviceFinder canDeviceFinder;
+  public static RobotParameters2022 robotParameters;
 
   // hardware here...
   private static DigitalInput practiceBotJumper;
@@ -91,18 +93,19 @@ public class RobotContainer {
 
   //intake
   public static CANSparkMaxSendable intakeWheelbar;
-  public static CANSparkMax intakeBelt;
+  public static CANSparkMaxSendable intakeBelt;
 
   // vision
   public static Solenoid ringLight;
 
   // shooter hardware verables are currently unknown so we need to change them
-  public static WPI_TalonFX shooterSubsystemFalcon1;
-  public static WPI_TalonFX shooterSubsystemFalcon2;
+  public static WPI_TalonFX shooterSubsystemTop1;
+  public static WPI_TalonFX shooterSubsystemTop2;
+  public static WPI_TalonFX shooterSubsystemBackShooter;
   public static CANSparkMaxSendable shooterSubsystemHoodMax;
   public static RelativeEncoder shooterSubsystemHoodEncoder;
   public static DigitalInput hoodLimitSwitch;
-  public static CANSparkMax shooterPreshooter;
+  public static CANSparkMaxSendable shooterSubsystemPreshooter;
 
   // turret
   public static CANSparkMaxSendable turretSubsystemturretSpinner;
@@ -134,7 +137,6 @@ public class RobotContainer {
     logger.info ("CAN bus: " + canDeviceFinder.getDeviceSet());
 
     robotParameters = (RobotParameters2022) RobotParametersContainer.getRobotParameters(RobotParameters2022.class);
-    logger.info ("got parameters for chassis '{}'", robotParameters.getName());
 
     makeHardware();
     setupMotors();
@@ -147,14 +149,14 @@ public class RobotContainer {
 
   void makeHardware() {
     practiceBotJumper = new DigitalInput(0);
-    boolean iAmACompetitionRobot = amIACompBot();
-    if (!iAmACompetitionRobot) {
-      logger.warn ("this is a test chassis, will try to deal with missing hardware!");
+    boolean shouldMakeAllCANDevices = shouldMakeAllCANDevices();
+    if (!shouldMakeAllCANDevices) {
+      logger.warn ("will try to deal with missing hardware!");
     }
 
     // we don't *need* to use the canDeviceFinder for CAN Talons because
     // they do not put up unreasonable amounts of SPAM
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1, "Swerve") || iAmACompetitionRobot){
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1, "Swerve") || shouldMakeAllCANDevices){
 
       driveSubsystemRightFrontDrive = new CANSparkMaxSendable(1, MotorType.kBrushless);
       driveSubsystemRightFrontDriveEncoder = driveSubsystemRightFrontDrive.getEncoder();
@@ -190,56 +192,91 @@ public class RobotContainer {
     }
 
     climberStationaryHookContact = new DigitalInput(1);
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 40, "climberExtentionMotor") || iAmACompetitionRobot) {
-      climberExtentionMotor = new WPI_TalonFX(40);
+    if (robotParameters.hasClimber()) {
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 40, "climberExtentionMotor") || shouldMakeAllCANDevices) {
+        climberExtentionMotor = new WPI_TalonFX(40);
+      }
+    } else {
+      logger.info ("robot parameters say no climber, so skipping");
     }
 
     // shooter motors
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 21, "top shooter 1") || iAmACompetitionRobot) {
-      // Shooter Motors 
-      shooterSubsystemFalcon1 = new WPI_TalonFX(21);
+    if (robotParameters.hasShooter()) {
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 21, "top shooter 1") || shouldMakeAllCANDevices) {
+        // Shooter Motors
+        shooterSubsystemTop1 = new WPI_TalonFX(21);
+      }
+
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 17, "top shooter 2") || shouldMakeAllCANDevices) {
+        shooterSubsystemTop2 = new WPI_TalonFX(17);
+      }
+
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 27, "preshooter") || shouldMakeAllCANDevices) {
+        shooterSubsystemPreshooter = new CANSparkMaxSendable(27, MotorType.kBrushless);
+      }
+
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 28, "back shooter") || shouldMakeAllCANDevices) {
+        shooterSubsystemBackShooter = new WPI_TalonFX(28);
+      }
+
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 29)){
+        shooterSubsystemHoodMax = new CANSparkMaxSendable(29, MotorType.kBrushless);
+        shooterSubsystemHoodMax.setIdleMode(IdleMode.kCoast);
+        shooterSubsystemHoodMax.setOpenLoopRampRate(.3);
+        shooterSubsystemHoodMax.setClosedLoopRampRate(.3);
+        shooterSubsystemHoodMax.setSmartCurrentLimit(10);
+      }
+    } else {
+      logger.info ("robot parameters say no shooter, so skipping");
     }
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 17, "top shooter 2") || iAmACompetitionRobot) {
-      shooterSubsystemFalcon2 = new WPI_TalonFX(17);
+    // turret
+    if (robotParameters.hasTurret()){
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 20, "turret") || shouldMakeAllCANDevices) {
+        turretSubsystemturretSpinner = new CANSparkMaxSendable(20, MotorType.kBrushless);
+        resetMaxToKnownState(turretSubsystemturretSpinner, true);
+        turretSubsystemturretSpinner.setSmartCurrentLimit(10);
+        turretSubsystemturretEncoder = turretSubsystemturretSpinner.getEncoder();
+      }
+    } else {
+      logger.info ("robot parameters say no turret, so skipping");
     }
 
-    // turret 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 20, "turret") || iAmACompetitionRobot) {
-      turretSubsystemturretSpinner = new CANSparkMaxSendable(20, MotorType.kBrushless);
-      resetMaxToKnownState(turretSubsystemturretSpinner, true);
-      turretSubsystemturretSpinner.setSmartCurrentLimit(10);
-      turretSubsystemturretEncoder = turretSubsystemturretSpinner.getEncoder();
+    // intake
+    if (robotParameters.hasIntake()) {
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 25, "wheel bar") || shouldMakeAllCANDevices) {
+        intakeWheelbar = new CANSparkMaxSendable(25, MotorType.kBrushless);
+      }
+      /*
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 26, "Intake Belt") || iAmACompetitionRobot){
+        intakeBelt = new CANSparkMax(#, MotorType.UNDECIDED);
+      }
+        */
+    } else {
+      logger.info ("robot parameters say no intake, so skipping");
     }
 
     PneumaticsModuleType pneumaticModuleType = null;
 
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.REV_PH, 1, "REV PH") || iAmACompetitionRobot) {
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.REV_PH, 1, "REV PH") || shouldMakeAllCANDevices) {
       pneumaticModuleType = PneumaticsModuleType.REVPH;
     } else if (canDeviceFinder.isDevicePresent(CANDeviceType.CTRE_PCM, 0, "CTRE PCM")) {
       pneumaticModuleType = PneumaticsModuleType.CTREPCM;
     }
 
-    if (pneumaticModuleType == PneumaticsModuleType.CTREPCM) {
-      Compressor compressor = new Compressor(pneumaticModuleType);
-      compressor.disable();
-    }
-
     if (pneumaticModuleType != null) {
+      if (! robotParameters.shouldRunCompressor()) {
+        logger.info ("disabling the compressor because of robot_parameters");
+        Compressor compressor = new Compressor(pneumaticModuleType);
+        compressor.disable();
+      }
+
       ringLight = new Solenoid(pneumaticModuleType, 7);
       ringLight.set(true);
-      climberArmTilt = new DoubleSolenoid(pneumaticModuleType, 0, 1);
+      if (robotParameters.hasClimber()){
+        climberArmTilt = new DoubleSolenoid(pneumaticModuleType, 0, 1);
+      }
     }
-
-    // intake
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 25, "wheel bar") || iAmACompetitionRobot){
-      intakeWheelbar = new CANSparkMaxSendable(25, MotorType.kBrushless);
-    }
-    /*
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 26, "Intake Belt") || iAmACompetitionRobot){
-      intakeBelt = new CANSparkMax(#, MotorType.UNDECIDED);
-    }
-      */
   }
   
   void setupMotors() {
@@ -270,6 +307,25 @@ public class RobotContainer {
       
       resetMaxToKnownState(driveSubsystemRightBackAzimuth, false);
       driveSubsystemRightBackAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
+    }
+    if (shooterSubsystemTop1 != null) {
+      shooterSubsystemTop1.configFactoryDefault();
+      shooterSubsystemTop1.setInverted(InvertType.InvertMotorOutput);
+    }
+
+    if (shooterSubsystemTop2 != null) {
+      shooterSubsystemTop2.configFactoryDefault();
+      shooterSubsystemTop2.follow(shooterSubsystemTop1);
+      shooterSubsystemTop2.setInverted(InvertType.OpposeMaster);
+    }
+
+    if (shooterSubsystemBackShooter != null) {
+      shooterSubsystemBackShooter.configFactoryDefault();
+      shooterSubsystemBackShooter.setInverted(InvertType.InvertMotorOutput);
+    }
+
+    if(shooterSubsystemPreshooter != null) {
+      shooterSubsystemPreshooter.setInverted(false);
     }
   }
 
@@ -419,17 +475,18 @@ public class RobotContainer {
   }
 
   /**
-   * Determine if this robot is a competition robot.
+   * Determine if we should make software objects, even if the device does 
+   * not appear on the CAN bus.
    *
-   * It is if it's connected to an FMS.
+   * We should if it's connected to an FMS.
    *
-   * It is if it is missing a grounding jumper on DigitalInput 0.
+   * We should if it is missing a grounding jumper on DigitalInput 0.
    *
-   * It is if the robot_parameters.json says so for this MAC address.
+   * We should if the robot_parameters.json says so for this MAC address.
    * 
-   * @return true if this robot is a competition robot.
+   * @return true if we should make all software objects for CAN devices
    */
-  public static boolean amIACompBot() {
+  public static boolean shouldMakeAllCANDevices() {
     if (DriverStation.isFMSAttached()) {
       return true;
     }
@@ -438,7 +495,7 @@ public class RobotContainer {
       return true;
     }
 
-    if (robotParameters.isCompetitionRobot()) {
+    if (robotParameters.shouldMakeAllCANDevices()) {
       return true;
     }
 
