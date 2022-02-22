@@ -2,7 +2,7 @@
 
 ## Driver Controls
 * A - X Mode
-* LB - Intake arm up and down plus roller (clockwise)
+* LT - Intake up/down + roller (clockwise)
 * RT - Fire
 
 ## Operator Controls

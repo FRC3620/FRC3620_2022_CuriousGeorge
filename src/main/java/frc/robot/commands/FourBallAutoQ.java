@@ -11,17 +11,17 @@ public class FourBallAutoQ extends SequentialCommandGroup {
       addCommands(
       new setInitialNavXOffsetCommand(driveSubsystem, 145)
       ,
-      new AutoDriveToCargoCommand(4*12, 145, .3, 145, driveSubsystem, visionSubsystem)
+      new AutoDriveToCargoCommand(4*12, 145, .5, 145, driveSubsystem, visionSubsystem)
       ,
       new WaitCommand(.5) //shoot 2 balls
       ,
-      new AutoDriveCommand(130, 185, .3, 133, driveSubsystem)
+      new AutoDriveCommand(130, 185, .5, 133, driveSubsystem)
       ,
       new WaitCommand(.1)
+      //,
+      //new AutoDriveCommand(30, 135, 0.3, 130, driveSubsystem) 
       ,
-      new AutoDriveCommand(30, 135, 0.3, 130, driveSubsystem) 
-      ,
-      new AutoDriveToCargoCommand(100, 135, .3, 135, driveSubsystem, visionSubsystem)
+      new AutoDriveToCargoCommand(100, 135, .5, 135, driveSubsystem, visionSubsystem)
       ,
      // new AutoDriveCommand(220, 325, .3, 325, driveSubsystem)
      // ,
