@@ -12,6 +12,7 @@ import org.usfirst.frc3620.misc.RobotMode;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,7 +23,7 @@ import frc.robot.RobotContainer;
 public class ClimberSubsystem extends SubsystemBase {
   DigitalInput climberStationaryHookContact = RobotContainer.climberStationaryHookContact; 
   WPI_TalonFX climberExtentionMotor = RobotContainer.climberExtentionMotor; 
-  DoubleSolenoid climberArmTilt = RobotContainer.climberArmTilt;
+  Solenoid climberArmTilt = RobotContainer.climberArmTilt;
   boolean encoderIsValid = false;
   Timer calibrationTimer;
   
@@ -96,19 +97,15 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public void climberArmTiltIn() {
     if (climberArmTilt != null) { 
-      climberArmTilt.set(Value.kReverse);
+      climberArmTilt.set(false);
     }
   }
 
   public void climberArmTiltOut() {
     if (climberArmTilt != null) { 
-      climberArmTilt.set(Value.kForward);
+      climberArmTilt.set(true);
     }
   }
 
-  public void climberArmTiltOff() {
-    if (climberArmTilt != null) { 
-      climberArmTilt.set(Value.kOff);
-    }
-  }
+
 }

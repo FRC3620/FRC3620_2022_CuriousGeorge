@@ -2,12 +2,11 @@
 
 ## Driver Controls
 * A - X Mode
-* LT - Intake up/down + roller (clockwise)
+* LB - Intake arm up and down plus roller and belt (clockwise)
 * RT - Fire
 
 ## Operator Controls
 
----
 * Dpad - Turret left and right
 * X - Shooter ("fire up")
 * Right Stick - Climber up + down
@@ -38,4 +37,5 @@
 * SparkMAX 8 - right back azimuth
 <br></br>
 * PCM 7 - RingLight
-* PCM 0,1 - ClimberTilt
+* PCM 0 - ClimberTilt
+* PCM 1 - IntakeArm
