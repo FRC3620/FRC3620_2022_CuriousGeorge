@@ -28,9 +28,9 @@ import frc.robot.RobotContainer;
 public class ShooterSubsystem extends SubsystemBase {
   public final static Logger logger = EventLogging.getLogger(ShooterSubsystem.class, Level.INFO);
 
-  WPI_TalonFX m_top1 = RobotContainer.shooterSubsystemTop1;
-  WPI_TalonFX m_top2 = RobotContainer.shooterSubsystemTop2;
-  WPI_TalonFX m_back = RobotContainer.shooterSubsystemBackShooter;
+  WPI_TalonFX m_top1 = RobotContainer.shooterSubsystemShooterTop1;
+  WPI_TalonFX m_top2 = RobotContainer.shooterSubsystemShooterTop2;
+  WPI_TalonFX m_back = RobotContainer.shooterSubsystemShooterBack;
   private final CANSparkMax hoodMotor = RobotContainer.shooterSubsystemHoodMax;
   RelativeEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
   CANSparkMax preshooter = RobotContainer.shooterSubsystemPreshooter;
