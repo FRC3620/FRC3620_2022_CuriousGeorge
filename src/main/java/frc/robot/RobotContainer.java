@@ -96,7 +96,6 @@ public class RobotContainer {
   public static CANSparkMaxSendable intakeBelt;
   public static Solenoid intakeArm;
 
-
   // vision
   public static Solenoid ringLight;
 

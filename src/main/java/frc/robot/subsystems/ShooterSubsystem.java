@@ -24,6 +24,7 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.miscellaneous.CANSparkMaxSendable;
 
 public class ShooterSubsystem extends SubsystemBase {
   public final static Logger logger = EventLogging.getLogger(ShooterSubsystem.class, Level.INFO);
@@ -33,7 +34,7 @@ public class ShooterSubsystem extends SubsystemBase {
   WPI_TalonFX m_back = RobotContainer.shooterSubsystemBackShooter;
   private final CANSparkMax hoodMotor = RobotContainer.shooterSubsystemHoodMax;
   RelativeEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
-  CANSparkMax preshooter = RobotContainer.shooterSubsystemPreshooter;
+  CANSparkMaxSendable preshooter = RobotContainer.shooterSubsystemPreshooter;
   private SparkMaxPIDController anglePID;
   private final int kTimeoutMs = 0;
   private final int kVelocitySlotIdx = 0;
@@ -95,6 +96,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     if (preshooter != null) {
+      SendableRegistry.addLW(preshooter, getName(), "preshooter");
       SparkMaxPIDController preshooterPid = preshooter.getPIDController();
 
       preshooterPid.setFF(0);
