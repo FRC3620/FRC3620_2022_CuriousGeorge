@@ -28,12 +28,14 @@ import frc.robot.RobotContainer;
 public class ShooterSubsystem extends SubsystemBase {
   public final static Logger logger = EventLogging.getLogger(ShooterSubsystem.class, Level.INFO);
 
-  WPI_TalonFX m_top1 = RobotContainer.shooterSubsystemShooterTop1;
+  static WPI_TalonFX m_top1 = RobotContainer.shooterSubsystemShooterTop1;
   WPI_TalonFX m_top2 = RobotContainer.shooterSubsystemShooterTop2;
-  WPI_TalonFX m_back = RobotContainer.shooterSubsystemShooterBack;
+  static WPI_TalonFX m_back = RobotContainer.shooterSubsystemShooterBack;
   private final CANSparkMax hoodMotor = RobotContainer.shooterSubsystemHoodMax;
   RelativeEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
-  CANSparkMax preshooter = RobotContainer.shooterSubsystemPreshooter;
+  static CANSparkMax preshooter = RobotContainer.shooterSubsystemPreshooter;
+  double requestedRPM = 0;
+  
   private SparkMaxPIDController anglePID;
   private final int kTimeoutMs = 0;
   private final int kVelocitySlotIdx = 0;
@@ -231,6 +233,26 @@ public class ShooterSubsystem extends SubsystemBase {
     
   }
   
+  public void shooterOff(){
+    //sets target velocity to zero
+    if (m_top1 != null) {
+      m_top1.set(ControlMode.PercentOutput, 0);
+    }
+    if (m_back != null) {
+      m_back.set(ControlMode.PercentOutput, 0);
+    }
+    if (preshooter != null) {
+      preshooter.set(0);
+    }
+  }
+  
+  public void shootPID(){
+    double targetVelocity = requestedRPM * 2048 / 600;
+    if (m_top1 != null) {
+      m_top1.set(ControlMode.Velocity, targetVelocity);
+    }
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
