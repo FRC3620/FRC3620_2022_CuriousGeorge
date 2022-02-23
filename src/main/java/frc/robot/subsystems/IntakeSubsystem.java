@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -43,7 +42,13 @@ public class IntakeSubsystem extends SubsystemBase {
     //m_colorMatcher.addColorMatch(kYellowTarget);
 
     if (intakeWheelbar != null) {
-      SendableRegistry.addLW(intakeWheelbar, getName(), "intakewheelbar");
+      SendableRegistry.addLW(intakeWheelbar, getName(), "intake wheelbar");
+    }
+    if (intakeBelt != null) {
+      SendableRegistry.addLW(intakeBelt, getName(), "intake belt");
+    }
+    if (intakeArm != null) {
+      SendableRegistry.addLW(intakeArm, getName(), "intake arm");
     }
   }
 

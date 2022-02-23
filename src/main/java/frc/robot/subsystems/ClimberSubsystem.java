@@ -11,10 +11,8 @@ import org.usfirst.frc3620.misc.RobotMode;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -26,15 +24,14 @@ public class ClimberSubsystem extends SubsystemBase {
   Solenoid climberArmTilt = RobotContainer.climberArmTilt;
   boolean encoderIsValid = false;
   Timer calibrationTimer;
-  
 
   /** Creates a new ClimberSubsystem. */
   public ClimberSubsystem() {
     if(climberExtentionMotor != null) {
-      SendableRegistry.addLW(climberExtentionMotor, getName(), "climber");
-
+      SendableRegistry.addLW(climberExtentionMotor, getName(), "climber motor");
       climberExtentionMotor.setSelectedSensorPosition(0);
     }
+    SendableRegistry.addLW(climberStationaryHookContact, getName(), "climber contact switch");
   }
 
   @Override
@@ -66,7 +63,6 @@ public class ClimberSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("climber.encoder", getShaftPosition());
     }
   }
-    
 
   public boolean doesStationaryHookHaveBar() {
     boolean rv = !climberStationaryHookContact.get(); 
@@ -75,7 +71,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
   /**
    * Return the position of the climber extension
-   * @return position (expressed in furlongs)
+   * @return position (expressed in something besides furlongs)
    */
 
   public double getShaftPosition() {

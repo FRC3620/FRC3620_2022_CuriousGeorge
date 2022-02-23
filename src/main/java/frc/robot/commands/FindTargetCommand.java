@@ -8,16 +8,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-import org.slf4j.Logger;
-import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.EventLogging.Level;
-
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class FindTargetCommand extends CommandBase {
   TurretSubsystem turretSubsystem;
-  VisionSubsystem VisionSubsystem;
+  VisionSubsystem visionSubsystem;
   Timer turretTimer = new Timer();
   
   /** Creates a new FindTargetCommand. */
@@ -25,7 +21,7 @@ public class FindTargetCommand extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(_subsystem);
     turretSubsystem = _subsystem;
-    VisionSubsystem = _vsubsystem;
+    visionSubsystem = _vsubsystem;
     SmartDashboard.putBoolean("Target Found", true);
      
    
@@ -35,9 +31,9 @@ public class FindTargetCommand extends CommandBase {
   @Override
   public void initialize() {
     spinTurret();
-turretTimer.reset();
-turretTimer.start();
-    }
+    turretTimer.reset();
+    turretTimer.start();
+  }
   
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -48,23 +44,20 @@ turretTimer.start();
       spinTurret();
       turretTimer.reset(); 
     }
-
-
   }
 
   public void spinTurret(){
-
-   double spinTurretDegrees = 0;
-    double positionInFrame = VisionSubsystem.getTargetXLocation();
+    double spinTurretDegrees = 0;
+    double positionInFrame = visionSubsystem.getTargetXLocation();
     SmartDashboard.putNumber("target location",positionInFrame);
     double currentTurretPosition = turretSubsystem.getCurrentTurretPosition();
     if (positionInFrame>=0){
-       
       spinTurretDegrees = ((positionInFrame - 0.5)/0.0825)*5;
-       double  Targetx = spinTurretDegrees + currentTurretPosition;
-       turretSubsystem.setTurretPosition(Targetx);
+      double targetx = spinTurretDegrees + currentTurretPosition;
+      turretSubsystem.setTurretPosition(targetx);
     }
-}
+  }
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
@@ -75,6 +68,5 @@ turretTimer.start();
   @Override
   public boolean isFinished() {
    return false;
+  }
 }
-}
-

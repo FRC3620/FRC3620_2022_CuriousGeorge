@@ -36,14 +36,14 @@ public class AutoDriveToCargoCommand extends CommandBase {
     private String legName;
 
 
-    public AutoDriveToCargoCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem, VisionSubsystem VisionSubsystem) {
-        this(distance, strafeAngle, speed, heading, driveSubsystem, VisionSubsystem,null, null);
+    public AutoDriveToCargoCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
+        this(distance, strafeAngle, speed, heading, driveSubsystem, visionSubsystem,null, null);
     }
 
-    public AutoDriveToCargoCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem, VisionSubsystem VisionSubsystem, String legName, IAutonomousLogger autonomousLogger) {
+    public AutoDriveToCargoCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, String legName, IAutonomousLogger autonomousLogger) {
         this.driveSubsystem = driveSubsystem;
-        this.visionSubsystem = VisionSubsystem;
-        addRequirements(driveSubsystem, VisionSubsystem);
+        this.visionSubsystem = visionSubsystem;
+        addRequirements(driveSubsystem, visionSubsystem);
 
         desiredDistance = distance;
         desiredAngle = strafeAngle;
