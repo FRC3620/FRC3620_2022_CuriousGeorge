@@ -30,7 +30,7 @@ public class ShooterCalculator {
 
         double desiredBackspinRPM;
 
-        desiredBackspinRPM = (mainShooterRPM - (2 * 2.5 * desiredCargoRPM)) * (mainShooterRPM/backspinShooterDiameter);
+        desiredBackspinRPM = (mainShooterRPM - (2 * 2.5 * desiredCargoRPM)) * (mainShooterDiameter/backspinShooterDiameter);
 
         return desiredBackspinRPM;
 

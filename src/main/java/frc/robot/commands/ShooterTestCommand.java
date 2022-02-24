@@ -53,14 +53,14 @@ public class ShooterTestCommand extends CommandBase {
     double t = SmartDashboard.getNumber("top.set", 0.0);
     double b = SmartDashboard.getNumber("bottom.set", 0.0);
     //logger.info ("execute: {} {}", t, b);
-    m_subsystem.setTopRPM(t);
+    m_subsystem.setMainRPM(t);
     m_subsystem.setBackRPM(b);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_subsystem.setTopRPM(0);
+    m_subsystem.setMainRPM(0);
     m_subsystem.setBackRPM(0);
     if (dataLogger != null) {
       // dataLogger.done();

@@ -99,9 +99,9 @@ public class RobotContainer {
   public static Solenoid ringLight;
 
   // shooter hardware verables are currently unknown so we need to change them
-  public static WPI_TalonFX shooterSubsystemShooterTop1;
-  public static WPI_TalonFX shooterSubsystemShooterTop2;
-  public static WPI_TalonFX shooterSubsystemShooterBack;
+  public static WPI_TalonFX shooterSubsystemMainShooter1;
+  public static WPI_TalonFX shooterSubsystemMainShooter2;
+  public static WPI_TalonFX shooterSubsystemBackSpinShooter;
   public static CANSparkMaxSendable shooterSubsystemHoodMax;
   public static RelativeEncoder shooterSubsystemHoodEncoder;
   public static DigitalInput hoodLimitSwitch;
@@ -204,11 +204,11 @@ public class RobotContainer {
     if (robotParameters.hasShooter()) {
       if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 21, "top shooter 1") || shouldMakeAllCANDevices) {
         // Shooter Motors
-        shooterSubsystemShooterTop1 = new WPI_TalonFX(21);
+        shooterSubsystemMainShooter2 = new WPI_TalonFX(21);
       }
 
       if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 17, "top shooter 2") || shouldMakeAllCANDevices) {
-        shooterSubsystemShooterTop2 = new WPI_TalonFX(17);
+        shooterSubsystemMainShooter1 = new WPI_TalonFX(17);
       }
 
       if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 27, "preshooter") || shouldMakeAllCANDevices) {
@@ -216,7 +216,7 @@ public class RobotContainer {
       }
 
       if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 28, "back shooter") || shouldMakeAllCANDevices) {
-        shooterSubsystemShooterBack = new WPI_TalonFX(28);
+        shooterSubsystemBackSpinShooter = new WPI_TalonFX(28);
       }
 
       if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 29)){
@@ -308,20 +308,20 @@ public class RobotContainer {
       resetMaxToKnownState(driveSubsystemRightBackAzimuth, false);
       driveSubsystemRightBackAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
     }
-    if (shooterSubsystemShooterTop1 != null) {
-      shooterSubsystemShooterTop1.configFactoryDefault();
-      shooterSubsystemShooterTop1.setInverted(InvertType.InvertMotorOutput);
+    if (shooterSubsystemMainShooter2 != null) {
+      shooterSubsystemMainShooter2.configFactoryDefault();
+      shooterSubsystemMainShooter2.setInverted(InvertType.InvertMotorOutput);
     }
 
-    if (shooterSubsystemShooterTop2 != null) {
-      shooterSubsystemShooterTop2.configFactoryDefault();
-      shooterSubsystemShooterTop2.follow(shooterSubsystemShooterTop1);
-      shooterSubsystemShooterTop2.setInverted(InvertType.OpposeMaster);
+    if (shooterSubsystemMainShooter1 != null) {
+      shooterSubsystemMainShooter1.configFactoryDefault();
+      shooterSubsystemMainShooter1.follow(shooterSubsystemMainShooter2);
+      shooterSubsystemMainShooter1.setInverted(InvertType.OpposeMaster);
     }
 
-    if (shooterSubsystemShooterBack != null) {
-      shooterSubsystemShooterBack.configFactoryDefault();
-      shooterSubsystemShooterBack.setInverted(InvertType.InvertMotorOutput);
+    if (shooterSubsystemBackSpinShooter != null) {
+      shooterSubsystemBackSpinShooter.configFactoryDefault();
+      shooterSubsystemBackSpinShooter.setInverted(InvertType.InvertMotorOutput);
     }
 
     if(shooterSubsystemPreshooter != null) {

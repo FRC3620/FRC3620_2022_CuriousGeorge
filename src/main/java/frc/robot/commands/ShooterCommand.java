@@ -37,9 +37,9 @@ public class ShooterCommand extends CommandBase {
     shooterSubsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
-    talonFX = RobotContainer.shooterSubsystemShooterTop1;
-    talonFX = RobotContainer.shooterSubsystemShooterTop2;
-    talonFX = RobotContainer.shooterSubsystemShooterBack;
+    talonFX = RobotContainer.shooterSubsystemMainShooter2;
+    talonFX = RobotContainer.shooterSubsystemMainShooter1;
+    talonFX = RobotContainer.shooterSubsystemBackSpinShooter;
     sparkMax = RobotContainer.shooterSubsystemPreshooter;
   }
 

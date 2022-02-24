@@ -24,33 +24,35 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.miscellaneous.ShooterCalculator;
 
 public class ShooterSubsystem extends SubsystemBase {
   public final static Logger logger = EventLogging.getLogger(ShooterSubsystem.class, Level.INFO);
 
-  static WPI_TalonFX m_top1 = RobotContainer.shooterSubsystemShooterTop1;
-  WPI_TalonFX m_top2 = RobotContainer.shooterSubsystemShooterTop2;
-  static WPI_TalonFX m_back = RobotContainer.shooterSubsystemShooterBack;
+  static WPI_TalonFX m_main2 = RobotContainer.shooterSubsystemMainShooter2;
+  WPI_TalonFX m_main1 = RobotContainer.shooterSubsystemMainShooter1;
+  static WPI_TalonFX m_back = RobotContainer.shooterSubsystemBackSpinShooter;
   private final CANSparkMax hoodMotor = RobotContainer.shooterSubsystemHoodMax;
   RelativeEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
   static CANSparkMax preshooter = RobotContainer.shooterSubsystemPreshooter;
-  double requestedRPM = 0;
+  
+  double mainShooterRPM = 2000;
   
   private SparkMaxPIDController anglePID;
   private final int kTimeoutMs = 0;
   private final int kVelocitySlotIdx = 0;
 
-  //top FPID Values
-  private final double tFVelocity = 0.049; //0.045
-  private final double tPVelocity = 0.45; //0.60
-  private final double tIVelocity = 0.0; //0.000003
-  private final double tDVelocity = 7.75; //7.75
+  //main shooter FPID Values
+  private final double mainFVelocity = 0.049; //0.045
+  private final double mainPVelocity = 0.45; //0.60
+  private final double mainIVelocity = 0.0; //0.000003
+  private final double mainDVelocity = 7.75; //7.75
 
-  //bottom FPID Values
-  private final double bFVelocity = 0.0495;//.0456
-  private final double bPVelocity = 0.1; //.45
-  private final double bIVelocity = 0.00;//0.0000001
-  private final double bDVelocity = 0;//7.5
+  //preshooter FPID Values
+  private final double preshooter_FVelocity = 0.0495;//.0456
+  private final double preshooter_PVelocity = 0.1; //.45
+  private final double preshooter_IVelocity = 0.00;//0.0000001
+  private final double preshooter_DVelocity = 0;//7.5
 
   //hood
   private final double hoodP = 0;
@@ -58,28 +60,35 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double hoodD = 0;
   private double hoodPosition = 0;
 
+  //backspin FPID
+  private final double back_FVelocity = 0.0495;//.0456
+  private final double back_PVelocity = 0.1; //.45
+  private final double back_IVelocity = 0.00;//0.0000001
+  private final double back_DVelocity = 0;//7.5
+
+
   public ShooterSubsystem() {
-    if (m_top1 != null) {
-      SendableRegistry.addLW(m_top1, getName(), "top1");
-      setupMotor(m_top1);
-      m_top1.setInverted(InvertType.InvertMotorOutput);
+    if (m_main2 != null) {
+      SendableRegistry.addLW(m_main2, getName(), "top1");
+      setupMotor(m_main2);
+      m_main2.setInverted(InvertType.InvertMotorOutput);
 
       //for PID you have to have a sensor to check on so you know the error
-      m_top1.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kVelocitySlotIdx, kTimeoutMs);
+      m_main2.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kVelocitySlotIdx, kTimeoutMs);
 
       //set up the topfalcon for using FPID
-      m_top1.config_kF(kVelocitySlotIdx, tFVelocity, kTimeoutMs);
-      m_top1.config_kP(kVelocitySlotIdx, tPVelocity, kTimeoutMs);
-      m_top1.config_kI(kVelocitySlotIdx, tIVelocity, kTimeoutMs);
-      m_top1.config_kD(kVelocitySlotIdx, tDVelocity, kTimeoutMs);
+      m_main2.config_kF(kVelocitySlotIdx, mainFVelocity, kTimeoutMs);
+      m_main2.config_kP(kVelocitySlotIdx, mainPVelocity, kTimeoutMs);
+      m_main2.config_kI(kVelocitySlotIdx, mainIVelocity, kTimeoutMs);
+      m_main2.config_kD(kVelocitySlotIdx, mainDVelocity, kTimeoutMs);
     }
 
-    if (m_top2 != null) {
-      SendableRegistry.addLW(m_top2, getName(), "top2");
-      setupMotor(m_top2);
+    if (m_main1 != null) {
+      SendableRegistry.addLW(m_main1, getName(), "top2");
+      setupMotor(m_main1);
       
-      m_top2.follow(m_top1);
-      m_top2.setInverted(InvertType.OpposeMaster);
+      m_main1.follow(m_main2);
+      m_main1.setInverted(InvertType.OpposeMaster);
     }
 
     if (m_back != null) {
@@ -89,11 +98,11 @@ public class ShooterSubsystem extends SubsystemBase {
       //for PID you have to have a sensor to check on so you know the error
       m_back.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kVelocitySlotIdx, kTimeoutMs);
 
-      //set up the bottomfalcon for using FPID
-      m_back.config_kF(kVelocitySlotIdx, bFVelocity, kTimeoutMs);
-      m_back.config_kP(kVelocitySlotIdx, bPVelocity, kTimeoutMs);
-      m_back.config_kI(kVelocitySlotIdx, bIVelocity, kTimeoutMs);
-      m_back.config_kD(kVelocitySlotIdx, bDVelocity, kTimeoutMs);
+      //set up the backspin for using FPID
+      m_back.config_kF(kVelocitySlotIdx, back_FVelocity, kTimeoutMs);
+      m_back.config_kP(kVelocitySlotIdx, back_PVelocity, kTimeoutMs);
+      m_back.config_kI(kVelocitySlotIdx, back_IVelocity, kTimeoutMs);
+      m_back.config_kD(kVelocitySlotIdx, back_DVelocity, kTimeoutMs);
     }
 
     if (preshooter != null) {
@@ -104,6 +113,32 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
   }
+
+  public double calcHoodPosition(double cy) {
+    double calcHoodPosition;
+    if(cy < 224){
+      calcHoodPosition = 3.73187317480733 + 0.0327847309136473*cy +-0.0000114726741759497*cy*cy;
+      calcHoodPosition = calcHoodPosition + SmartDashboard.getNumber("manualHoodPosition", 5);
+    } else if(cy < 336){
+      calcHoodPosition = 3.85000000000 + 0.0369791667*cy + -0.0000325521*cy*cy;
+    }else if(cy < 403){
+      calcHoodPosition = -28.1396700696 + 0.2136292223*cy + -0.0002749411*cy*cy;
+    } else {
+      calcHoodPosition = -56.8299016952515 + 0.355106208706275*cy + -0.000449346405275719*cy*cy;
+    }
+    return 5.0 * calcHoodPosition;
+  }
+
+  public double calcMainRPM(double cy) {
+    double calcMainRPM = 2650;
+    if(cy < 252) {
+      calcMainRPM = 4700;
+    } else {
+      calcMainRPM = 4700;
+    }
+    return calcMainRPM;
+  }
+
 
   void setupMotor(TalonFX m) {
     m.configFactoryDefault();
@@ -154,8 +189,10 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber(s.name + ".velocity.target", targetVelocity);
   }
 
-  public void setTopRPM(double r) {
-    setRpm(m_top1, r, s_top);
+  public void setMainRPM(double r) {
+    setRpm(m_main2, r, s_main);
+
+    setBackRPM(ShooterCalculator.calculateBackspinRPM(r));
   }
 
   public void setBackRPM(double r) {
@@ -166,12 +203,12 @@ public class ShooterSubsystem extends SubsystemBase {
     setRpm(preshooter, r, s_preshooter);
   }
 
-  Status s_top = new Status("top");
+  Status s_main = new Status("top");
   Status s_back = new Status("back");
   Status s_preshooter = new Status("preshooter");
 
   public Status getTopStatus() {
-    return s_top;
+    return s_main;
   }
 
   public Status getBackStatus() {
@@ -235,8 +272,8 @@ public class ShooterSubsystem extends SubsystemBase {
   
   public void shooterOff(){
     //sets target velocity to zero
-    if (m_top1 != null) {
-      m_top1.set(ControlMode.PercentOutput, 0);
+    if (m_main2 != null) {
+      m_main2.set(ControlMode.PercentOutput, 0);
     }
     if (m_back != null) {
       m_back.set(ControlMode.PercentOutput, 0);
@@ -246,17 +283,29 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
   
-  public void shootPID(){
-    double targetVelocity = requestedRPM * 2048 / 600;
-    if (m_top1 != null) {
-      m_top1.set(ControlMode.Velocity, targetVelocity);
+  public void shootPID() {
+    double targetVelocity = mainShooterRPM * 2048 / 600;
+    if (m_main2 != null) {
+      setMainRPM(targetVelocity);
+    }
+  }
+
+  public void preshooterOn(double speed) {
+    if(preshooter != null) {
+      preshooter.set(speed);
+    }
+  }
+
+  public void preshooterOff() {
+    if(preshooter != null) {
+      preshooter.set(0);
     }
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    gatherActuals(s_top, m_top1, "top");
+    gatherActuals(s_main, m_main2, "top");
     gatherActuals(s_back, m_back, "back");
     gatherActuals(s_preshooter, preshooter, "preshooter");
   }
