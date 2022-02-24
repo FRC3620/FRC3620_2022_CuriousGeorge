@@ -39,6 +39,7 @@ import org.usfirst.frc3620.misc.*;
 import frc.robot.commands.*;
 import frc.robot.miscellaneous.CANSparkMaxSendable;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.RumbleSubsystem.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -125,6 +126,8 @@ public class RobotContainer {
   public static TurretSubsystem turretSubsystem;
   public static ShooterSubsystem shooterSubsystem;
   public static ArmSubsystem armSubsystem;
+  public static RumbleSubsystem operatorRumbleSubsystem;
+  public static RumbleSubsystem driverRumbleSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -352,6 +355,8 @@ public class RobotContainer {
     turretSubsystem = new TurretSubsystem();
     shooterSubsystem = new ShooterSubsystem();
     armSubsystem = new ArmSubsystem();
+    operatorRumbleSubsystem = new RumbleSubsystem(1);
+    driverRumbleSubsystem = new RumbleSubsystem(0);
   }
 
   /**
@@ -420,6 +425,12 @@ public class RobotContainer {
     SmartDashboard.putData("Climber Tilt In", new ClimberTiltTestCommandIn());
 
     SmartDashboard.putData("Find target",new FindTargetCommand(turretSubsystem, visionSubsystem));
+
+    SmartDashboard.putData("Rumble Command", new RumbleCommand(driverRumbleSubsystem, Hand.BOTH, 1.0, 3.0));
+    SmartDashboard.putData("Rumble Command 2", new RumbleCommand(driverRumbleSubsystem, .5, 5.0));
+    SmartDashboard.putData("Rumble Command 3", new RumbleCommand(driverRumbleSubsystem,Hand.LEFT, .5, 3.0));
+    SmartDashboard.putData("Rumble Command 4", new RumbleCommand(driverRumbleSubsystem,Hand.RIGHT, .5, 3.0));
+
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
