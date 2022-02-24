@@ -14,13 +14,13 @@ import frc.robot.subsystems.RumbleSubsystem.Hand;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class MassageOperatorMethod extends CommandBase {
+public class MassageOperatorToShootCommand extends CommandBase {
   TurretSubsystem turretSubsystem;
   VisionSubsystem visionSubsystem;
   RumbleCommand rumbleCommand;
   
   /** Creates a new FindTargetCommand. */
-  public MassageOperatorMethod(TurretSubsystem _subsystem, VisionSubsystem _vsubsystem, RumbleSubsystem _rsubsystem) {
+  public MassageOperatorToShootCommand(TurretSubsystem _subsystem, VisionSubsystem _vsubsystem, RumbleSubsystem _rsubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(_subsystem);
     turretSubsystem = _subsystem;

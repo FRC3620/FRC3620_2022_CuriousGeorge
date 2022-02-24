@@ -47,10 +47,12 @@ public class FindTargetCommand extends CommandBase {
   }
 
   public void spinTurret(){
+    
     double spinTurretDegrees = 0;
     double positionInFrame = visionSubsystem.getTargetXLocation();
     SmartDashboard.putNumber("target location",positionInFrame);
     double currentTurretPosition = turretSubsystem.getCurrentTurretPosition();
+
     if (positionInFrame>=0){
       spinTurretDegrees = ((positionInFrame - 0.5)/0.0825)*5;
       double targetx = spinTurretDegrees + currentTurretPosition;
