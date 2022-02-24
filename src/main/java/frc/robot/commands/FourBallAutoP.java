@@ -13,11 +13,13 @@ public class FourBallAutoP extends SequentialCommandGroup {
       ,
       new WaitCommand(.5) //shooting
       ,
-      new AutoDriveCommand(40, 90, .3, 90, driveSubsystem) //drive to position A
+      new AutoDriveCommand(40, 90, .5, 90, driveSubsystem) //drive to position A
       ,
-      new AutoDriveCommand(21.5*12, 183, .3, 135, driveSubsystem) //drive to position D
+      new AutoDriveCommand(12*12, 180, 1, 135, driveSubsystem) //drive to position D
       ,
-      new AutoDriveToCargoCommand(2*12, 135, .3, 135, driveSubsystem, visionSubsystem)
+      new AutoDriveCommand(108, 205, .5, 135, driveSubsystem)
+      ,
+      new AutoDriveToCargoCommand(10, 135, .5, 135, driveSubsystem, visionSubsystem)
       ,
       new WaitCommand(.5) //shooting
       //new AutoDriveCommand(4*12, 270, .2, 180, driveSubsystem),*/
