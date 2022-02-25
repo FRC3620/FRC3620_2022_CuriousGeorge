@@ -106,7 +106,7 @@ public class RobotContainer {
   public static RelativeEncoder shooterSubsystemHoodEncoder;
   public static DigitalInput hoodLimitSwitch;
   public static CANSparkMaxSendable shooterSubsystemPreshooter;
-
+  
   // turret
   public static CANSparkMaxSendable turretSubsystemturretSpinner;
   public static RelativeEncoder turretSubsystemturretEncoder;
@@ -379,6 +379,9 @@ public class RobotContainer {
     climberExtendUp.whileHeld(new ClimberTestCommandUp());
     AnalogJoystickButton climberExtendDown = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, 0.2);
     climberExtendDown.whileHeld(new ClimberTestCommandDown());
+
+  
+
   }
 
   void setupSmartDashboardCommands() {
@@ -396,6 +399,7 @@ public class RobotContainer {
     SmartDashboard.putData("Reset NavX", new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
     SmartDashboard.putData("Find target",new FindTargetCommand(turretSubsystem, visionSubsystem));
+    
 
     SmartDashboard.putData("Shooter Test Command", new ShooterTestCommand(shooterSubsystem));
 
