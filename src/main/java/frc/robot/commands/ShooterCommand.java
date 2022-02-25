@@ -10,6 +10,7 @@ package frc.robot.commands;
 import frc.robot.RobotContainer;
 import frc.robot.miscellaneous.CANSparkMaxSendable;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 import java.util.Date;
 
@@ -19,6 +20,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import org.usfirst.frc3620.logger.FastDataLoggerCollections;
 import org.usfirst.frc3620.logger.IFastDataLogger;
 
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
@@ -37,6 +39,7 @@ public class ShooterCommand extends CommandBase {
     shooterSubsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
+     
     talonFX = RobotContainer.shooterSubsystemMainShooter2;
     talonFX = RobotContainer.shooterSubsystemMainShooter1;
     talonFX = RobotContainer.shooterSubsystemBackSpinShooter;
@@ -69,6 +72,7 @@ public class ShooterCommand extends CommandBase {
   @Override
   public void execute() {
     RobotContainer.shooterSubsystem.shootPID();
+    RobotContainer.visionSubsystem.turnVisionLightOn();
     //RobotContainer.shooterSubsystem.Shoot();
   }
 

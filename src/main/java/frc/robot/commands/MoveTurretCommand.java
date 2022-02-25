@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.TurretSubsystem;
 
 public class MoveTurretCommand extends CommandBase {
@@ -31,8 +32,10 @@ public class MoveTurretCommand extends CommandBase {
   }
 
   // Called every time the scheduler runs while the command is scheduled.
+
   @Override
   public void execute() {
+    RobotContainer.visionSubsystem.turnVisionLightOn();
   }
 
   // Called once the command ends or is interrupted.

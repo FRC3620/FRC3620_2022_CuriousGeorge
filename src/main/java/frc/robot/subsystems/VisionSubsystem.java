@@ -4,10 +4,14 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 
 public class VisionSubsystem extends SubsystemBase {
+  public static final String VisionLightOnCommand = null;
+  public final String turnVisionLightOn = null;
   private NetworkTableInstance inst = NetworkTableInstance.getDefault();
   private NetworkTable networkTable = inst.getTable("V/Cargo");
   
@@ -17,7 +21,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   private NetworkTable networkTable2= inst.getTable("V/Target");
   private NetworkTableEntry targetX = networkTable2.getEntry("target.x");
-
+  private Solenoid visionLight = RobotContainer.ringLight;
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
   }
@@ -45,5 +49,8 @@ public class VisionSubsystem extends SubsystemBase {
   
   public double getBallYLocation(){
     return ballY.getDouble(-1);
+  }
+  public void turnVisionLightOn() {
+    visionLight.set(true);
   }
 }
