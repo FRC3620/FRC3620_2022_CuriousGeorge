@@ -424,14 +424,13 @@ public class RobotContainer {
     SmartDashboard.putData("Climber Tilt Out", new ClimberTiltTestCommandOut());
     SmartDashboard.putData("Climber Tilt In", new ClimberTiltTestCommandIn());
 
-    SmartDashboard.putData("Find target",new FindTargetCommand(turretSubsystem, visionSubsystem));
-    SmartDashboard.putData("Find target and Rumble", new MassageOperatorMethod(turretSubsystem, visionSubsystem, driverRumbleSubsystem));
+    SmartDashboard.putData("Find Target",new FindTargetCommand(turretSubsystem, visionSubsystem));
+    SmartDashboard.putData("Find Target and Wiggle", new MassageOperatorToShootCommand(visionSubsystem, driverRumbleSubsystem));
 
     SmartDashboard.putData("Rumble Command", new RumbleCommand(driverRumbleSubsystem, Hand.BOTH, 1.0, 3.0));
     SmartDashboard.putData("Rumble Command 2", new RumbleCommand(driverRumbleSubsystem, .5, 5.0));
     SmartDashboard.putData("Rumble Command 3", new RumbleCommand(driverRumbleSubsystem,Hand.LEFT, .5, 3.0));
     SmartDashboard.putData("Rumble Command 4", new RumbleCommand(driverRumbleSubsystem,Hand.RIGHT, .5, 3.0));
-
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();

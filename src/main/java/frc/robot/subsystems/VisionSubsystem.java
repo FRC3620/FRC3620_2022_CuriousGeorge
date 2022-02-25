@@ -83,6 +83,7 @@ public class VisionSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("vision.target.y", getTargetYLocation());
       SmartDashboard.putNumber("vision.target.boxes", targetData.boxes);
       SmartDashboard.putBoolean("vision.target.found", targetData.found);
+      SmartDashboard.putBoolean("vision.target.centered", isTargetCentered());
       rv = true;
     } catch (Exception ex) {
       logger.error ("trouble with parsing JSON?", ex);
@@ -125,6 +126,16 @@ public class VisionSubsystem extends SubsystemBase {
    */
   public double getTargetDataAge() {
     return Timer.getFPGATimestamp() - targetDataLastUpdated;
+  }
+
+  public boolean isTargetCentered() {
+    if (! isTargetFound()) {
+      return false;
+    }
+    if (Math.abs(getTargetXDegrees()) < 5){
+      return true;
+    }
+    return false;
   }
 
   public double getBallXLocation(){

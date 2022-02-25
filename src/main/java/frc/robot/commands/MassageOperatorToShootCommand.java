@@ -15,24 +15,26 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class MassageOperatorToShootCommand extends CommandBase {
-  TurretSubsystem turretSubsystem;
   VisionSubsystem visionSubsystem;
   RumbleCommand rumbleCommand;
   
   /** Creates a new FindTargetCommand. */
-  public MassageOperatorToShootCommand(TurretSubsystem _subsystem, VisionSubsystem _vsubsystem, RumbleSubsystem _rsubsystem) {
+  public MassageOperatorToShootCommand(VisionSubsystem _vsubsystem, RumbleSubsystem _rsubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(_subsystem);
-    turretSubsystem = _subsystem;
     visionSubsystem = _vsubsystem;
 
     rumbleCommand = new RumbleCommand(_rsubsystem, Hand.BOTH, 1.0, 0.5);
   }
 
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    SmartDashboard.putBoolean("Target Found", false);
+    
   }
   
 
@@ -52,10 +54,7 @@ public class MassageOperatorToShootCommand extends CommandBase {
   @Override
   public boolean isFinished() {
 
-    double positionInFrame = visionSubsystem.getTargetXLocation();
-
-    if (positionInFrame > 0.4 && positionInFrame < 0.6){
-      SmartDashboard.putBoolean("Target Found", true);
+    if (visionSubsystem.isTargetCentered()){
       return true;
     }
 
