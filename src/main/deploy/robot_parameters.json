@@ -1,7 +1,7 @@
 [
   {
     "name": "2022 competition",
-    "macAddress": "(2022compbot)",
+    "macAddress": "00-80-2F-21-E4-EA",
     "makeAllCANDevices": true,
     // azimuth home encoders
     "swerve.he.rf": 0,   // right front
@@ -14,8 +14,8 @@
 
     "has_climber": true,
     "has_intake": true,
-    "has_shooter": true,
-    "has_turret": true,
+    "has_shooter": false,
+    "has_turret": false,
 
     "should_run_compressor": true
   },

@@ -269,10 +269,12 @@ public class RobotContainer {
     }
 
     if (pneumaticModuleType != null) {
+      Compressor compressor = new Compressor(pneumaticModuleType);
       if (! robotParameters.shouldRunCompressor()) {
         logger.info ("disabling the compressor because of robot_parameters");
-        Compressor compressor = new Compressor(pneumaticModuleType);
         compressor.disable();
+      } else {
+        compressor.enableDigital();
       }
 
       ringLight = new Solenoid(pneumaticModuleType, 7);
