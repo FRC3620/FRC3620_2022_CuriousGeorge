@@ -15,7 +15,7 @@
   
 # Hardware Assignments
 
-* TalonFX 16 - climber
+* TalonFX 17 - climber
 <br></br>
 * TalonFX 13 - Top Shooter 1
 * TalonFX 14 - Top Shooter 2
