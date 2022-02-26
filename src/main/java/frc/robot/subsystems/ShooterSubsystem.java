@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.miscellaneous.MotorStatus;
 import frc.robot.miscellaneous.ShooterCalculator;
+import frc.robot.miscellaneous.CANSparkMaxSendable;
 
 public class ShooterSubsystem extends SubsystemBase {
   public final static Logger logger = EventLogging.getLogger(ShooterSubsystem.class, Level.INFO);
@@ -33,7 +34,7 @@ public class ShooterSubsystem extends SubsystemBase {
   static WPI_TalonFX m_main2 = RobotContainer.shooterSubsystemMainShooter2;
   WPI_TalonFX m_main1 = RobotContainer.shooterSubsystemMainShooter1;
   static WPI_TalonFX m_back = RobotContainer.shooterSubsystemBackSpinShooter;
-  private final CANSparkMax hoodMotor = RobotContainer.shooterSubsystemHoodMax;
+  CANSparkMaxSendable hoodMotor = RobotContainer.shooterSubsystemHoodMax;
   RelativeEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
   
 
@@ -41,6 +42,7 @@ public class ShooterSubsystem extends SubsystemBase {
   
   private SparkMaxPIDController anglePID;
   private final int kTimeoutMs = 0;
+
   private final int kVelocitySlotIdx = 0;
 
   //main shooter FPID Values
@@ -66,7 +68,6 @@ public class ShooterSubsystem extends SubsystemBase {
   public ShooterSubsystem() {
     if (m_main2 != null) {
       SendableRegistry.addLW(m_main2, getName(), "top1");
-      setupMotor(m_main2);
       m_main2.setInverted(InvertType.InvertMotorOutput);
 
       //for PID you have to have a sensor to check on so you know the error
@@ -81,14 +82,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
     if (m_main1 != null) {
       SendableRegistry.addLW(m_main1, getName(), "top2");
-      setupMotor(m_main1);
-      
-      m_main1.follow(m_main2);
-      m_main1.setInverted(InvertType.OpposeMaster);
     }
 
     if (m_back != null) {
-      setupMotor(m_back);
       SendableRegistry.addLW(m_back, getName(), "back");
 
       //for PID you have to have a sensor to check on so you know the error
@@ -100,8 +96,22 @@ public class ShooterSubsystem extends SubsystemBase {
       m_back.config_kI(kVelocitySlotIdx, back_IVelocity, kTimeoutMs);
       m_back.config_kD(kVelocitySlotIdx, back_DVelocity, kTimeoutMs);
     }
+  
+
 
    
+
+    
+    if (hoodMotor != null) {
+      SendableRegistry.addLW(hoodMotor, getName(), "hoodMotor");
+      anglePID = hoodMotor.getPIDController();
+      hoodEncoder = hoodMotor.getEncoder();
+      anglePID.setReference(requestedHoodPosition, ControlType.kPosition);
+      anglePID.setP(hoodP);
+      anglePID.setI(hoodI);
+      anglePID.setD(hoodD);
+      anglePID.setOutputRange(-0.5, 0.5);
+    }
   }
 
   public double calcHoodPosition(double cy) {
@@ -129,20 +139,8 @@ public class ShooterSubsystem extends SubsystemBase {
     return calcMainRPM;
   }
 
-
-  void setupMotor(TalonFX m) {
-    m.configFactoryDefault();
-    m.setInverted(InvertType.None);
-
-    //set max and minium(nominal) speed in percentage output
-    m.configNominalOutputForward(0, kTimeoutMs);
-    m.configNominalOutputReverse(0, kTimeoutMs);
-    m.configPeakOutputForward(+1, kTimeoutMs);
-    m.configPeakOutputReverse(-1, kTimeoutMs);
-    
-    StatorCurrentLimitConfiguration amprage=new StatorCurrentLimitConfiguration(true,40,0,0); 
-    m.configStatorCurrentLimit(amprage);
-    m.setNeutralMode(NeutralMode.Coast);
+  public void setTopPower(double p) {
+    m_main1.set(p);
   }
 
   void setRpm(TalonFX m, double r, MotorStatus s) {
@@ -176,7 +174,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setMainRPM(double r) {
-    setRpm(m_main2, r, s_main);
+    setRpm(m_main1, r, s_main);
 
    // setBackRPM(ShooterCalculator.calculateBackspinRPM(r));
   }
@@ -187,7 +185,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   
 
-  MotorStatus s_main = new MotorStatus("top");
+  MotorStatus s_main = new MotorStatus("main");
   MotorStatus s_back = new MotorStatus("back");
   
   public MotorStatus getTopStatus() {
@@ -236,7 +234,7 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    s_main.gatherActuals(m_main2, "top");
+    s_main.gatherActuals(m_main1, "main");
     s_back.gatherActuals(m_back, "back");
     SmartDashboard.putNumber("Hood Position", getHoodPosition());
 

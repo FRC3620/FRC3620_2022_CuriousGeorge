@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,6 +25,7 @@ public class VisionSubsystem extends SubsystemBase {
   private Solenoid visionLight = RobotContainer.ringLight;
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
+    SendableRegistry.addLW(RobotContainer.ringLight, getName(), "ringlight");
   }
 
   @Override

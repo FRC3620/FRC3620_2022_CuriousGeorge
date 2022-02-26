@@ -4,17 +4,27 @@
 
 package frc.robot.subsystems;
 
+import org.slf4j.Logger;
+
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+
 import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
 public class ArmSubsystem extends SubsystemBase {
-  DoubleSolenoid climberArmTilt = RobotContainer.climberArmTilt;
+  
+	Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+  Solenoid climberArmTilt = RobotContainer.climberArmTilt;
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
     if (climberArmTilt != null) {
+      logger.info("have climberArmTilt");
       SendableRegistry.addLW(climberArmTilt, getName(), "tilt");
+    } else {
+      logger.info("missing climberArmTilt");
     }
   }
 

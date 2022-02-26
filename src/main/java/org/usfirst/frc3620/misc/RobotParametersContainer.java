@@ -31,6 +31,9 @@ public class RobotParametersContainer {
         Map<String, T> rv = new HashMap<>();
         for (T c : l) {
             rv.put(c.macAddress.toLowerCase(), c);
+            if (c.macAddress.length() == 17) {
+                rv.put(c.macAddress.toLowerCase().substring(0, 16), c);
+            }
         }
         return rv;
     }
@@ -74,8 +77,12 @@ public class RobotParametersContainer {
 
         if (parameterMap != null) {
             rv = parameterMap.get(mac.toLowerCase());
+            if (rv == null && mac.length() == 17) {
+                rv = parameterMap.get(mac.toLowerCase().substring(0, 16));
+            }
             if (rv == null) {
                 logger.info ("no entry in {} for \"{}\"", path, mac);
+                logger.info ("parameters: {}", parameterMap.toString());
             }
         }
         if (rv == null) {
@@ -106,6 +113,8 @@ public class RobotParametersContainer {
             if (Robot.isSimulation()) {
                 rv = "(simulation)";
             } else {
+                String eth0_mac = "";
+                String usb0_mac = "";
                 try {
                     for (Enumeration<NetworkInterface> e = NetworkInterface
                             .getNetworkInterfaces(); e.hasMoreElements(); ) {
@@ -122,14 +131,18 @@ public class RobotParametersContainer {
                             String macString = sb.toString();
                             logger.info("found network {}, MAC address {}", network.getName(), macString);
                             if (network.getName().equals("eth0")) {
-                                rv = macString;
-                                break;
+                                eth0_mac = macString;
+                            }
+                            if (network.getName().equals("usb0")) {
+                                usb0_mac = macString;
                             }
                         }
                     }
                 } catch (SocketException e) {
                     e.printStackTrace();
                 }
+                if (usb0_mac.length() > 0) rv = usb0_mac;
+                if (eth0_mac.length() > 0) rv = eth0_mac;
             }
             roboRIOMacAddress = rv;
         }

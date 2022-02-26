@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import javax.print.attribute.standard.MediaSize.NA;
-
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.DriveSubsystem;
 
@@ -14,19 +12,19 @@ import frc.robot.subsystems.DriveSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class setInitialNavXOffsetCommand extends InstantCommand {
   DriveSubsystem m_DriveSubsystem;
-  double NavXOffsetAngle;
-  public setInitialNavXOffsetCommand(DriveSubsystem driveSubsystem, double OffsetAngle) {
+  double navXOffsetAngle;
+  public setInitialNavXOffsetCommand(DriveSubsystem driveSubsystem, double offsetAngle) {
     super();
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     m_DriveSubsystem = driveSubsystem;
-    NavXOffsetAngle = OffsetAngle;
+    navXOffsetAngle = offsetAngle;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_DriveSubsystem.setNavXOffset(NavXOffsetAngle);
+    m_DriveSubsystem.setNavXOffset(navXOffsetAngle);
     m_DriveSubsystem.resetNavX();
     m_DriveSubsystem.setTargetHeading(m_DriveSubsystem.getNavXFixedAngle());
     

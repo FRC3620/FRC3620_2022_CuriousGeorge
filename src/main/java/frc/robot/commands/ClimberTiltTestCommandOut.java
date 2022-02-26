@@ -4,32 +4,25 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
-import edu.wpi.first.util.sendable.SendableRegistry;
 
 public class ClimberTiltTestCommandOut extends CommandBase {
   ClimberSubsystem climberSubsystem = RobotContainer.climberSubsystem;
   ArmSubsystem armSubsystem = RobotContainer.armSubsystem;
-  protected Timer m_timer = new Timer();
-  
   
   /** Creates a new ClimberTiltTestCommandOut. */
   public ClimberTiltTestCommandOut() {
-    addRequirements(armSubsystem);
-
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(armSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     climberSubsystem.climberArmTiltOut();
-    m_timer.reset();
-    m_timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,16 +32,11 @@ public class ClimberTiltTestCommandOut extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_timer.stop();
-    climberSubsystem.climberArmTiltOff();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_timer.hasElapsed(5);
-    
+    return true;
   }
 }
-
-

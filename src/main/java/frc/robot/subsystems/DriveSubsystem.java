@@ -152,6 +152,11 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 		sc = new SwerveCalculator(CHASIS_WIDTH, CHASIS_LENGTH, MAX_VELOCITY_IN_PER_SEC);
 
+		SendableRegistry.addLW(leftFrontHomeEncoder, getName(), "left front home encoder");
+		SendableRegistry.addLW(rightFrontHomeEncoder, getName(), "right front home encoder");
+		SendableRegistry.addLW(leftBackHomeEncoder, getName(), "left back home encoder");
+		SendableRegistry.addLW(rightBackHomeEncoder, getName(), "right back home encoder");
+
 		if (rightFrontDriveMaster != null) {
 			SendableRegistry.addLW(rightFrontDriveMaster, getName(), "right front drive");
 			SendableRegistry.addLW(leftFrontDriveMaster, getName(), "left front drive");
@@ -250,11 +255,15 @@ public class DriveSubsystem extends SubsystemBase {
 	public void periodic() {
 		SmartDashboard.putNumber("Conversion Factor", (WHEEL_TO_ENCODER_RATIO_VELOCITY*WHEEL_CIRCUMFERENCE)/60);
 
+		SmartDashboard.putNumber("Right Front Home Encoder", getHomeEncoderHeading(rightFrontHomeEncoder));
+		SmartDashboard.putNumber("Left Front Home Encoder", getHomeEncoderHeading(leftFrontHomeEncoder));
+		SmartDashboard.putNumber("Left Back Home Encoder", getHomeEncoderHeading(leftBackHomeEncoder));
+		SmartDashboard.putNumber("Right Back Home Encoder", getHomeEncoderHeading(rightBackHomeEncoder));
+
 		if (rightFrontDriveEncoder != null) {
 			SmartDashboard.putNumber("Right Front Velocity", rightFrontDriveEncoder.getVelocity());
 			SmartDashboard.putNumber("Right Front Azimuth", rightFrontAzimuthEncoder.getPosition());
 			SmartDashboard.putNumber("Right Front Azimuth fixed", getFixedPosition(rightFrontAzimuthEncoder));
-			SmartDashboard.putNumber("Right Front Home Encoder", getHomeEncoderHeading(rightFrontHomeEncoder));
 			SmartDashboard.putNumber("Right Front Drive Current Draw", rightFrontDriveMaster.getOutputCurrent());
 			SmartDashboard.putNumber("Right Front Drive Voltage", rightFrontDriveMaster.getAppliedOutput());
 		}
@@ -262,7 +271,6 @@ public class DriveSubsystem extends SubsystemBase {
 			SmartDashboard.putNumber("Left Front Velocity", leftFrontDriveEncoder.getVelocity());
 			SmartDashboard.putNumber("Left Front Azimuth", leftFrontAzimuthEncoder.getPosition());
 			SmartDashboard.putNumber("Left Front Azimuth fixed", getFixedPosition(leftFrontAzimuthEncoder));
-			SmartDashboard.putNumber("Left Front Home Encoder", getHomeEncoderHeading(leftFrontHomeEncoder));
 			SmartDashboard.putNumber("Left Front Drive Current Draw", leftFrontDriveMaster.getOutputCurrent());
 			SmartDashboard.putNumber("Left Front Drive Voltage", leftFrontDriveMaster.getAppliedOutput());
 		}
@@ -270,16 +278,15 @@ public class DriveSubsystem extends SubsystemBase {
 			SmartDashboard.putNumber("Left Back Velocity", leftBackDriveEncoder.getVelocity());
 			SmartDashboard.putNumber("Left Back Azimuth", leftBackAzimuthEncoder.getPosition());
 			SmartDashboard.putNumber("Left Back Azimuth fixed", getFixedPosition(leftBackAzimuthEncoder));
-			SmartDashboard.putNumber("Left Back Home Encoder", getHomeEncoderHeading(leftBackHomeEncoder));
 			SmartDashboard.putNumber("Left Back Drive Current Draw", leftBackDriveMaster.getOutputCurrent());
+			SmartDashboard.putNumber("Left Back Drive Voltage", leftBackDriveMaster.getAppliedOutput());
 		}
 		if (rightBackDriveEncoder != null) {
 			SmartDashboard.putNumber("Right Back Velocity", rightBackDriveEncoder.getVelocity());
 			SmartDashboard.putNumber("Right Back Azimuth", rightBackAzimuthEncoder.getPosition());
 			SmartDashboard.putNumber("Right Back Azimuth fixed", getFixedPosition(rightBackAzimuthEncoder));
-			SmartDashboard.putNumber("Right Back Home Encoder", getHomeEncoderHeading(rightBackHomeEncoder));
 			SmartDashboard.putNumber("Right Back Drive Current Draw", rightBackDriveMaster.getOutputCurrent());
-			SmartDashboard.putNumber("Right Back Drive Motor Position", rightBackDriveEncoder.getPosition());
+			SmartDashboard.putNumber("Right Back Drive Voltage", rightBackDriveMaster.getAppliedOutput());
 		}
 
 		if (rightFrontDriveMaster  != null) {
@@ -747,6 +754,7 @@ public class DriveSubsystem extends SubsystemBase {
 			rightBackAzimuthEncoder.setPosition(getHomeEncoderHeading(rightBackHomeEncoder) - RIGHT_BACK_ABSOLUTE_OFFSET);
 		}
 	}
+
 	public double getFixedPosition(RelativeEncoder encoder){
   		if (encoder != null) {
 			double azimuth = encoder.getPosition();
@@ -823,7 +831,7 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public double getNavXAbsoluteAngle(){ //returns raw degrees, can accumulate past 360 or -360 degrees 
-		double angle =ahrs.getAngle();
+		double angle = ahrs.getAngle();
 		return angle;
 	}
 	

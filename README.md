@@ -2,21 +2,12 @@
 
 ## Driver Controls
 * A - X Mode
-* LT - Intake up/down + roller (clockwise)
+* LB - Intake arm up and down plus roller and belt (clockwise)
 * RT - Fire
 
 ## Operator Controls
 
-
-* DPad Up - Hood forward
-* DPad Down - Hood backward
----
-**!!!!**
-
-Dpad Up and Down are also defined as Turret Front and Rear; which is it?
-
----
-* Dpad Left + Right - Turret left and right
+* Dpad - Turret left, forward, right, reverse
 * X - Shooter ("fire up")
 * Right Stick - Climber up + down
 * A - Climber tilt out
@@ -24,17 +15,17 @@ Dpad Up and Down are also defined as Turret Front and Rear; which is it?
   
 # Hardware Assignments
 
-* TalonFX 40 - climber
+* TalonFX 17 - climber
 <br></br>
-* TalonFX 21 - Top Shooter 1
-* TalonFX 17 - Top Shooter 2
-* SparkMAX 27 - Preshooter
-* TalonFX 28 - Back Shooter
+* TalonFX 13 - Top Shooter 1
+* TalonFX 14 - Top Shooter 2
+* SparkMAX 11 - Preshooter
+* TalonFX 15 - Back Shooter
 <br></br>
-* SparkMAX 25 - intake wheel/wheel bar
-* SparkMAX 26 - intake belt
+* SparkMAX 9 - intake wheel/wheel bar
+* SparkMAX 10 - intake belt
 <br></br>
-* SparkMAX 20 - Turret
+* SparkMAX 12 - Turret
 <br></br>
 * SparkMAX 1 - right front drive
 * SparkMAX 2 - right front azimuth
@@ -46,4 +37,5 @@ Dpad Up and Down are also defined as Turret Front and Rear; which is it?
 * SparkMAX 8 - right back azimuth
 <br></br>
 * PCM 7 - RingLight
-* PCM 0,1 - ClimberTilt
+* PCM 0 - ClimberTilt
+* PCM 1 - IntakeArm

@@ -8,6 +8,8 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -39,6 +41,7 @@ import org.usfirst.frc3620.misc.*;
 import frc.robot.commands.*;
 import frc.robot.miscellaneous.CANSparkMaxSendable;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.RumbleSubsystem.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -94,6 +97,7 @@ public class RobotContainer {
   //intake
   public static CANSparkMaxSendable intakeWheelbar;
   public static CANSparkMaxSendable intakeBelt;
+  public static Solenoid intakeArm;
 
   // vision
   public static Solenoid ringLight;
@@ -114,7 +118,7 @@ public class RobotContainer {
   // climber
   public static DigitalInput climberStationaryHookContact;
   public static WPI_TalonFX climberExtentionMotor; 
-  public static DoubleSolenoid climberArmTilt;
+  public static Solenoid climberArmTilt;
 
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
@@ -126,6 +130,9 @@ public class RobotContainer {
   public static ArmSubsystem armSubsystem;
   public static PreShooterSubsystem preShooterSubsystem;
   
+  public static RumbleSubsystem operatorRumbleSubsystem;
+  public static RumbleSubsystem driverRumbleSubsystem;
+
   // joysticks here....
   public static Joystick driverJoystick;
   public static Joystick operatorJoystick;
@@ -155,6 +162,11 @@ public class RobotContainer {
       logger.warn ("will try to deal with missing hardware!");
     }
 
+    driveSubsystemRightFrontHomeEncoder = new AnalogInput(0);
+    driveSubsystemLeftFrontHomeEncoder = new AnalogInput(1);
+    driveSubsystemLeftBackHomeEncoder = new AnalogInput(2);
+    driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
+      
     // we don't *need* to use the canDeviceFinder for CAN Talons because
     // they do not put up unreasonable amounts of SPAM
     if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1, "Swerve") || shouldMakeAllCANDevices){
@@ -164,8 +176,6 @@ public class RobotContainer {
       
       driveSubsystemRightFrontAzimuth = new CANSparkMaxSendable(2, MotorType.kBrushless);
       driveSubsystemRightFrontAzimuthEncoder = driveSubsystemRightFrontAzimuth.getEncoder();
-
-      driveSubsystemRightFrontHomeEncoder = new AnalogInput(0);
               
       driveSubsystemLeftFrontDrive = new CANSparkMaxSendable(3, MotorType.kBrushless);
       driveSubsystemLeftFrontDriveEncoder = driveSubsystemLeftFrontDrive.getEncoder();
@@ -173,29 +183,23 @@ public class RobotContainer {
       driveSubsystemLeftFrontAzimuth = new CANSparkMaxSendable(4, MotorType.kBrushless);
       driveSubsystemLeftFrontAzimuthEncoder = driveSubsystemLeftFrontAzimuth.getEncoder();
 
-      driveSubsystemLeftFrontHomeEncoder = new AnalogInput(1);
-      
       driveSubsystemLeftBackDrive = new CANSparkMaxSendable(5, MotorType.kBrushless);
       driveSubsystemLeftBackDriveEncoder = driveSubsystemLeftBackDrive.getEncoder();
               
       driveSubsystemLeftBackAzimuth = new CANSparkMaxSendable(6, MotorType.kBrushless);
       driveSubsystemLeftBackAzimuthEncoder = driveSubsystemLeftBackAzimuth.getEncoder();
 
-      driveSubsystemLeftBackHomeEncoder = new AnalogInput(2);
-              
       driveSubsystemRightBackDrive = new CANSparkMaxSendable(7, MotorType.kBrushless);
       driveSubsystemRightBackDriveEncoder = driveSubsystemRightBackDrive.getEncoder();
       
       driveSubsystemRightBackAzimuth = new CANSparkMaxSendable(8, MotorType.kBrushless);
       driveSubsystemRightBackAzimuthEncoder = driveSubsystemRightBackAzimuth.getEncoder();
-
-      driveSubsystemRightBackHomeEncoder = new AnalogInput(3);
     }
 
     climberStationaryHookContact = new DigitalInput(1);
     if (robotParameters.hasClimber()) {
-      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 40, "climberExtentionMotor") || shouldMakeAllCANDevices) {
-        climberExtentionMotor = new WPI_TalonFX(40);
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 17, "climberExtentionMotor") || shouldMakeAllCANDevices) {
+        climberExtentionMotor = new WPI_TalonFX(17);
       }
     } else {
       logger.info ("robot parameters say no climber, so skipping");
@@ -203,29 +207,25 @@ public class RobotContainer {
 
     // shooter motors
     if (robotParameters.hasShooter()) {
-      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 21, "top shooter 1") || shouldMakeAllCANDevices) {
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 13, "top shooter 1") || shouldMakeAllCANDevices) {
         // Shooter Motors
-        shooterSubsystemMainShooter2 = new WPI_TalonFX(21);
+        shooterSubsystemMainShooter2 = new WPI_TalonFX(13);
       }
 
-      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 17, "top shooter 2") || shouldMakeAllCANDevices) {
-        shooterSubsystemMainShooter1 = new WPI_TalonFX(17);
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 14, "top shooter 2") || shouldMakeAllCANDevices) {
+        shooterSubsystemMainShooter1 = new WPI_TalonFX(14);
       }
 
-      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 27, "preshooter") || shouldMakeAllCANDevices) {
-        preShooterSubsystemPreShooter = new CANSparkMaxSendable(27, MotorType.kBrushless);
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11, "preshooter") || shouldMakeAllCANDevices) {
+        preShooterSubsystemPreShooter = new CANSparkMaxSendable(11, MotorType.kBrushless);
       }
 
-      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 28, "back shooter") || shouldMakeAllCANDevices) {
-        shooterSubsystemBackSpinShooter = new WPI_TalonFX(28);
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 15, "back shooter") || shouldMakeAllCANDevices) {
+        shooterSubsystemBackSpinShooter = new WPI_TalonFX(15);
       }
 
-      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 29)){
-        shooterSubsystemHoodMax = new CANSparkMaxSendable(29, MotorType.kBrushless);
-        shooterSubsystemHoodMax.setIdleMode(IdleMode.kCoast);
-        shooterSubsystemHoodMax.setOpenLoopRampRate(.3);
-        shooterSubsystemHoodMax.setClosedLoopRampRate(.3);
-        shooterSubsystemHoodMax.setSmartCurrentLimit(10);
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 16)){
+        shooterSubsystemHoodMax = new CANSparkMaxSendable(16, MotorType.kBrushless);
       }
     } else {
       logger.info ("robot parameters say no shooter, so skipping");
@@ -233,8 +233,8 @@ public class RobotContainer {
 
     // turret
     if (robotParameters.hasTurret()){
-      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 20, "turret") || shouldMakeAllCANDevices) {
-        turretSubsystemturretSpinner = new CANSparkMaxSendable(20, MotorType.kBrushless);
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 12, "turret") || shouldMakeAllCANDevices) {
+        turretSubsystemturretSpinner = new CANSparkMaxSendable(12, MotorType.kBrushless);
         resetMaxToKnownState(turretSubsystemturretSpinner, true);
         turretSubsystemturretSpinner.setSmartCurrentLimit(10);
         turretSubsystemturretEncoder = turretSubsystemturretSpinner.getEncoder();
@@ -243,16 +243,15 @@ public class RobotContainer {
       logger.info ("robot parameters say no turret, so skipping");
     }
 
-    // intake
     if (robotParameters.hasIntake()) {
-      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 25, "wheel bar") || shouldMakeAllCANDevices) {
-        intakeWheelbar = new CANSparkMaxSendable(25, MotorType.kBrushless);
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9, "wheel bar") || shouldMakeAllCANDevices) {
+        intakeWheelbar = new CANSparkMaxSendable(9, MotorType.kBrushless);
       }
-      /*
-      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 26, "Intake Belt") || iAmACompetitionRobot){
-        intakeBelt = new CANSparkMax(#, MotorType.UNDECIDED);
+      
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 10, "Intake Belt") || shouldMakeAllCANDevices) {
+        intakeBelt = new CANSparkMaxSendable(10, MotorType.kBrushless);
       }
-        */
+        
     } else {
       logger.info ("robot parameters say no intake, so skipping");
     }
@@ -266,16 +265,21 @@ public class RobotContainer {
     }
 
     if (pneumaticModuleType != null) {
+      Compressor compressor = new Compressor(pneumaticModuleType);
       if (! robotParameters.shouldRunCompressor()) {
         logger.info ("disabling the compressor because of robot_parameters");
-        Compressor compressor = new Compressor(pneumaticModuleType);
         compressor.disable();
+      } else {
+        compressor.enableDigital();
       }
 
       ringLight = new Solenoid(pneumaticModuleType, 7);
       ringLight.set(true);
       if (robotParameters.hasClimber()){
-        climberArmTilt = new DoubleSolenoid(pneumaticModuleType, 0, 1);
+        climberArmTilt = new Solenoid(pneumaticModuleType, 0);
+      }
+      if (robotParameters.hasIntake()){
+        intakeArm = new Solenoid(pneumaticModuleType, 1);
       }
     }
   }
@@ -309,26 +313,36 @@ public class RobotContainer {
       resetMaxToKnownState(driveSubsystemRightBackAzimuth, false);
       driveSubsystemRightBackAzimuth.setClosedLoopRampRate(AZIMUTH_CLOSED_LOOP_RAMP_RATE_CONSTANT);
     }
-    if (shooterSubsystemMainShooter2 != null) {
-      shooterSubsystemMainShooter2.configFactoryDefault();
-      shooterSubsystemMainShooter2.setInverted(InvertType.InvertMotorOutput);
+    if (shooterSubsystemMainShooter1 != null) {
+      resetTalonFXToKnownState(shooterSubsystemMainShooter1, InvertType.InvertMotorOutput);
     }
 
-    if (shooterSubsystemMainShooter1 != null) {
-      shooterSubsystemMainShooter1.configFactoryDefault();
-      shooterSubsystemMainShooter1.follow(shooterSubsystemMainShooter2);
-      shooterSubsystemMainShooter1.setInverted(InvertType.OpposeMaster);
+    if (shooterSubsystemMainShooter2 != null) {
+      resetTalonFXToKnownState(shooterSubsystemMainShooter2, InvertType.OpposeMaster);
+      shooterSubsystemMainShooter2.follow(shooterSubsystemMainShooter1);
     }
 
     if (shooterSubsystemBackSpinShooter != null) {
-      shooterSubsystemBackSpinShooter.configFactoryDefault();
-      shooterSubsystemBackSpinShooter.setInverted(InvertType.InvertMotorOutput);
+      resetTalonFXToKnownState(shooterSubsystemBackSpinShooter, InvertType.InvertMotorOutput);
     }
 
     if(preShooterSubsystemPreShooter != null) {
-      preShooterSubsystemPreShooter.setInverted(false);
+      resetMaxToKnownState(preShooterSubsystemPreShooter, true); 
+    }
+
+    if(shooterSubsystemHoodMax != null) {
+      resetMaxToKnownState(shooterSubsystemHoodMax, true);
+      shooterSubsystemHoodMax.setIdleMode(IdleMode.kCoast);
+      shooterSubsystemHoodMax.setOpenLoopRampRate(.3);
+      shooterSubsystemHoodMax.setClosedLoopRampRate(.3);
+      shooterSubsystemHoodMax.setSmartCurrentLimit(10);
+    } 
+
+    if(climberExtentionMotor != null) {
+      resetTalonFXToKnownState(climberExtentionMotor, InvertType.InvertMotorOutput);
     }
   }
+  
 
   static void resetMaxToKnownState(CANSparkMax x, boolean inverted) {
     x.setInverted(inverted);
@@ -336,6 +350,22 @@ public class RobotContainer {
     x.setOpenLoopRampRate(1);
     x.setClosedLoopRampRate(1);
     x.setSmartCurrentLimit(50);
+  }
+
+  static void resetTalonFXToKnownState(WPI_TalonFX m, InvertType invert) {
+    int kTimeoutMs = 0;
+    m.configFactoryDefault();
+    m.setInverted(invert);
+
+    //set max and minium(nominal) speed in percentage output
+    m.configNominalOutputForward(0, kTimeoutMs);
+    m.configNominalOutputReverse(0, kTimeoutMs);
+    m.configPeakOutputForward(+1, kTimeoutMs);
+    m.configPeakOutputReverse(-1, kTimeoutMs);
+    
+    StatorCurrentLimitConfiguration amprage=new StatorCurrentLimitConfiguration(true,40,0,0); 
+    m.configStatorCurrentLimit(amprage);
+    m.setNeutralMode(NeutralMode.Coast);
   }
 
   void makeSubsystems() {
@@ -347,6 +377,8 @@ public class RobotContainer {
     shooterSubsystem = new ShooterSubsystem();
     armSubsystem = new ArmSubsystem();
     preShooterSubsystem = new PreShooterSubsystem();
+    operatorRumbleSubsystem = new RumbleSubsystem(1);
+    driverRumbleSubsystem = new RumbleSubsystem(0);
   }
 
   /**
@@ -382,8 +414,10 @@ public class RobotContainer {
     AnalogJoystickButton climberExtendDown = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, 0.2);
     climberExtendDown.whileHeld(new ClimberTestCommandDown());
 
-  
-
+    JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
+    intakeButton.toggleWhenPressed(new IntakeBallCommand());
+    JoystickButton ejectButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    ejectButton.whileHeld(new EjectBallCommand());
   }
 
   void setupSmartDashboardCommands() {
@@ -415,6 +449,13 @@ public class RobotContainer {
     SmartDashboard.putData("Climber Tilt In", new ClimberTiltTestCommandIn());
 
     SmartDashboard.putData("Find target",new FindTargetCommand(turretSubsystem, visionSubsystem));
+
+    SmartDashboard.putData("Rumble Command", new RumbleCommand(driverRumbleSubsystem, Hand.BOTH, 1.0, 3.0));
+    SmartDashboard.putData("Rumble Command 2", new RumbleCommand(driverRumbleSubsystem, .5, 5.0));
+    SmartDashboard.putData("Rumble Command 3", new RumbleCommand(driverRumbleSubsystem,Hand.LEFT, .5, 3.0));
+    SmartDashboard.putData("Rumble Command 4", new RumbleCommand(driverRumbleSubsystem,Hand.RIGHT, .5, 3.0));
+
+    SmartDashboard.putData("Top shooter to 0.1", new ShooterPowerTest());
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();

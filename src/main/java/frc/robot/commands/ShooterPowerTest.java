@@ -6,37 +6,35 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.ArmSubsystem;
-import frc.robot.subsystems.ClimberSubsystem;
 
-public class ClimberTiltTestCommandIn extends CommandBase {
-  ClimberSubsystem climberSubsystem = RobotContainer.climberSubsystem;
-  ArmSubsystem armSubsystem = RobotContainer.armSubsystem;
-
-  /** Creates a new ClimberTiltTestCommandOut. */
-  public ClimberTiltTestCommandIn() {
+public class ShooterPowerTest extends CommandBase {
+  /** Creates a new ShooterPowerTest. */
+  public ShooterPowerTest() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(armSubsystem);
+    addRequirements(RobotContainer.shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    climberSubsystem.climberArmTiltIn();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    RobotContainer.shooterSubsystem.setTopPower(0.1);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    RobotContainer.shooterSubsystem.setTopPower(0.0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }
