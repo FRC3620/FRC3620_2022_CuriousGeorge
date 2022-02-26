@@ -235,7 +235,7 @@ public class RobotContainer {
     if (robotParameters.hasTurret()){
       if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 12, "turret") || shouldMakeAllCANDevices) {
         turretSubsystemturretSpinner = new CANSparkMaxSendable(12, MotorType.kBrushless);
-        resetMaxToKnownState(turretSubsystemturretSpinner, true);
+        resetMaxToKnownState(turretSubsystemturretSpinner, false);
         turretSubsystemturretSpinner.setSmartCurrentLimit(10);
         turretSubsystemturretEncoder = turretSubsystemturretSpinner.getEncoder();
       }
@@ -340,11 +340,13 @@ public class RobotContainer {
 
     if(climberExtentionMotor != null) {
       resetTalonFXToKnownState(climberExtentionMotor, InvertType.InvertMotorOutput);
+      StatorCurrentLimitConfiguration amprage=new StatorCurrentLimitConfiguration(true,80,0,0); 
+      climberExtentionMotor.configStatorCurrentLimit(amprage);
     }
   }
-  
 
   static void resetMaxToKnownState(CANSparkMax x, boolean inverted) {
+    // TODO set to factory default here
     x.setInverted(inverted);
     x.setIdleMode(IdleMode.kCoast);
     x.setOpenLoopRampRate(1);
@@ -357,14 +359,17 @@ public class RobotContainer {
     m.configFactoryDefault();
     m.setInverted(invert);
 
+    /*
+
     //set max and minium(nominal) speed in percentage output
-    m.configNominalOutputForward(0, kTimeoutMs);
-    m.configNominalOutputReverse(0, kTimeoutMs);
+    m.configNominalOutputForward(+1, kTimeoutMs);
+    m.configNominalOutputReverse(-1, kTimeoutMs);
     m.configPeakOutputForward(+1, kTimeoutMs);
     m.configPeakOutputReverse(-1, kTimeoutMs);
     
     StatorCurrentLimitConfiguration amprage=new StatorCurrentLimitConfiguration(true,40,0,0); 
     m.configStatorCurrentLimit(amprage);
+    */
     m.setNeutralMode(NeutralMode.Coast);
   }
 
