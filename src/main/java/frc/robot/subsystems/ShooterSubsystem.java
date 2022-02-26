@@ -32,11 +32,12 @@ public class ShooterSubsystem extends SubsystemBase {
   WPI_TalonFX m_top1 = RobotContainer.shooterSubsystemTop1;
   WPI_TalonFX m_top2 = RobotContainer.shooterSubsystemTop2;
   WPI_TalonFX m_back = RobotContainer.shooterSubsystemBackShooter;
-  private final CANSparkMax hoodMotor = RobotContainer.shooterSubsystemHoodMax;
+  private final CANSparkMaxSendable hoodMotor = RobotContainer.shooterSubsystemHoodMax;
   RelativeEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
   CANSparkMaxSendable preshooter = RobotContainer.shooterSubsystemPreshooter;
   private SparkMaxPIDController anglePID;
   private final int kTimeoutMs = 0;
+
   private final int kVelocitySlotIdx = 0;
 
   //top FPID Values
@@ -60,8 +61,6 @@ public class ShooterSubsystem extends SubsystemBase {
   public ShooterSubsystem() {
     if (m_top1 != null) {
       SendableRegistry.addLW(m_top1, getName(), "top1");
-      setupMotor(m_top1);
-      m_top1.setInverted(InvertType.InvertMotorOutput);
 
       //for PID you have to have a sensor to check on so you know the error
       m_top1.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kVelocitySlotIdx, kTimeoutMs);
@@ -75,14 +74,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
     if (m_top2 != null) {
       SendableRegistry.addLW(m_top2, getName(), "top2");
-      setupMotor(m_top2);
-      
-      m_top2.follow(m_top1);
-      m_top2.setInverted(InvertType.OpposeMaster);
     }
 
     if (m_back != null) {
-      setupMotor(m_back);
       SendableRegistry.addLW(m_back, getName(), "back");
 
       //for PID you have to have a sensor to check on so you know the error
@@ -103,21 +97,21 @@ public class ShooterSubsystem extends SubsystemBase {
       // etc etc for rest of PID
 
     }
+    
+    if (hoodMotor != null) {
+      SendableRegistry.addLW(hoodMotor, getName(), "hoodMotor");
+      anglePID = hoodMotor.getPIDController();
+      hoodEncoder = hoodMotor.getEncoder();
+      anglePID.setReference(hoodPosition, ControlType.kPosition);
+      anglePID.setP(hoodP);
+      anglePID.setI(hoodI);
+      anglePID.setD(hoodD);
+      anglePID.setOutputRange(-0.5, 0.5);
+    }
   }
 
-  void setupMotor(TalonFX m) {
-    m.configFactoryDefault();
-    m.setInverted(InvertType.None);
-
-    //set max and minium(nominal) speed in percentage output
-    m.configNominalOutputForward(0, kTimeoutMs);
-    m.configNominalOutputReverse(0, kTimeoutMs);
-    m.configPeakOutputForward(+1, kTimeoutMs);
-    m.configPeakOutputReverse(-1, kTimeoutMs);
-    
-    StatorCurrentLimitConfiguration amprage=new StatorCurrentLimitConfiguration(true,40,0,0); 
-    m.configStatorCurrentLimit(amprage);
-    m.setNeutralMode(NeutralMode.Coast);
+  public void setTopPower(double p) {
+    m_top1.set(p);
   }
 
   void setRpm(TalonFX m, double r, Status s) {
@@ -221,15 +215,6 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber(prefix + ".current.supply", s.supplyCurrent);
     SmartDashboard.putNumber("Hood Position", hoodPosition);
 
-    if (hoodMotor != null) {
-      anglePID = hoodMotor.getPIDController();
-      hoodEncoder = hoodMotor.getEncoder();
-      anglePID.setReference(hoodPosition, ControlType.kPosition);
-      anglePID.setP(hoodP);
-      anglePID.setI(hoodI);
-      anglePID.setD(hoodD);
-      anglePID.setOutputRange(-0.5, 0.5);
-    }
     
   }
   

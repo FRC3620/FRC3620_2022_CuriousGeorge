@@ -4,17 +4,17 @@
     "macAddress": "00-80-2F-21-E4-EA",
     "makeAllCANDevices": true,
     // azimuth home encoders
-    "swerve.he.rf": 0,   // right front
-    "swerve.he.lf": 0,  // left front
-    "swerve.he.lb": 0, // left back
-    "swerve.he.rb": 0,  // right back
+    "swerve.he.rf": -1.1,   // right front
+    "swerve.he.lf": 84.3,  // left front
+    "swerve.he.lb": -84.2, // left back
+    "swerve.he.rb": -94.7,  // right back
     //
     "swerve.chassis_width": 23.00,  // inches
     "swerve.chassis_length": 23.00,
 
     "has_climber": true,
     "has_intake": true,
-    "has_shooter": false,
+    "has_shooter": true,
     "has_turret": false,
 
     "should_run_compressor": true
