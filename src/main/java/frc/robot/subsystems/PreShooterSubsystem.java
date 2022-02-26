@@ -15,7 +15,7 @@ public class PreShooterSubsystem extends SubsystemBase {
   /** Creates a new PreSubshooterSubsystem. */
 
   // Set up Motor
-  static CANSparkMax preshooter = RobotContainer.shooterSubsystemPreshooter;
+  static CANSparkMax preshooter = RobotContainer.preShooterSubsystemPreShooter;
 
   //preshooter FPID Values
   private final double preshooter_FVelocity = 0.0495;//.0456

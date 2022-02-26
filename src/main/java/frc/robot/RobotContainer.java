@@ -105,7 +105,7 @@ public class RobotContainer {
   public static CANSparkMaxSendable shooterSubsystemHoodMax;
   public static RelativeEncoder shooterSubsystemHoodEncoder;
   public static DigitalInput hoodLimitSwitch;
-  public static CANSparkMaxSendable shooterSubsystemPreshooter;
+  public static CANSparkMaxSendable preShooterSubsystemPreShooter;
   
   // turret
   public static CANSparkMaxSendable turretSubsystemturretSpinner;
@@ -124,7 +124,8 @@ public class RobotContainer {
   public static TurretSubsystem turretSubsystem;
   public static ShooterSubsystem shooterSubsystem;
   public static ArmSubsystem armSubsystem;
-
+  public static PreShooterSubsystem preShooterSubsystem;
+  
   // joysticks here....
   public static Joystick driverJoystick;
   public static Joystick operatorJoystick;
@@ -212,7 +213,7 @@ public class RobotContainer {
       }
 
       if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 27, "preshooter") || shouldMakeAllCANDevices) {
-        shooterSubsystemPreshooter = new CANSparkMaxSendable(27, MotorType.kBrushless);
+        preShooterSubsystemPreShooter = new CANSparkMaxSendable(27, MotorType.kBrushless);
       }
 
       if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 28, "back shooter") || shouldMakeAllCANDevices) {
@@ -324,8 +325,8 @@ public class RobotContainer {
       shooterSubsystemBackSpinShooter.setInverted(InvertType.InvertMotorOutput);
     }
 
-    if(shooterSubsystemPreshooter != null) {
-      shooterSubsystemPreshooter.setInverted(false);
+    if(preShooterSubsystemPreShooter != null) {
+      preShooterSubsystemPreShooter.setInverted(false);
     }
   }
 
@@ -345,6 +346,7 @@ public class RobotContainer {
     turretSubsystem = new TurretSubsystem();
     shooterSubsystem = new ShooterSubsystem();
     armSubsystem = new ArmSubsystem();
+    preShooterSubsystem = new PreShooterSubsystem();
   }
 
   /**
