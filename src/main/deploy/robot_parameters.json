@@ -15,7 +15,7 @@
     "has_climber": true,
     "has_intake": true,
     "has_shooter": true,
-    "has_turret": false,
+    "has_turret": true,
 
     "should_run_compressor": true
   },
