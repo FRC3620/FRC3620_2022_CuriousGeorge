@@ -43,7 +43,7 @@ public class ShooterCommand extends CommandBase {
     talonFX = RobotContainer.shooterSubsystemMainShooter2;
     talonFX = RobotContainer.shooterSubsystemMainShooter1;
     talonFX = RobotContainer.shooterSubsystemBackSpinShooter;
-    sparkMax = RobotContainer.shooterSubsystemPreshooter;
+    sparkMax = RobotContainer.preShooterSubsystemPreShooter;
   }
 
   // Called when the command is initially scheduled.
