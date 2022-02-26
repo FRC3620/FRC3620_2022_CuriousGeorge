@@ -24,6 +24,7 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.miscellaneous.MotorStatus;
 import frc.robot.miscellaneous.ShooterCalculator;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -34,8 +35,8 @@ public class ShooterSubsystem extends SubsystemBase {
   static WPI_TalonFX m_back = RobotContainer.shooterSubsystemBackSpinShooter;
   private final CANSparkMax hoodMotor = RobotContainer.shooterSubsystemHoodMax;
   RelativeEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
-  static CANSparkMax preshooter = RobotContainer.shooterSubsystemPreshooter;
   
+
   double mainShooterRPM = 2000;
   
   private SparkMaxPIDController anglePID;
@@ -48,17 +49,12 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double mainIVelocity = 0.0; //0.000003
   private final double mainDVelocity = 7.75; //7.75
 
-  //preshooter FPID Values
-  private final double preshooter_FVelocity = 0.0495;//.0456
-  private final double preshooter_PVelocity = 0.1; //.45
-  private final double preshooter_IVelocity = 0.00;//0.0000001
-  private final double preshooter_DVelocity = 0;//7.5
-
+  
   //hood
   private final double hoodP = 0;
   private final double hoodI = 0;
   private final double hoodD = 0;
-  private double hoodPosition = 0;
+  private double requestedHoodPosition = 0;
 
   //backspin FPID
   private final double back_FVelocity = 0.0495;//.0456
@@ -105,13 +101,7 @@ public class ShooterSubsystem extends SubsystemBase {
       m_back.config_kD(kVelocitySlotIdx, back_DVelocity, kTimeoutMs);
     }
 
-    if (preshooter != null) {
-      SparkMaxPIDController preshooterPid = preshooter.getPIDController();
-
-      preshooterPid.setFF(0);
-      // etc etc for rest of PID
-
-    }
+   
   }
 
   public double calcHoodPosition(double cy) {
@@ -155,7 +145,7 @@ public class ShooterSubsystem extends SubsystemBase {
     m.setNeutralMode(NeutralMode.Coast);
   }
 
-  void setRpm(TalonFX m, double r, Status s) {
+  void setRpm(TalonFX m, double r, MotorStatus s) {
     double targetVelocity = 0.0;
     if (m != null) {
       if (r == 0) {
@@ -166,13 +156,11 @@ public class ShooterSubsystem extends SubsystemBase {
       }
     }
     //logger.info ("setRpm {} {}", s.name, r);
-    s.requestedRPM = r;
-    s.requestedSensorVelocity = targetVelocity;
-    SmartDashboard.putNumber(s.name + ".rpm.target", r);
-    SmartDashboard.putNumber(s.name + ".velocity.target", targetVelocity);
+    s.setRequestedRPM(r);
+    s.setRequestedSensorVelocity(targetVelocity);
   }
 
-  void setRpm(CANSparkMax m, double r, Status s) {
+  public static void setRpm(CANSparkMax m, double r, MotorStatus s) {
     double targetVelocity = 0;
     if (m != null) {
       if (r == 0) {
@@ -183,93 +171,50 @@ public class ShooterSubsystem extends SubsystemBase {
       }
     }
     //logger.info ("setRpm {} {}", s.name, r);
-    s.requestedRPM = r;
-    s.requestedSensorVelocity = targetVelocity;
-    SmartDashboard.putNumber(s.name + ".rpm.target", r);
-    SmartDashboard.putNumber(s.name + ".velocity.target", targetVelocity);
+    s.setRequestedRPM(r);
+    s.setRequestedSensorVelocity(targetVelocity);
   }
 
   public void setMainRPM(double r) {
     setRpm(m_main2, r, s_main);
 
-    setBackRPM(ShooterCalculator.calculateBackspinRPM(r));
+   // setBackRPM(ShooterCalculator.calculateBackspinRPM(r));
   }
 
   public void setBackRPM(double r) {
     setRpm(m_back, r, s_back);
   }
 
-  public void setPreshooterRPM(double r) {
-    setRpm(preshooter, r, s_preshooter);
-  }
+  
 
-  Status s_main = new Status("top");
-  Status s_back = new Status("back");
-  Status s_preshooter = new Status("preshooter");
-
-  public Status getTopStatus() {
+  MotorStatus s_main = new MotorStatus("top");
+  MotorStatus s_back = new MotorStatus("back");
+  
+  public MotorStatus getTopStatus() {
     return s_main;
   }
 
-  public Status getBackStatus() {
+  public MotorStatus getBackStatus() {
     return s_back;
   }
 
-  public Status getPreshooterStatus() {
-    return s_preshooter;
-  }
-
-  void gatherActuals(Status s, TalonFX m, String prefix) {
-    if (m != null) {
-      s.actualSensorVelocity = m.getSelectedSensorVelocity();
-      s.actualRPM = s.actualSensorVelocity * 600 / 2048;
-      s.statorCurrent = m.getStatorCurrent();
-      s.supplyCurrent = m.getSupplyCurrent();
+  public void setPosition(double position) {
+    if(position >= 85){
+      requestedHoodPosition = 85;
+    } else if (position < 0) {
+      requestedHoodPosition=0;
     } else {
-      s.actualSensorVelocity = -1;
-      s.actualRPM = -1;
-      s.statorCurrent = -1;
-      s.supplyCurrent = -1;
-    }
+      requestedHoodPosition=position;
+    }   
+      hoodMotor.getPIDController().setReference(requestedHoodPosition,CANSparkMax.ControlType.kPosition );
 
-    SmartDashboard.putNumber(prefix + ".velocity.actual", s.actualSensorVelocity);
-    SmartDashboard.putNumber(prefix + ".rpm.actual", s.actualRPM);
-    SmartDashboard.putNumber(prefix + ".current.stator", s.statorCurrent);
-    SmartDashboard.putNumber(prefix + ".current.supply", s.supplyCurrent);
-  }
-
-  void gatherActuals(Status s, CANSparkMax m, String prefix) {
-    if (m != null) {
-      RelativeEncoder encoder = m.getEncoder();
-      s.actualSensorVelocity = encoder.getVelocity();
-      s.actualRPM = s.actualSensorVelocity;
-      s.statorCurrent = m.getOutputCurrent();
-      s.supplyCurrent = -1;
-    } else {
-      s.actualSensorVelocity = -1;
-      s.actualRPM = -1;
-      s.statorCurrent = -1;
-      s.supplyCurrent = -1;
-    }
-
-    SmartDashboard.putNumber(prefix + ".velocity.actual", s.actualSensorVelocity);
-    SmartDashboard.putNumber(prefix + ".rpm.actual", s.actualRPM);
-    SmartDashboard.putNumber(prefix + ".current.stator", s.statorCurrent);
-    SmartDashboard.putNumber(prefix + ".current.supply", s.supplyCurrent);
-    SmartDashboard.putNumber("Hood Position", hoodPosition);
-
-    if (hoodMotor != null) {
-      anglePID = hoodMotor.getPIDController();
-      hoodEncoder = hoodMotor.getEncoder();
-      anglePID.setReference(hoodPosition, ControlType.kPosition);
-      anglePID.setP(hoodP);
-      anglePID.setI(hoodI);
-      anglePID.setD(hoodD);
-      anglePID.setOutputRange(-0.5, 0.5);
-    }
-    
   }
   
+  public double getHoodPosition(){
+    return hoodMotor.getEncoder().getPosition();
+  }
+
+
   public void shooterOff(){
     //sets target velocity to zero
     if (m_main2 != null) {
@@ -277,9 +222,6 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     if (m_back != null) {
       m_back.set(ControlMode.PercentOutput, 0);
-    }
-    if (preshooter != null) {
-      preshooter.set(0);
     }
   }
   
@@ -290,24 +232,14 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
-  public void preshooterOn(double speed) {
-    if(preshooter != null) {
-      preshooter.set(speed);
-    }
-  }
-
-  public void preshooterOff() {
-    if(preshooter != null) {
-      preshooter.set(0);
-    }
-  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    gatherActuals(s_main, m_main2, "top");
-    gatherActuals(s_back, m_back, "back");
-    gatherActuals(s_preshooter, preshooter, "preshooter");
+    s_main.gatherActuals(m_main2, "top");
+    s_back.gatherActuals(m_back, "back");
+    SmartDashboard.putNumber("Hood Position", getHoodPosition());
+
   }
 
   @Override
@@ -315,46 +247,5 @@ public class ShooterSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
   }
 
-  public static class Status {
-    String name;
-    double requestedRPM = -1;
-    double requestedSensorVelocity = -1;
-    double actualSensorVelocity = -1;
-    double actualRPM = -1;
-    double statorCurrent = -1;
-    double supplyCurrent = -1;
-
-    Status(String _name) {
-      this.name = _name;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public double getRequestedRPM() {
-      return requestedRPM;
-    }
-
-    public double getRequestedSensorVelocity() {
-      return requestedSensorVelocity;
-    }
-
-    public double getActualSensorVelocity() {
-      return actualSensorVelocity;
-    }
-
-    public double getActualRPM() {
-      return actualRPM;
-    }
-
-    public double getStatorCurrent() {
-      return statorCurrent;
-    }
-
-    public double getSupplyCurrent() {
-      return supplyCurrent;
-    }
-  }
 
 }

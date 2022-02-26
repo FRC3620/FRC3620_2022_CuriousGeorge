@@ -397,6 +397,7 @@ public class RobotContainer {
     SmartDashboard.putData("DougTestAutoDrive", new DougTestAutoDrive(driveSubsystem));
     SmartDashboard.putData("DougTestAutoSpin", new DougTestAutoSpin(driveSubsystem));
     SmartDashboard.putData("Reset NavX", new ResetNavXCommand(driveSubsystem));
+    SmartDashboard.putData(new SetHoodPositionCommand());
     SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
     SmartDashboard.putData("Find target",new FindTargetCommand(turretSubsystem, visionSubsystem));
     

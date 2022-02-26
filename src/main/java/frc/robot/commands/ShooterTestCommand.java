@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.ShootingDataLogger;
+import frc.robot.miscellaneous.ShooterCalculator;
 import frc.robot.subsystems.ShooterSubsystem;
 
 import org.slf4j.Logger;
@@ -34,7 +35,8 @@ public class ShooterTestCommand extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
     SmartDashboard.putNumber("top.set", 0.0);
-    SmartDashboard.putNumber("bottom.set", 0.0);
+    SmartDashboard.putNumber("back.set", 0.0);
+    SmartDashboard.putBoolean("manual backspin", false);
   }
 
   // Called when the command is initially scheduled.
@@ -51,12 +53,23 @@ public class ShooterTestCommand extends CommandBase {
   @Override
   public void execute() {
     double t = SmartDashboard.getNumber("top.set", 0.0);
-    double b = SmartDashboard.getNumber("bottom.set", 0.0);
+    double b = SmartDashboard.getNumber("back.set", 0.0);
+
     //logger.info ("execute: {} {}", t, b);
     m_subsystem.setMainRPM(t);
-    m_subsystem.setBackRPM(b);
-  }
+    double backspinRPM = ShooterCalculator.calculateBackspinRPM(t);
+    SmartDashboard.putNumber("back.Calculated", backspinRPM);
 
+    if( SmartDashboard.getBoolean ("manual backspin", true)) {
+        m_subsystem.setBackRPM(b);
+
+    }
+    else{ 
+         m_subsystem.setBackRPM(backspinRPM);
+    }
+  
+  }
+  
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
