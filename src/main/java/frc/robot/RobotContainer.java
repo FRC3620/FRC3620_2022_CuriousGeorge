@@ -117,7 +117,7 @@ public class RobotContainer {
 
   // climber
   public static DigitalInput climberStationaryHookContact;
-  public static WPI_TalonFX climberExtentionMotor; 
+  public static CANSparkMaxSendable climberExtentionMotor; 
   public static Solenoid climberArmTilt;
 
   // subsystems here...
@@ -198,8 +198,8 @@ public class RobotContainer {
 
     climberStationaryHookContact = new DigitalInput(1);
     if (robotParameters.hasClimber()) {
-      if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 17, "climberExtentionMotor") || shouldMakeAllCANDevices) {
-        climberExtentionMotor = new WPI_TalonFX(17);
+      if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 17, "climberExtentionMotor") || shouldMakeAllCANDevices) {
+        climberExtentionMotor = new CANSparkMaxSendable(17, MotorType.kBrushless);
       }
     } else {
       logger.info ("robot parameters say no climber, so skipping");
@@ -339,15 +339,17 @@ public class RobotContainer {
     } 
 
     if(climberExtentionMotor != null) {
-      resetTalonFXToKnownState(climberExtentionMotor, InvertType.InvertMotorOutput);
+      resetMaxToKnownState(climberExtentionMotor, InvertType.InvertMotorOutput);
       StatorCurrentLimitConfiguration amprage=new StatorCurrentLimitConfiguration(true,80,0,0); 
       climberExtentionMotor.configStatorCurrentLimit(amprage);
     }
   }
 
-  static void resetMaxToKnownState(CANSparkMax x, boolean inverted) {
+  private void resetMaxToKnownState(CANSparkMaxSendable climberExtentionMotor2, InvertType invertmotoroutput) {
+  }
+
+  static void resetMaxToKnownState(CANSparkMax x, boolean invertmotoroutput) {
     // TODO set to factory default here
-    x.setInverted(inverted);
     x.setIdleMode(IdleMode.kCoast);
     x.setOpenLoopRampRate(1);
     x.setClosedLoopRampRate(1);

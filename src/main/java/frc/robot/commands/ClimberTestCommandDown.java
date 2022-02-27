@@ -8,11 +8,12 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.miscellaneous.CANSparkMaxSendable;
 import frc.robot.subsystems.ClimberSubsystem;
 
 public class ClimberTestCommandDown extends CommandBase {
   ClimberSubsystem climberSubsystem = RobotContainer.climberSubsystem;
-  TalonFX climberExtentionMotor = RobotContainer.climberExtentionMotor;
+  CANSparkMaxSendable climberExtentionMotor = RobotContainer.climberExtentionMotor;
 
   /** Creates a new ClimberTestCommand. */
   public ClimberTestCommandDown() {

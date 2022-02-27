@@ -1,5 +1,7 @@
 package frc.robot.miscellaneous;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -18,5 +20,29 @@ public class CANSparkMaxSendable extends CANSparkMax implements Sendable  {
         builder.setActuator(true);
         builder.setSafeState(this::stopMotor);
         builder.addDoubleProperty("Value", this::get, this::set);
+    }
+
+    public void configStatorCurrentLimit(StatorCurrentLimitConfiguration amprage) {
+    }
+
+    public void setSelectedSensorPosition(int i) {
+    }
+
+    public double getSelectedSensorVelocity() {
+        return 0;
+    }
+
+    public void setSelectedSensorPosition(double d) {
+    }
+
+    public double getStatorCurrent() {
+        return 0;
+    }
+
+    public double getSelectedSensorPosition() {
+        return 0;
+    }
+
+    public void set(ControlMode percentoutput, double speed) {
     }
 }
