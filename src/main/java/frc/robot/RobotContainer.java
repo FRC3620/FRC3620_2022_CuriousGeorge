@@ -209,11 +209,11 @@ public class RobotContainer {
     if (robotParameters.hasShooter()) {
       if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 13, "top shooter 1") || shouldMakeAllCANDevices) {
         // Shooter Motors
-        shooterSubsystemMainShooter2 = new WPI_TalonFX(13);
+        shooterSubsystemMainShooter1 = new WPI_TalonFX(13);
       }
 
       if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON, 14, "top shooter 2") || shouldMakeAllCANDevices) {
-        shooterSubsystemMainShooter1 = new WPI_TalonFX(14);
+        shooterSubsystemMainShooter2 = new WPI_TalonFX(14);
       }
 
       if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 11, "preshooter") || shouldMakeAllCANDevices) {
@@ -447,6 +447,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Eject Ball", new EjectBallCommand());
     SmartDashboard.putData("Intake Ball", new IntakeBallCommand());
+    SmartDashboard.putData("pre shooter", new PreshooterFireCommand());
 
     SmartDashboard.putData("Climber Extention Motor Up", new ClimberTestCommandUp());
     SmartDashboard.putData("Climber Extention Motor Down", new ClimberTestCommandDown());

@@ -27,7 +27,7 @@ public class PreshooterFireCommand extends CommandBase {
 
 
   public void spinPreShooter(){
-    preShooterSubsystem.preshooterOn(.2);
+    preShooterSubsystem.preshooterOn(1);
 
   }
 

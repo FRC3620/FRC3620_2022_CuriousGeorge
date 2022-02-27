@@ -58,6 +58,8 @@ public class ShooterTestCommand extends CommandBase {
     double h = SmartDashboard.getNumber("hood.set", 0.0);
     //logger.info ("execute: {} {}", t, b);
     m_subsystem.setMainRPM(t);
+    
+    
     double backspinRPM = ShooterCalculator.calculateBackspinRPM(t);
     SmartDashboard.putNumber("back.Calculated", backspinRPM);
 
@@ -68,6 +70,7 @@ public class ShooterTestCommand extends CommandBase {
     else{ 
          m_subsystem.setBackRPM(backspinRPM);
     }
+    m_subsystem.setPosition(h);
     m_subsystem.setPosition(SmartDashboard.getNumber("hood.set", 5));
       
   }

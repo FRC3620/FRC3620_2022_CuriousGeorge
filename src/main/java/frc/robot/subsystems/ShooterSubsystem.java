@@ -31,8 +31,8 @@ import frc.robot.miscellaneous.CANSparkMaxSendable;
 public class ShooterSubsystem extends SubsystemBase {
   public final static Logger logger = EventLogging.getLogger(ShooterSubsystem.class, Level.INFO);
 
-  static WPI_TalonFX m_main2 = RobotContainer.shooterSubsystemMainShooter2;
-  WPI_TalonFX m_main1 = RobotContainer.shooterSubsystemMainShooter1;
+  static WPI_TalonFX m_main1 = RobotContainer.shooterSubsystemMainShooter1;
+  WPI_TalonFX m_main2 = RobotContainer.shooterSubsystemMainShooter2;
   static WPI_TalonFX m_back = RobotContainer.shooterSubsystemBackSpinShooter;
   CANSparkMaxSendable hoodMotor = RobotContainer.shooterSubsystemHoodMax;
   RelativeEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
@@ -66,22 +66,22 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
   public ShooterSubsystem() {
-    if (m_main2 != null) {
-      SendableRegistry.addLW(m_main2, getName(), "top1");
-      m_main2.setInverted(InvertType.InvertMotorOutput);
-
+    if (m_main1 != null) {
+      SendableRegistry.addLW(m_main1, getName(), "main1");
+      
       //for PID you have to have a sensor to check on so you know the error
-      m_main2.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kVelocitySlotIdx, kTimeoutMs);
+      m_main1.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kVelocitySlotIdx, kTimeoutMs);
 
       //set up the topfalcon for using FPID
-      m_main2.config_kF(kVelocitySlotIdx, mainFVelocity, kTimeoutMs);
-      m_main2.config_kP(kVelocitySlotIdx, mainPVelocity, kTimeoutMs);
-      m_main2.config_kI(kVelocitySlotIdx, mainIVelocity, kTimeoutMs);
-      m_main2.config_kD(kVelocitySlotIdx, mainDVelocity, kTimeoutMs);
+      m_main1.config_kF(kVelocitySlotIdx, mainFVelocity, kTimeoutMs);
+      m_main1.config_kP(kVelocitySlotIdx, mainPVelocity, kTimeoutMs);
+      m_main1.config_kI(kVelocitySlotIdx, mainIVelocity, kTimeoutMs);
+      m_main1.config_kD(kVelocitySlotIdx, mainDVelocity, kTimeoutMs);
     }
 
-    if (m_main1 != null) {
-      SendableRegistry.addLW(m_main1, getName(), "top2");
+    if (m_main2 != null) {
+      SendableRegistry.addLW(m_main2, getName(), "main2");
+      m_main2.follow(m_main1);
     }
 
     if (m_back != null) {
@@ -226,7 +226,7 @@ public class ShooterSubsystem extends SubsystemBase {
   
   public void shootPID() {
     double targetVelocity = mainShooterRPM * 2048 / 600;
-    if (m_main2 != null) {
+    if (m_main1 != null) {
       setMainRPM(targetVelocity);
     }
   }
@@ -237,7 +237,7 @@ public class ShooterSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     s_main.gatherActuals(m_main1, "main");
     s_back.gatherActuals(m_back, "back");
-    SmartDashboard.putNumber("Hood Position", getHoodPosition());
+    SmartDashboard.putNumber("hood.actual", getHoodPosition());
 
   }
 
