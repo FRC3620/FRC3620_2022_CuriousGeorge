@@ -96,11 +96,6 @@ public class ShooterSubsystem extends SubsystemBase {
       m_back.config_kI(kVelocitySlotIdx, back_IVelocity, kTimeoutMs);
       m_back.config_kD(kVelocitySlotIdx, back_DVelocity, kTimeoutMs);
     }
-  
-
-
-   
-
     
     if (hoodMotor != null) {
       SendableRegistry.addLW(hoodMotor, getName(), "hoodMotor");
@@ -112,6 +107,12 @@ public class ShooterSubsystem extends SubsystemBase {
       anglePID.setD(hoodD);
       anglePID.setOutputRange(-0.5, 0.5);
     }
+
+
+    //Load "cargo.desireRPM" value in SmartDashboard
+    SmartDashboard.putNumber("cargo.desiredRPM", 120.0);
+
+
   }
 
   public double calcHoodPosition(double cy) {

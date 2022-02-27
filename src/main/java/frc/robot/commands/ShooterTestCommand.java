@@ -34,7 +34,7 @@ public class ShooterTestCommand extends CommandBase {
     m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
-    SmartDashboard.putNumber("top.set", 0.0);
+    SmartDashboard.putNumber("main.set", 0.0);
     SmartDashboard.putNumber("back.set", 0.0);
     SmartDashboard.putNumber("hood.set",5.0);
     SmartDashboard.putBoolean("manual backspin", false);
