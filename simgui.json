@@ -1,9 +1,73 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "SPARK MAX [5]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/ArmSubsystem": "Subsystem",
+      "/LiveWindow/ClimberSubsystem": "Subsystem",
+      "/LiveWindow/ClimberSubsystem/climber contact switch": "Digital Input",
+      "/LiveWindow/DriveSubsystem/left back azimuth": "Motor Controller",
+      "/LiveWindow/DriveSubsystem/left back drive": "Motor Controller",
+      "/LiveWindow/DriveSubsystem/left front azimuth": "Motor Controller",
+      "/LiveWindow/DriveSubsystem/left front drive": "Motor Controller",
+      "/LiveWindow/DriveSubsystem/right back azimuth": "Motor Controller",
+      "/LiveWindow/DriveSubsystem/right back drive": "Motor Controller",
+      "/LiveWindow/DriveSubsystem/right front azimuth": "Motor Controller",
+      "/LiveWindow/DriveSubsystem/right front drive": "Motor Controller",
       "/LiveWindow/ExampleSubsystem": "Subsystem",
-      "/LiveWindow/Ungrouped/Scheduler": "Scheduler"
+      "/LiveWindow/IntakeSubsystem": "Subsystem",
+      "/LiveWindow/RumbleSubsystem": "Subsystem",
+      "/LiveWindow/ShooterSubsystem": "Subsystem",
+      "/LiveWindow/TurretSubsystem": "Subsystem",
+      "/LiveWindow/Ungrouped/DigitalInput[0]": "Digital Input",
+      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/navX-Sensor[4]": "Gyro",
+      "/LiveWindow/VisionSubsystem": "Subsystem",
+      "/SmartDashboard/3 Ball Auto Q": "Command",
+      "/SmartDashboard/4 Ball Auto P": "Command",
+      "/SmartDashboard/4 Ball Auto Q": "Command",
+      "/SmartDashboard/5 Ball Auto P": "Command",
+      "/SmartDashboard/Auto mode": "String Chooser",
+      "/SmartDashboard/AutoDriveToCargo Test": "Command",
+      "/SmartDashboard/Climber Extention Motor Down": "Command",
+      "/SmartDashboard/Climber Extention Motor Up": "Command",
+      "/SmartDashboard/Climber Tilt In": "Command",
+      "/SmartDashboard/Climber Tilt Out": "Command",
+      "/SmartDashboard/DougTestAutoDrive": "Command",
+      "/SmartDashboard/DougTestAutoSpin": "Command",
+      "/SmartDashboard/Eject Ball": "Command",
+      "/SmartDashboard/Find target": "Command",
+      "/SmartDashboard/Intake Ball": "Command",
+      "/SmartDashboard/Reset NavX": "Command",
+      "/SmartDashboard/Rumble Command": "Command",
+      "/SmartDashboard/Rumble Command 2": "Command",
+      "/SmartDashboard/Rumble Command 3": "Command",
+      "/SmartDashboard/Rumble Command 4": "Command",
+      "/SmartDashboard/Shooter Test Command": "Command",
+      "/SmartDashboard/TestAuto": "Command",
+      "/SmartDashboard/Toggle field relative": "Command",
+      "/SmartDashboard/Top shooter to 0.1": "Command",
+      "/SmartDashboard/ZeroDriveEncodersCommand": "Command"
+    }
+  },
+  "NetworkTables": {
+    "SmartDashboard": {
+      "Shooter Test Command": {
+        "open": true
+      },
+      "Top shooter to 0.1": {
+        "open": true
+      },
+      "open": true
     }
   }
 }

@@ -55,6 +55,7 @@
   {
     "name": "simulator",
     "macAddress": "(simulator)",
-    "makeAllCANDevices": false
+    "makeAllCANDevices": false,
+    "has_shooter": true
   }
 ]

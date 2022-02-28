@@ -111,7 +111,9 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setTopPower(double p) {
-    m_top1.set(p);
+    if (m_top1 != null) {
+      m_top1.set(p);
+    }
   }
 
   void setRpm(TalonFX m, double r, Status s) {
