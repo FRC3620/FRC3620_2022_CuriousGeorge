@@ -101,7 +101,6 @@ public class CenterOnBallCommand extends CommandBase {
     if (Math.abs(targetX-0.5) <= BALL_LOCATION_TOLERANCE){
       return true;
     }
-
     return false;
   }
 }

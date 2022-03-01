@@ -111,8 +111,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     //Load "cargo.desireRPM" value in SmartDashboard
     SmartDashboard.putNumber("cargo.desiredRPM", 120.0);
-
-
   }
 
   public double calcHoodPosition(double cy) {
@@ -203,16 +201,22 @@ public class ShooterSubsystem extends SubsystemBase {
     } else if (position < 0) {
       requestedHoodPosition=0;
     } else {
-      requestedHoodPosition=position;
+      requestedHoodPosition = position;
     }   
       hoodMotor.getPIDController().setReference(requestedHoodPosition,CANSparkMax.ControlType.kPosition );
+  }
 
+  public void setHoodPower(double power){
+    hoodMotor.set(power);
+  }
+
+  public void resetHoodEncoder(){
+    hoodEncoder.setPosition(0);
   }
   
   public double getHoodPosition(){
     return hoodMotor.getEncoder().getPosition();
   }
-
 
   public void shooterOff(){
     //sets target velocity to zero
