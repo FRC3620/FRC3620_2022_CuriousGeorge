@@ -59,6 +59,16 @@ public class ClimberSubsystem extends SubsystemBase {
             }
           }
         }
+        
+        if(RobotContainer.getOperatorJoystickRightY()<0 && getShaftPosition()<=0) {
+          spinClimberExtentionMotor(0.0);
+          
+        }else if(RobotContainer.getOperatorJoystickRightY()>0/*add upper limit*/) {
+          //spinClimberExtentionMotor(0.0);
+        }else{
+          spinClimberExtentionMotor(RobotContainer.getOperatorJoystickRightY());
+        }
+
       }
       SmartDashboard.putBoolean("climber.doesstationaryhookhavebar", doesStationaryHookHaveBar());
       SmartDashboard.putNumber("climber.encoder", getShaftPosition());
