@@ -22,7 +22,7 @@ public class ClimberSubsystem extends SubsystemBase {
   DigitalInput climberStationaryHookContact = RobotContainer.climberStationaryHookContact; 
   WPI_TalonFX climberExtentionMotor = RobotContainer.climberExtentionMotor; 
   Solenoid climberArmTilt = RobotContainer.climberArmTilt;
-  boolean encoderIsValid = false;
+  boolean encoderIsValid = true;  // set this back later
   Timer calibrationTimer;
 
   /** Creates a new ClimberSubsystem. */
@@ -61,6 +61,7 @@ public class ClimberSubsystem extends SubsystemBase {
       }
       SmartDashboard.putBoolean("climber.doesstationaryhookhavebar", doesStationaryHookHaveBar());
       SmartDashboard.putNumber("climber.encoder", getShaftPosition());
+      SmartDashboard.putNumber("climber.current", climberExtentionMotor.getStatorCurrent());
     }
   }
 
