@@ -143,6 +143,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setTopPower(double p) {
     if (m_main1 != null) {
       m_main1.set(p);
+      s_main.setRequestedRPM(-1);
+      s_main.setRequestedSensorVelocity(-1);
     }
   }
 

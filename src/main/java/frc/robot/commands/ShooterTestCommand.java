@@ -34,20 +34,23 @@ public class ShooterTestCommand extends CommandBase {
     m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
+
     SmartDashboard.putNumber("main.set", 0.0);
     SmartDashboard.putNumber("back.set", 0.0);
     SmartDashboard.putNumber("hood.set",5.0);
     SmartDashboard.putBoolean("manual backspin", false);
     SmartDashboard.putNumber("back.calculated", 0);
-
+    SmartDashboard.putBoolean("shooter.datalogging.enabled", false);
+    SmartDashboard.putNumber("shooter.datalogging.length", 15);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    boolean shouldDoDataLogging = SmartDashboard.getBoolean("datalogging.enabled", false);
+    boolean shouldDoDataLogging = SmartDashboard.getBoolean("shooter.datalogging.enabled", false);
     if (shouldDoDataLogging) {
-      dataLogger = ShootingDataLogger.getShootingDataLogger("shooter_m", m_subsystem);
+      double length = SmartDashboard.getNumber("shooter.datalogging.length", 15);
+      dataLogger = ShootingDataLogger.getShootingDataLogger("shooter_m", m_subsystem, length);
       dataLogger.start();
     }
   }
