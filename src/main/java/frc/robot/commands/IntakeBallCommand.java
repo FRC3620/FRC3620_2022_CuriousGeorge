@@ -29,8 +29,8 @@ public class IntakeBallCommand extends CommandBase {
   }
 
   public void intakeBall() {
-    intakeSubsystem.spinIntakeWheelBar(0.1);
-    intakeSubsystem.spinIntakeBelt(0.1);
+    intakeSubsystem.spinIntakeWheelBar(0.6);
+    intakeSubsystem.spinIntakeBelt(0.6);
   }
 
   // Called once the command ends or is interrupted.

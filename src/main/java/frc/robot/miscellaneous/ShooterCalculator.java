@@ -4,6 +4,8 @@
 
 package frc.robot.miscellaneous;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /** Add your docs here. */
 public class ShooterCalculator {
 
@@ -30,13 +32,16 @@ public class ShooterCalculator {
 
         double desiredBackspinRPM;
 
+        // Check to see if there is a desiredCargoRPM value in SmartDashboard
+        if(SmartDashboard.getNumber("cargo.desiredRPM", 0) == 0) {
+          // The number must not exist. Let's go ahead and create it.
+          SmartDashboard.putNumber("cargo.desiredRPM", desiredCargoRPM);
+        }
+        desiredCargoRPM = SmartDashboard.getNumber("cargo.desiredRPM", desiredCargoRPM);
+
         desiredBackspinRPM = (mainShooterRPM - (2 * 2.5 * desiredCargoRPM)) * (mainShooterDiameter/backspinShooterDiameter);
 
         return desiredBackspinRPM;
 
     }
-
-
-
-
 }
