@@ -38,6 +38,8 @@ public class ShooterTestCommand extends CommandBase {
     SmartDashboard.putNumber("back.set", 0.0);
     SmartDashboard.putNumber("hood.set",5.0);
     SmartDashboard.putBoolean("manual backspin", false);
+    SmartDashboard.putNumber("back.calculated", 0);
+
   }
 
   // Called when the command is initially scheduled.
@@ -61,7 +63,7 @@ public class ShooterTestCommand extends CommandBase {
     
     
     double backspinRPM = ShooterCalculator.calculateBackspinRPM(t);
-    SmartDashboard.putNumber("back.Calculated", backspinRPM);
+    SmartDashboard.putNumber("back.calculated", backspinRPM);
 
     if( SmartDashboard.getBoolean ("manual backspin", true)) {
         m_subsystem.setBackRPM(b);
