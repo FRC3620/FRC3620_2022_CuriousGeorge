@@ -102,7 +102,7 @@ public class RobotContainer {
   // vision
   public static Solenoid ringLight;
 
-  // shooter hardware verables are currently unknown so we need to change them
+  // shooter hardware variables are currently unknown so we need to change them
   public static WPI_TalonFX shooterSubsystemMainShooter1;
   public static WPI_TalonFX shooterSubsystemMainShooter2;
   public static WPI_TalonFX shooterSubsystemBackSpinShooter;
@@ -235,14 +235,13 @@ public class RobotContainer {
     if (robotParameters.hasTurret()){
       if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 12, "turret") || shouldMakeAllCANDevices) {
         turretSubsystemturretSpinner = new CANSparkMaxSendable(12, MotorType.kBrushless);
-        resetMaxToKnownState(turretSubsystemturretSpinner, false);
-        turretSubsystemturretSpinner.setSmartCurrentLimit(10);
         turretSubsystemturretEncoder = turretSubsystemturretSpinner.getEncoder();
       }
     } else {
       logger.info ("robot parameters say no turret, so skipping");
     }
 
+    //intake
     if (robotParameters.hasIntake()) {
       if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9, "wheel bar") || shouldMakeAllCANDevices) {
         intakeWheelbar = new CANSparkMaxSendable(9, MotorType.kBrushless);
@@ -342,6 +341,21 @@ public class RobotContainer {
       resetMaxToKnownState(climberExtentionMotor, true);
       climberExtentionMotor.setIdleMode(IdleMode.kBrake);
     }
+
+    if(intakeWheelbar != null) {
+      resetMaxToKnownState(intakeWheelbar, false);
+      intakeWheelbar.setSmartCurrentLimit(20);
+    }
+
+    if(intakeBelt != null) {
+      resetMaxToKnownState(intakeBelt, false);
+      intakeBelt.setSmartCurrentLimit(20);
+    }
+
+    if(turretSubsystemturretSpinner != null) {
+      resetMaxToKnownState(turretSubsystemturretSpinner, false);
+      turretSubsystemturretSpinner.setSmartCurrentLimit(10);
+    }
   }
 
   static void resetMaxToKnownState(CANSparkMaxSendable x, boolean inverted) {
@@ -350,7 +364,7 @@ public class RobotContainer {
     x.setIdleMode(IdleMode.kCoast);
     x.setOpenLoopRampRate(1);
     x.setClosedLoopRampRate(1);
-    x.setSmartCurrentLimit(50);
+    x.setSmartCurrentLimit(80);
   }
 
   static void resetTalonFXToKnownState(WPI_TalonFX m, InvertType invert) {
@@ -360,7 +374,7 @@ public class RobotContainer {
 
     /*
 
-    //set max and minium(nominal) speed in percentage output
+    //set max and minimum(nominal) speed in percentage output
     m.configNominalOutputForward(+1, kTimeoutMs);
     m.configNominalOutputReverse(-1, kTimeoutMs);
     m.configPeakOutputForward(+1, kTimeoutMs);

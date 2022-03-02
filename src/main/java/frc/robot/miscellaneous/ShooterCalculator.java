@@ -44,8 +44,4 @@ public class ShooterCalculator {
         return desiredBackspinRPM;
 
     }
-
-
-
-
 }
