@@ -19,10 +19,13 @@ import com.revrobotics.CANSparkMax.ControlType;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
+import org.usfirst.frc3620.misc.RobotMode;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.miscellaneous.MotorStatus;
 import frc.robot.miscellaneous.ShooterCalculator;
@@ -36,6 +39,8 @@ public class ShooterSubsystem extends SubsystemBase {
   static WPI_TalonFX m_back = RobotContainer.shooterSubsystemBackSpinShooter;
   CANSparkMaxSendable hoodMotor = RobotContainer.shooterSubsystemHoodMax;
   RelativeEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
+  boolean hoodEncoderIsValid = true;
+  Timer hoodTimer;
   
 
   double mainShooterRPM = 2000;
@@ -181,9 +186,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setBackRPM(double r) {
     setRpm(m_back, r, s_back);
   }
-
   
-
   MotorStatus s_main = new MotorStatus("main");
   MotorStatus s_back = new MotorStatus("back");
   
@@ -196,14 +199,16 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setPosition(double position) {
-    if(position >= 85){
-      requestedHoodPosition = 85;
-    } else if (position < 0) {
-      requestedHoodPosition=0;
-    } else {
-      requestedHoodPosition = position;
-    }   
+    if(hoodEncoderIsValid){
+      if(position >= 85){
+        requestedHoodPosition = 85;
+      } else if (position < 0) {
+        requestedHoodPosition=0;
+      } else {
+        requestedHoodPosition = position;
+      }   
       hoodMotor.getPIDController().setReference(requestedHoodPosition,CANSparkMax.ControlType.kPosition );
+    }
   }
 
   public void setHoodPower(double power){
@@ -243,6 +248,29 @@ public class ShooterSubsystem extends SubsystemBase {
     s_back.gatherActuals(m_back, "back");
     SmartDashboard.putNumber("hood.actual", getHoodPosition());
 
+    if (hoodMotor != null) { 
+      double hoodSpeed = hoodEncoder.getVelocity();  // motor revolutions per minute
+      
+      if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
+        if (!hoodEncoderIsValid) {
+          setHoodPower(0.1);
+
+          if (hoodTimer == null) {
+            hoodTimer = new Timer();
+            hoodTimer.reset(); 
+            hoodTimer.start();
+          } else {
+            if (hoodTimer.get() > 0.5){
+              if (Math.abs(hoodSpeed) < 0.1) {
+                hoodEncoderIsValid = true;
+                setHoodPower(0.0);
+                resetHoodEncoder();
+              }
+            }
+          } 
+        } 
+      }
+    }
   }
 
   @Override
