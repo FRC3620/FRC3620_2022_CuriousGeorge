@@ -17,10 +17,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.miscellaneous.CANSparkMaxSendable;
 
 public class ClimberSubsystem extends SubsystemBase {
   DigitalInput climberStationaryHookContact = RobotContainer.climberStationaryHookContact; 
-  WPI_TalonFX climberExtentionMotor = RobotContainer.climberExtentionMotor; 
+  CANSparkMaxSendable climberExtentionMotor = RobotContainer.climberExtentionMotor; 
   Solenoid climberArmTilt = RobotContainer.climberArmTilt;
   boolean encoderIsValid = true;  // set this back later
   Timer calibrationTimer;

@@ -27,6 +27,8 @@ test {
 
         // includeTestsMatching 'RobotParametersTest'
         includeTestsMatching 'RobotParameters2022Test'
+
+        includeTestsMatching 'ShooterCalculatorTest'
     }
 }
 
