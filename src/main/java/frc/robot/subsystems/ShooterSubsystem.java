@@ -39,7 +39,7 @@ public class ShooterSubsystem extends SubsystemBase {
   static WPI_TalonFX m_back = RobotContainer.shooterSubsystemBackSpinShooter;
   CANSparkMaxSendable hoodMotor = RobotContainer.shooterSubsystemHoodMax;
   RelativeEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
-  boolean hoodEncoderIsValid = true;
+  boolean hoodEncoderIsValid = false;
   Timer hoodTimer;
   
 
@@ -61,6 +61,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double hoodP = 0;
   private final double hoodI = 0;
   private final double hoodD = 0;
+  private final double maximumHoodPosition = 110;
+  private final double minimumHoodPosition = 6;
   private double requestedHoodPosition = 0;
 
   //backspin FPID
@@ -200,10 +202,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setPosition(double position) {
     if(hoodEncoderIsValid){
-      if(position >= 85){
-        requestedHoodPosition = 85;
-      } else if (position < 0) {
-        requestedHoodPosition=0;
+      if(position >= maximumHoodPosition){
+        requestedHoodPosition = maximumHoodPosition;
+      } else if (position < minimumHoodPosition) {
+        requestedHoodPosition = minimumHoodPosition;
       } else {
         requestedHoodPosition = position;
       }   
@@ -247,14 +249,14 @@ public class ShooterSubsystem extends SubsystemBase {
     s_main.gatherActuals(m_main1, "main");
     s_back.gatherActuals(m_back, "back");
     SmartDashboard.putNumber("hood.actual", getHoodPosition());
+    SmartDashboard.putBoolean("hood.encoderisvalid", hoodEncoderIsValid);
 
     if (hoodMotor != null) { 
       double hoodSpeed = hoodEncoder.getVelocity();  // motor revolutions per minute
       
       if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
         if (!hoodEncoderIsValid) {
-          setHoodPower(0.1);
-
+          setHoodPower(-0.02);
           if (hoodTimer == null) {
             hoodTimer = new Timer();
             hoodTimer.reset(); 
