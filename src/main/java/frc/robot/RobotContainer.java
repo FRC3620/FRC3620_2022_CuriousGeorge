@@ -102,7 +102,7 @@ public class RobotContainer {
   // vision
   public static Solenoid ringLight;
 
-  // shooter hardware verables are currently unknown so we need to change them
+  // shooter hardware variables are currently unknown so we need to change them
   public static WPI_TalonFX shooterSubsystemMainShooter1;
   public static WPI_TalonFX shooterSubsystemMainShooter2;
   public static WPI_TalonFX shooterSubsystemBackSpinShooter;
@@ -235,14 +235,13 @@ public class RobotContainer {
     if (robotParameters.hasTurret()){
       if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 12, "turret") || shouldMakeAllCANDevices) {
         turretSubsystemturretSpinner = new CANSparkMaxSendable(12, MotorType.kBrushless);
-        resetMaxToKnownState(turretSubsystemturretSpinner, false);
-        turretSubsystemturretSpinner.setSmartCurrentLimit(10);
         turretSubsystemturretEncoder = turretSubsystemturretSpinner.getEncoder();
       }
     } else {
       logger.info ("robot parameters say no turret, so skipping");
     }
 
+    //intake
     if (robotParameters.hasIntake()) {
       if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9, "wheel bar") || shouldMakeAllCANDevices) {
         intakeWheelbar = new CANSparkMaxSendable(9, MotorType.kBrushless);
@@ -339,21 +338,33 @@ public class RobotContainer {
     } 
 
     if(climberExtentionMotor != null) {
-      resetMaxToKnownState(climberExtentionMotor, InvertType.InvertMotorOutput);
-      StatorCurrentLimitConfiguration amprage=new StatorCurrentLimitConfiguration(true,80,0,0); 
-      climberExtentionMotor.configStatorCurrentLimit(amprage);
+      resetMaxToKnownState(climberExtentionMotor, true);
+      climberExtentionMotor.setIdleMode(IdleMode.kBrake);
+    }
+
+    if(intakeWheelbar != null) {
+      resetMaxToKnownState(intakeWheelbar, false);
+      intakeWheelbar.setSmartCurrentLimit(20);
+    }
+
+    if(intakeBelt != null) {
+      resetMaxToKnownState(intakeBelt, false);
+      intakeBelt.setSmartCurrentLimit(20);
+    }
+
+    if(turretSubsystemturretSpinner != null) {
+      resetMaxToKnownState(turretSubsystemturretSpinner, false);
+      turretSubsystemturretSpinner.setSmartCurrentLimit(10);
     }
   }
 
-  private void resetMaxToKnownState(CANSparkMaxSendable climberExtentionMotor2, InvertType invertmotoroutput) {
-  }
-
-  static void resetMaxToKnownState(CANSparkMax x, boolean invertmotoroutput) {
-    // TODO set to factory default here
+  static void resetMaxToKnownState(CANSparkMaxSendable x, boolean inverted) {
+    // TODO set to factory default 
+    x.setInverted(inverted);
     x.setIdleMode(IdleMode.kCoast);
     x.setOpenLoopRampRate(1);
     x.setClosedLoopRampRate(1);
-    x.setSmartCurrentLimit(50);
+    x.setSmartCurrentLimit(80);
   }
 
   static void resetTalonFXToKnownState(WPI_TalonFX m, InvertType invert) {
@@ -363,7 +374,7 @@ public class RobotContainer {
 
     /*
 
-    //set max and minium(nominal) speed in percentage output
+    //set max and minimum(nominal) speed in percentage output
     m.configNominalOutputForward(+1, kTimeoutMs);
     m.configNominalOutputReverse(-1, kTimeoutMs);
     m.configPeakOutputForward(+1, kTimeoutMs);
@@ -416,15 +427,25 @@ public class RobotContainer {
     JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);
     centerOnBallButton.whileHeld(new InstantCenterOnBallCommand(driveSubsystem, visionSubsystem));
 
-    AnalogJoystickButton climberExtendUp = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.2);
+    /*AnalogJoystickButton climberExtendUp = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.2);
     climberExtendUp.whileHeld(new ClimberTestCommandUp());
     AnalogJoystickButton climberExtendDown = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, 0.2);
-    climberExtendDown.whileHeld(new ClimberTestCommandDown());
+    climberExtendDown.whileHeld(new ClimberTestCommandDown());*/
+
+
 
     JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
     intakeButton.toggleWhenPressed(new IntakeBallCommand());
     JoystickButton ejectButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
     ejectButton.whileHeld(new EjectBallCommand());
+  }
+
+  public static double getOperatorJoystickRightY() {
+    double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y); //Grabs the joystick value
+    if (axisValue < 0.2 && axisValue > -0.2) { //Since the joystick doesnt stay at zero, make it not give a false value
+      return 0;
+    }
+    return -axisValue;
   }
 
   void setupSmartDashboardCommands() {
@@ -451,8 +472,6 @@ public class RobotContainer {
     SmartDashboard.putData("Intake Ball", new IntakeBallCommand());
     SmartDashboard.putData("pre shooter", new PreshooterFireCommand());
 
-    SmartDashboard.putData("Climber Extention Motor Up", new ClimberTestCommandUp());
-    SmartDashboard.putData("Climber Extention Motor Down", new ClimberTestCommandDown());
     SmartDashboard.putData("Climber Tilt Out", new ClimberTiltTestCommandOut());
     SmartDashboard.putData("Climber Tilt In", new ClimberTiltTestCommandIn());
 
@@ -522,6 +541,11 @@ public class RobotContainer {
     return -axisValue;
   }
 
+  /**
+   * return the position of the operator's right vertical joystick
+   * @return the joystick position, positive is up (away from driver), negative is down
+   * pulled towards driver.
+   */
   public static double getOperatorVerticalJoystick() {
     double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y);
     if (axisValue < 0.15 && axisValue > -0.15) {

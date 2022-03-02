@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.revrobotics.RelativeEncoder;
 
 import org.usfirst.frc3620.misc.RobotMode;
 
@@ -22,15 +23,16 @@ import frc.robot.miscellaneous.CANSparkMaxSendable;
 public class ClimberSubsystem extends SubsystemBase {
   DigitalInput climberStationaryHookContact = RobotContainer.climberStationaryHookContact; 
   CANSparkMaxSendable climberExtentionMotor = RobotContainer.climberExtentionMotor; 
+  RelativeEncoder climberEncoder;
   Solenoid climberArmTilt = RobotContainer.climberArmTilt;
-  boolean encoderIsValid = true;  // set this back later
+  boolean encoderIsValid = false;
   Timer calibrationTimer;
 
   /** Creates a new ClimberSubsystem. */
   public ClimberSubsystem() {
     if(climberExtentionMotor != null) {
       SendableRegistry.addLW(climberExtentionMotor, getName(), "climber motor");
-      climberExtentionMotor.setSelectedSensorPosition(0);
+      climberEncoder = climberExtentionMotor.getEncoder();
     }
     SendableRegistry.addLW(climberStationaryHookContact, getName(), "climber contact switch");
   }
@@ -39,7 +41,7 @@ public class ClimberSubsystem extends SubsystemBase {
   public void periodic() {
 
     if (climberExtentionMotor != null) { 
-      double climberSpeed = climberExtentionMotor.getSelectedSensorVelocity();
+      double climberSpeed = climberEncoder.getVelocity();  // motor revolutions per minute
       
       if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
         if (!encoderIsValid) {
@@ -51,19 +53,38 @@ public class ClimberSubsystem extends SubsystemBase {
             calibrationTimer.start();
           } else {
             if (calibrationTimer.get() > 0.5){
-              if (Math.abs(climberSpeed) < 20) {
+              if (Math.abs(climberSpeed) < 0.1) {
                 encoderIsValid = true;
                 spinClimberExtentionMotor(0.0);
-                climberExtentionMotor.setSelectedSensorPosition(0.0);
-              }
+                climberEncoder.setPosition(0.0);
             }
           }
         }
+       } else {
+          
+          if(RobotContainer.getOperatorJoystickRightY()<0 && getClimberExtensionInInches()<=0) {
+            spinClimberExtentionMotor(0.0);
+            
+          }else if(RobotContainer.getOperatorJoystickRightY()>0 && getClimberExtensionInInches()>20.0) {
+            spinClimberExtentionMotor(0.0);
+          }else{
+            spinClimberExtentionMotor(RobotContainer.getOperatorJoystickRightY());
+          }
+        }
+
       }
       SmartDashboard.putBoolean("climber.doesstationaryhookhavebar", doesStationaryHookHaveBar());
-      SmartDashboard.putNumber("climber.encoder", getShaftPosition());
-      SmartDashboard.putNumber("climber.current", climberExtentionMotor.getStatorCurrent());
+      SmartDashboard.putNumber("climber.encoder",climberEncoder.getPosition());
+      SmartDashboard.putNumber("climber.extension", getClimberExtensionInInches());
+      SmartDashboard.putNumber("climber.current", climberExtentionMotor.getOutputCurrent());
+      SmartDashboard.putNumber("climber.power", climberExtentionMotor.get());
+      SmartDashboard.putBoolean("climber.encoder_is_valid", encoderIsValid);
     }
+  }
+
+  public double getClimberExtensionInInches() {
+    double rv = climberEncoder.getPosition() * 3.14159 / 20;
+    return rv;
   }
 
   public boolean doesStationaryHookHaveBar() {
@@ -71,25 +92,11 @@ public class ClimberSubsystem extends SubsystemBase {
     return rv; 
   }
 
-  /**
-   * Return the position of the climber extension
-   * @return position (expressed in something besides furlongs)
-   */
-
-  public double getShaftPosition() {
-    if (climberExtentionMotor != null) { 
-      double rv = climberExtentionMotor.getSelectedSensorPosition();
-      rv = rv/2048;
-      return rv; 
-    }
-    else {
-      return 0; 
-    }
-  }
+ 
 
   public void spinClimberExtentionMotor(double speed) {
     if (climberExtentionMotor != null) { 
-      climberExtentionMotor.set(ControlMode.PercentOutput, speed);
+      climberExtentionMotor.set(speed);
     }
   }
 
