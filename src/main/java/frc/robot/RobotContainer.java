@@ -339,17 +339,14 @@ public class RobotContainer {
     } 
 
     if(climberExtentionMotor != null) {
-      resetMaxToKnownState(climberExtentionMotor, InvertType.InvertMotorOutput);
-      StatorCurrentLimitConfiguration amprage=new StatorCurrentLimitConfiguration(true,80,0,0); 
-      climberExtentionMotor.configStatorCurrentLimit(amprage);
+      resetMaxToKnownState(climberExtentionMotor, true);
+      climberExtentionMotor.setIdleMode(IdleMode.kBrake);
     }
   }
 
-  private void resetMaxToKnownState(CANSparkMaxSendable climberExtentionMotor2, InvertType invertmotoroutput) {
-  }
-
-  static void resetMaxToKnownState(CANSparkMax x, boolean invertmotoroutput) {
-    // TODO set to factory default here
+  static void resetMaxToKnownState(CANSparkMaxSendable x, boolean inverted) {
+    // TODO set to factory default 
+    x.setInverted(inverted);
     x.setIdleMode(IdleMode.kCoast);
     x.setOpenLoopRampRate(1);
     x.setClosedLoopRampRate(1);
@@ -460,8 +457,6 @@ public class RobotContainer {
     SmartDashboard.putData("Eject Ball", new EjectBallCommand());
     SmartDashboard.putData("Intake Ball", new IntakeBallCommand());
 
-    SmartDashboard.putData("Climber Extention Motor Up", new ClimberTestCommandUp());
-    SmartDashboard.putData("Climber Extention Motor Down", new ClimberTestCommandDown());
     SmartDashboard.putData("Climber Tilt Out", new ClimberTiltTestCommandOut());
     SmartDashboard.putData("Climber Tilt In", new ClimberTiltTestCommandIn());
 
@@ -531,6 +526,11 @@ public class RobotContainer {
     return -axisValue;
   }
 
+  /**
+   * return the position of the operator's right vertical joystick
+   * @return the joystick position, positive is up (away from driver), negative is down
+   * pulled towards driver.
+   */
   public static double getOperatorVerticalJoystick() {
     double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y);
     if (axisValue < 0.15 && axisValue > -0.15) {
