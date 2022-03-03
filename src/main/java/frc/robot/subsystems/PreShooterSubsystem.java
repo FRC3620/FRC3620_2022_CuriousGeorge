@@ -7,15 +7,17 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
 
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.miscellaneous.CANSparkMaxSendable;
 import frc.robot.miscellaneous.MotorStatus;
 
 public class PreShooterSubsystem extends SubsystemBase {
   /** Creates a new PreSubshooterSubsystem. */
 
   // Set up Motor
-  static CANSparkMax preshooter = RobotContainer.preShooterSubsystemPreShooter;
+  static CANSparkMaxSendable preshooter = RobotContainer.preShooterSubsystemPreShooter;
 
   //preshooter FPID Values
   private final double preshooter_FVelocity = 0.0495;//.0456
@@ -29,6 +31,8 @@ public class PreShooterSubsystem extends SubsystemBase {
     if (preshooter != null) {
       SparkMaxPIDController preshooterPid = preshooter.getPIDController();
       preshooterPid.setFF(0);
+
+      SendableRegistry.addLW(preshooter, getName(), "preshooter");
     }
 
   }

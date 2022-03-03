@@ -19,10 +19,13 @@ import com.revrobotics.CANSparkMax.ControlType;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
+import org.usfirst.frc3620.misc.RobotMode;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.miscellaneous.MotorStatus;
 import frc.robot.miscellaneous.ShooterCalculator;
@@ -31,11 +34,14 @@ import frc.robot.miscellaneous.CANSparkMaxSendable;
 public class ShooterSubsystem extends SubsystemBase {
   public final static Logger logger = EventLogging.getLogger(ShooterSubsystem.class, Level.INFO);
 
-  static WPI_TalonFX m_main2 = RobotContainer.shooterSubsystemMainShooter2;
   WPI_TalonFX m_main1 = RobotContainer.shooterSubsystemMainShooter1;
-  static WPI_TalonFX m_back = RobotContainer.shooterSubsystemBackSpinShooter;
+  WPI_TalonFX m_main2 = RobotContainer.shooterSubsystemMainShooter2;
+  WPI_TalonFX m_back = RobotContainer.shooterSubsystemBackSpinShooter;
+
   CANSparkMaxSendable hoodMotor = RobotContainer.shooterSubsystemHoodMax;
-  RelativeEncoder hoodEncoder = RobotContainer.shooterSubsystemHoodEncoder;
+  RelativeEncoder hoodEncoder;
+  boolean hoodEncoderIsValid = false;
+  Timer hoodTimer;
   
 
   double mainShooterRPM = 2000;
@@ -51,11 +57,13 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double mainIVelocity = 0.0; //0.000003
   private final double mainDVelocity = 7.75; //7.75
 
-  
+
   //hood
   private final double hoodP = 0;
   private final double hoodI = 0;
   private final double hoodD = 0;
+  private final double maximumHoodPosition = 110;
+  private final double minimumHoodPosition = 6;
   private double requestedHoodPosition = 0;
 
   //backspin FPID
@@ -66,22 +74,22 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
   public ShooterSubsystem() {
-    if (m_main2 != null) {
-      SendableRegistry.addLW(m_main2, getName(), "top1");
-      m_main2.setInverted(InvertType.InvertMotorOutput);
+    if (m_main1 != null) {
+      SendableRegistry.addLW(m_main1, getName(), "main1");
 
       //for PID you have to have a sensor to check on so you know the error
-      m_main2.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kVelocitySlotIdx, kTimeoutMs);
+      m_main1.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, kVelocitySlotIdx, kTimeoutMs);
 
       //set up the topfalcon for using FPID
-      m_main2.config_kF(kVelocitySlotIdx, mainFVelocity, kTimeoutMs);
-      m_main2.config_kP(kVelocitySlotIdx, mainPVelocity, kTimeoutMs);
-      m_main2.config_kI(kVelocitySlotIdx, mainIVelocity, kTimeoutMs);
-      m_main2.config_kD(kVelocitySlotIdx, mainDVelocity, kTimeoutMs);
+      m_main1.config_kF(kVelocitySlotIdx, mainFVelocity, kTimeoutMs);
+      m_main1.config_kP(kVelocitySlotIdx, mainPVelocity, kTimeoutMs);
+      m_main1.config_kI(kVelocitySlotIdx, mainIVelocity, kTimeoutMs);
+      m_main1.config_kD(kVelocitySlotIdx, mainDVelocity, kTimeoutMs);
     }
 
-    if (m_main1 != null) {
-      SendableRegistry.addLW(m_main1, getName(), "top2");
+    if (m_main2 != null) {
+      SendableRegistry.addLW(m_main2, getName(), "main2");
+      m_main2.follow(m_main1);
     }
 
     if (m_back != null) {
@@ -96,11 +104,6 @@ public class ShooterSubsystem extends SubsystemBase {
       m_back.config_kI(kVelocitySlotIdx, back_IVelocity, kTimeoutMs);
       m_back.config_kD(kVelocitySlotIdx, back_DVelocity, kTimeoutMs);
     }
-  
-
-
-   
-
     
     if (hoodMotor != null) {
       SendableRegistry.addLW(hoodMotor, getName(), "hoodMotor");
@@ -112,35 +115,17 @@ public class ShooterSubsystem extends SubsystemBase {
       anglePID.setD(hoodD);
       anglePID.setOutputRange(-0.5, 0.5);
     }
-  }
 
-  public double calcHoodPosition(double cy) {
-    double calcHoodPosition;
-    if(cy < 224){
-      calcHoodPosition = 3.73187317480733 + 0.0327847309136473*cy +-0.0000114726741759497*cy*cy;
-      calcHoodPosition = calcHoodPosition + SmartDashboard.getNumber("manualHoodPosition", 5);
-    } else if(cy < 336){
-      calcHoodPosition = 3.85000000000 + 0.0369791667*cy + -0.0000325521*cy*cy;
-    }else if(cy < 403){
-      calcHoodPosition = -28.1396700696 + 0.2136292223*cy + -0.0002749411*cy*cy;
-    } else {
-      calcHoodPosition = -56.8299016952515 + 0.355106208706275*cy + -0.000449346405275719*cy*cy;
-    }
-    return 5.0 * calcHoodPosition;
-  }
-
-  public double calcMainRPM(double cy) {
-    double calcMainRPM = 2650;
-    if(cy < 252) {
-      calcMainRPM = 4700;
-    } else {
-      calcMainRPM = 4700;
-    }
-    return calcMainRPM;
+    //Load "cargo.desireRPM" value in SmartDashboard
+    SmartDashboard.putNumber("cargo.desiredRPM", 120.0);
   }
 
   public void setTopPower(double p) {
-    m_main1.set(p);
+    if (m_main1 != null) {
+      m_main1.set(p);
+      s_main.setRequestedRPM(-1);
+      s_main.setRequestedSensorVelocity(-1);
+    }
   }
 
   void setRpm(TalonFX m, double r, MotorStatus s) {
@@ -180,11 +165,12 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setBackRPM(double r) {
+    if (r < 0){
+      r = 0;
+    }
     setRpm(m_back, r, s_back);
   }
-
   
-
   MotorStatus s_main = new MotorStatus("main");
   MotorStatus s_back = new MotorStatus("back");
   
@@ -197,53 +183,91 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setPosition(double position) {
-    if(position >= 85){
-      requestedHoodPosition = 85;
-    } else if (position < 0) {
-      requestedHoodPosition=0;
-    } else {
-      requestedHoodPosition=position;
-    }   
+    if(hoodEncoderIsValid){
+      if(position >= maximumHoodPosition){
+        requestedHoodPosition = maximumHoodPosition;
+      } else if (position < minimumHoodPosition) {
+        requestedHoodPosition = minimumHoodPosition;
+      } else {
+        requestedHoodPosition = position;
+      }   
       hoodMotor.getPIDController().setReference(requestedHoodPosition,CANSparkMax.ControlType.kPosition );
-
+    }
   }
-  
+
+  public void setHoodPower(double power){
+    if (hoodMotor != null) {
+      hoodMotor.set(power);
+    }
+  }
+
+  public void resetHoodEncoder() {
+    if (hoodEncoder != null) {
+      hoodEncoder.setPosition(0);
+    }
+  }
+
   public double getHoodPosition(){
-    return hoodMotor.getEncoder().getPosition();
+    if (hoodMotor != null) {
+      return hoodMotor.getEncoder().getPosition();
+    } else {
+      return 0.0;
+    }
   }
-
 
   public void shooterOff(){
     //sets target velocity to zero
-    if (m_main2 != null) {
-      m_main2.set(ControlMode.PercentOutput, 0);
+    if (m_main1 != null) {
+      m_main1.set(ControlMode.PercentOutput, 0);
     }
     if (m_back != null) {
       m_back.set(ControlMode.PercentOutput, 0);
     }
   }
-  
+    
   public void shootPID() {
     double targetVelocity = mainShooterRPM * 2048 / 600;
-    if (m_main2 != null) {
+    if (m_main1 != null) {
       setMainRPM(targetVelocity);
     }
   }
-
+  
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     s_main.gatherActuals(m_main1, "main");
     s_back.gatherActuals(m_back, "back");
-    SmartDashboard.putNumber("Hood Position", getHoodPosition());
+    SmartDashboard.putNumber("hood.actual", getHoodPosition());
+    SmartDashboard.putBoolean("hood.encoderisvalid", hoodEncoderIsValid);
 
+    if (hoodMotor != null) { 
+      double hoodSpeed = hoodEncoder.getVelocity();  // motor revolutions per minute
+      
+      if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
+        if (!hoodEncoderIsValid) {
+          setHoodPower(-0.02);
+          if (hoodTimer == null) {
+            hoodTimer = new Timer();
+            hoodTimer.reset(); 
+            hoodTimer.start();
+          } else {
+            if (hoodTimer.get() > 0.5){
+              if (Math.abs(hoodSpeed) < 0.1) {
+                hoodEncoderIsValid = true;
+                setHoodPower(0.0);
+                resetHoodEncoder();
+              }
+            }
+          } 
+        } 
+      }
+    }
   }
 
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
-
 
 }

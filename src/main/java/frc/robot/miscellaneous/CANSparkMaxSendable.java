@@ -21,28 +21,4 @@ public class CANSparkMaxSendable extends CANSparkMax implements Sendable  {
         builder.setSafeState(this::stopMotor);
         builder.addDoubleProperty("Value", this::get, this::set);
     }
-
-    public void configStatorCurrentLimit(StatorCurrentLimitConfiguration amprage) {
-    }
-
-    public void setSelectedSensorPosition(int i) {
-    }
-
-    public double getSelectedSensorVelocity() {
-        return 0;
-    }
-
-    public void setSelectedSensorPosition(double d) {
-    }
-
-    public double getStatorCurrent() {
-        return 0;
-    }
-
-    public double getSelectedSensorPosition() {
-        return 0;
-    }
-
-    public void set(ControlMode percentoutput, double speed) {
-    }
 }

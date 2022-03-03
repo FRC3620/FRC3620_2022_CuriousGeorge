@@ -7,63 +7,57 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.RumbleSubsystem;
+
+import frc.robot.subsystems.RumbleSubsystem.Hand;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class FindTargetCommand extends CommandBase {
-  TurretSubsystem turretSubsystem;
+public class MassageOperatorToShootCommand extends CommandBase {
   VisionSubsystem visionSubsystem;
-  Timer turretTimer = new Timer();
+  RumbleCommand rumbleCommand;
   
   /** Creates a new FindTargetCommand. */
-  public FindTargetCommand(TurretSubsystem _subsystem, VisionSubsystem _vsubsystem) {
+  public MassageOperatorToShootCommand(VisionSubsystem _vsubsystem, RumbleSubsystem _rsubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(_subsystem);
-    turretSubsystem = _subsystem;
     visionSubsystem = _vsubsystem;
-    SmartDashboard.putBoolean("Target Found", true);
-     
-   
+
+    rumbleCommand = new RumbleCommand(_rsubsystem, Hand.BOTH, 1.0, 0.5);
+  }
+
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    spinTurret();
-    turretTimer.reset();
-    turretTimer.start();
+    
   }
   
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    if (turretTimer.get() > 0.3){
-      //seconds
-      spinTurret();
-      turretTimer.reset(); 
-    }
-  }
-
-  public void spinTurret(){
-    double currentTurretPosition = turretSubsystem.getCurrentTurretPosition();
-    if (visionSubsystem.isTargetFound()){
-      double spinTurretDegrees = visionSubsystem.getTargetXDegrees();
-      double targetx = spinTurretDegrees + currentTurretPosition;
-      turretSubsystem.setTurretPosition(targetx);
-    }
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
+    if (!interrupted){
+      rumbleCommand.schedule();
+    }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+
+    if (visionSubsystem.isTargetCentered()){
+      return true;
+    }
+
    return false;
   }
 }

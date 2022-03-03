@@ -30,49 +30,22 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class ShooterCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ShooterSubsystem shooterSubsystem;
-  IFastDataLogger dataLogger;
-
-  TalonFX talonFX;
-  CANSparkMaxSendable sparkMax;
-
   public ShooterCommand(ShooterSubsystem subsystem) {
     shooterSubsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
-     
-    talonFX = RobotContainer.shooterSubsystemMainShooter2;
-    talonFX = RobotContainer.shooterSubsystemMainShooter1;
-    talonFX = RobotContainer.shooterSubsystemBackSpinShooter;
-    sparkMax = RobotContainer.preShooterSubsystemPreShooter;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    dataLogger = new FastDataLoggerCollections();
-    dataLogger.setInterval(0.001);
-    dataLogger.setMaxLength(10.0);
-    if (talonFX != null) {
-      dataLogger.addDataProvider("setpoint", () -> talonFX.getClosedLoopTarget());
-      dataLogger.addDataProvider("rpm", () -> talonFX.getSelectedSensorVelocity());
-      dataLogger.addDataProvider("outputCurrent", () -> talonFX.getStatorCurrent());
-      dataLogger.addDataProvider("supplyCurrent", () -> talonFX.getSupplyCurrent());
-      dataLogger.addDataProvider("outputVoltage", () -> talonFX.getMotorOutputVoltage());
-      dataLogger.addDataProvider("supplyVoltage", () -> talonFX.getBusVoltage());
-      dataLogger.addDataProvider("outputPercent", () -> talonFX.getMotorOutputPercent());
-    } else {
-      dataLogger.addDataProvider("t", () -> Timer.getFPGATimestamp());
-    }
-    dataLogger.setFilename("test");
-    dataLogger.setFilenameTimestamp(new Date());
-    //dataLogger.start();
+    RobotContainer.visionSubsystem.turnVisionLightOn();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     RobotContainer.shooterSubsystem.shootPID();
-    RobotContainer.visionSubsystem.turnVisionLightOn();
     //RobotContainer.shooterSubsystem.Shoot();
   }
 

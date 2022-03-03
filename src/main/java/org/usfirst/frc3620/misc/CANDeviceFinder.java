@@ -53,7 +53,9 @@ public class CANDeviceFinder {
     }
 
     public boolean isPowerDistributionPresent() {
-        return isDevicePresent(CANDeviceType.CTRE_PDP, 0);
+        boolean rv = isDevicePresent(CANDeviceType.REV_PDH, 1);
+        if (!rv) rv = isDevicePresent(CANDeviceType.CTRE_PDP, 0);
+        return rv;
     }
 
     /**
