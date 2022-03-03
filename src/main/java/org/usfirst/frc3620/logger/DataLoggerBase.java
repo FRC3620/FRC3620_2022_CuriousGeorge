@@ -127,7 +127,7 @@ abstract public class DataLoggerBase implements IDataLogger {
 
 	static void writeHeader(PrintWriter w, Iterable<NamedDataProvider> namedDataProviders,
 			Map<String, Object> metadata) {
-		w.print("time,timeSinceStart");
+		w.print("meta,time,timeSinceStart");
 		for (NamedDataProvider namedDataProvider : namedDataProviders) {
 			w.print(",");
 			w.print(namedDataProvider.name);
