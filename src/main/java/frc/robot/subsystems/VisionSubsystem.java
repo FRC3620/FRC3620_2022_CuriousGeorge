@@ -8,6 +8,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -34,7 +35,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   private NetworkTable targetNetworkTable = inst.getTable("V/Target");
   private NetworkTableEntry nt_target_json = targetNetworkTable.getEntry("json");
-
+  private Solenoid visionLight = RobotContainer.ringLight;
   Gson targetGson = new Gson();
   TargetData targetData = new TargetData();
   double targetDataLastUpdated = 0;
@@ -144,5 +145,8 @@ public class VisionSubsystem extends SubsystemBase {
   
   public double getBallYLocation(){
     return ballY.getDouble(-1);
+  }
+  public void turnVisionLightOn() {
+    visionLight.set(true);
   }
 }

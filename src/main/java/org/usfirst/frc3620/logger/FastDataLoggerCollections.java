@@ -26,6 +26,7 @@ public class FastDataLoggerCollections extends FastDataLoggerBase {
     @Override
     void writeData(PrintWriter w) {
         for (int i = 0; i < data.size(); i++) {
+            w.print(",");  // meta column comes first
             w.print(timestamps.get(i));
             w.print(",");            
             w.format("%.6f", timestamps.get(i));

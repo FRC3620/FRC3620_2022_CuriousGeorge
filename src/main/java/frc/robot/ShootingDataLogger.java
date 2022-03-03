@@ -1,7 +1,7 @@
 package frc.robot;
 
+import frc.robot.miscellaneous.MotorStatus;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.ShooterSubsystem.Status;
 
 import org.usfirst.frc3620.logger.FastDataLoggerCollections;
 import org.usfirst.frc3620.logger.IFastDataLogger;
@@ -15,7 +15,7 @@ public class ShootingDataLogger {
         return getShootingDataLogger(name, shooterSubsystem, 15.0);
     }
 
-    static void addDataProviders (IFastDataLogger dl, Status s) {
+    static void addDataProviders (IFastDataLogger dl, MotorStatus s) {
         String n = s.getName();
         dl.addDataProvider(n + ".velocity.requested", () -> s.getRequestedRPM());
         dl.addDataProvider(n + ".velocity.actual", () -> s.getActualSensorVelocity());
@@ -39,7 +39,9 @@ public class ShootingDataLogger {
         dataLogger.addDataProvider("battery_voltage", () -> RobotController.getBatteryVoltage());
 
         addDataProviders(dataLogger, shooterSubsystem.getTopStatus());
-       
+        addDataProviders(dataLogger, shooterSubsystem.getBackStatus());
+
+        dataLogger.addDataProvider("hood.position", () -> shooterSubsystem.getHoodPosition());
 
         return dataLogger;
     }

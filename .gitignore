@@ -165,3 +165,5 @@ bin/
 gitgraph*
 .idea/*
 networktables.ini
+simgui-ds.json
+simgui.json

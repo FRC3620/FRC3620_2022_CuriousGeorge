@@ -16,8 +16,6 @@ public class RobotDataLogger {
 		dataLogger.addDataProvider("robotMode", () -> Robot.currentRobotMode.toString());
 		dataLogger.addDataProvider("robotModeInt", () -> Robot.currentRobotMode.ordinal());
 		dataLogger.addDataProvider("batteryVoltage", () -> DataLogger.f2(RobotController.getBatteryVoltage()));
-	
-
 
 		if (canDeviceFinder.isPowerDistributionPresent()) {
 			powerDistribution = new PowerDistribution();
@@ -25,8 +23,10 @@ public class RobotDataLogger {
 			dataLogger.addDataProvider("pdp.totalPower", () -> DataLogger.f2(powerDistribution.getTotalPower()));
 			dataLogger.addDataProvider("pdp.totalEnergy", () -> DataLogger.f2(powerDistribution.getTotalEnergy()));
 		}
-		
-	
-	
+
+		if (RobotContainer.climberExtentionMotor != null) {
+			dataLogger.addDataProvider("climber.power", () -> RobotContainer.climberExtentionMotor.getAppliedOutput());
+			dataLogger.addDataProvider("climber.current", () -> RobotContainer.climberExtentionMotor.getOutputCurrent());
+		}
 	}
 }

@@ -4,51 +4,43 @@
 
 package frc.robot.commands;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.PreShooterSubsystem;
 
-public class ClimberTestCommandDown extends CommandBase {
-  ClimberSubsystem climberSubsystem = RobotContainer.climberSubsystem;
-  TalonFX climberExtentionMotor = RobotContainer.climberExtentionMotor;
-
-  /** Creates a new ClimberTestCommand. */
-  public ClimberTestCommandDown() {
-    addRequirements(climberSubsystem);
+public class PreshooterFireCommand extends CommandBase {
+  /** Creates a new PreshooterFireCommand. */
+  PreShooterSubsystem preShooterSubsystem = RobotContainer.preShooterSubsystem;
+  public PreshooterFireCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
- 
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (climberSubsystem.getShaftPosition() >= 0) {
-      climberSubsystem.spinClimberExtentionMotor(-0.1);
-    }
+    spinPreShooter();
   }
-  
+
+
+  public void spinPreShooter(){
+    preShooterSubsystem.preshooterOn(1);
+
+  }
+
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    climberSubsystem.spinClimberExtentionMotor(0);
-  
+    preShooterSubsystem.preshooterOff();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (climberSubsystem.getShaftPosition() >= 0) {
-      return false;
-    }
-    return true;
+    return false;
   }
 }
-
-

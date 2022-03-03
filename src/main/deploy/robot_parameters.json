@@ -1,13 +1,13 @@
 [
   {
     "name": "2022 competition",
-    "macAddress": "(2022compbot)",
+    "macAddress": "00-80-2F-21-E4-EA",
     "makeAllCANDevices": true,
     // azimuth home encoders
-    "swerve.he.rf": 0,   // right front
-    "swerve.he.lf": 0,  // left front
-    "swerve.he.lb": 0, // left back
-    "swerve.he.rb": 0,  // right back
+    "swerve.he.rf": -1.1,   // right front
+    "swerve.he.lf": 86.6,  // left front
+    "swerve.he.lb": -84.7, // left back
+    "swerve.he.rb": -95.7,  // right back
     //
     "swerve.chassis_width": 23.00,  // inches
     "swerve.chassis_length": 23.00,

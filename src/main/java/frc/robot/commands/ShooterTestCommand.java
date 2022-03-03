@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.ShootingDataLogger;
+import frc.robot.miscellaneous.ShooterCalculator;
 import frc.robot.subsystems.ShooterSubsystem;
 
 import org.slf4j.Logger;
@@ -33,16 +34,23 @@ public class ShooterTestCommand extends CommandBase {
     m_subsystem = subsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
-    SmartDashboard.putNumber("top.set", 0.0);
-    SmartDashboard.putNumber("bottom.set", 0.0);
+
+    SmartDashboard.putNumber("main.set", 0.0);
+    SmartDashboard.putNumber("back.set", 0.0);
+    SmartDashboard.putNumber("hood.set",5.0);
+    SmartDashboard.putBoolean("manual backspin", false);
+    SmartDashboard.putNumber("back.calculated", 0);
+    SmartDashboard.putBoolean("shooter.datalogging.enabled", false);
+    SmartDashboard.putNumber("shooter.datalogging.length", 15);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    boolean shouldDoDataLogging = SmartDashboard.getBoolean("datalogging.enabled", false);
+    boolean shouldDoDataLogging = SmartDashboard.getBoolean("shooter.datalogging.enabled", false);
     if (shouldDoDataLogging) {
-      dataLogger = ShootingDataLogger.getShootingDataLogger("shooter_m", m_subsystem);
+      double length = SmartDashboard.getNumber("shooter.datalogging.length", 15);
+      dataLogger = ShootingDataLogger.getShootingDataLogger("shooter_m", m_subsystem, length);
       dataLogger.start();
     }
   }
@@ -50,20 +58,36 @@ public class ShooterTestCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double t = SmartDashboard.getNumber("top.set", 0.0);
-    double b = SmartDashboard.getNumber("bottom.set", 0.0);
+    double t = SmartDashboard.getNumber("main.set", 0.0);
+    double b = SmartDashboard.getNumber("back.set", 0.0);
+    double h = SmartDashboard.getNumber("hood.set", 0.0);
     //logger.info ("execute: {} {}", t, b);
-    m_subsystem.setTopRPM(t);
-    m_subsystem.setBackRPM(b);
-  }
+    m_subsystem.setMainRPM(t);
+    
+    
+    double backspinRPM = ShooterCalculator.calculateBackspinRPM(t);
+    SmartDashboard.putNumber("back.calculated", backspinRPM);
 
+    if( SmartDashboard.getBoolean ("manual backspin", true)) {
+        m_subsystem.setBackRPM(b);
+
+    }
+    else{ 
+         m_subsystem.setBackRPM(backspinRPM);
+    }
+    m_subsystem.setPosition(h);
+    m_subsystem.setPosition(SmartDashboard.getNumber("hood.set", 5));
+      
+  }
+  
+  
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_subsystem.setTopRPM(0);
+    m_subsystem.setMainRPM(0);
     m_subsystem.setBackRPM(0);
     if (dataLogger != null) {
-      // dataLogger.done();
+      dataLogger.done();
       dataLogger = null;
     }
   }

@@ -7,7 +7,7 @@ import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2022.3.1"
-    id "com.gorylenko.gradle-git-properties" version "2.3.2"
+    id "com.gorylenko.gradle-git-properties" version "2.4.0"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -27,6 +27,8 @@ test {
 
         // includeTestsMatching 'RobotParametersTest'
         includeTestsMatching 'RobotParameters2022Test'
+
+        includeTestsMatching 'ShooterCalculatorTest'
     }
 }
 

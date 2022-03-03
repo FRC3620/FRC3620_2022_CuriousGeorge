@@ -63,6 +63,7 @@ public class DataLogger extends DataLoggerBase {
                 double t = getTimeInSeconds();
                 Date curDate = new Date();
 
+                w.print(',');  // 1st column is metadata
                 w.print(format.format(curDate));
                 w.print(',');
                 w.format("%.6f", t - t0);
