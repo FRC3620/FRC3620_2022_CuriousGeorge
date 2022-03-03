@@ -107,7 +107,6 @@ public class RobotContainer {
   public static WPI_TalonFX shooterSubsystemMainShooter2;
   public static WPI_TalonFX shooterSubsystemBackSpinShooter;
   public static CANSparkMaxSendable shooterSubsystemHoodMax;
-  public static RelativeEncoder shooterSubsystemHoodEncoder;
   public static DigitalInput hoodLimitSwitch;
   public static CANSparkMaxSendable preShooterSubsystemPreShooter;
   

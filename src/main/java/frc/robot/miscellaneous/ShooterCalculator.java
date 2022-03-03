@@ -44,4 +44,32 @@ public class ShooterCalculator {
         return desiredBackspinRPM;
 
     }
+
+
+    public double calcHoodPosition(double cy) {
+        double calcHoodPosition;
+        if(cy < 224){
+            calcHoodPosition = 3.73187317480733 + 0.0327847309136473*cy +-0.0000114726741759497*cy*cy;
+            calcHoodPosition = calcHoodPosition + SmartDashboard.getNumber("manualHoodPosition", 5);
+        } else if(cy < 336){
+            calcHoodPosition = 3.85000000000 + 0.0369791667*cy + -0.0000325521*cy*cy;
+        }else if(cy < 403){
+            calcHoodPosition = -28.1396700696 + 0.2136292223*cy + -0.0002749411*cy*cy;
+        } else {
+            calcHoodPosition = -56.8299016952515 + 0.355106208706275*cy + -0.000449346405275719*cy*cy;
+        }
+        return 5.0 * calcHoodPosition;
+    }
+
+    public double calcMainRPM(double cy) {
+        double calcMainRPM = 2650;
+        if(cy < 252) {
+            calcMainRPM = 4700;
+        } else {
+            calcMainRPM = 4700;
+        }
+        return calcMainRPM;
+    }
+
+
 }
