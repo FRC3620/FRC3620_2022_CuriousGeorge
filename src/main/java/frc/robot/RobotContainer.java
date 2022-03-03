@@ -109,7 +109,7 @@ public class RobotContainer {
   public static CANSparkMaxSendable shooterSubsystemHoodMax;
   public static DigitalInput hoodLimitSwitch;
   public static CANSparkMaxSendable preShooterSubsystemPreShooter;
-  
+
   // turret
   public static CANSparkMaxSendable turretSubsystemturretSpinner;
   public static RelativeEncoder turretSubsystemturretEncoder;
@@ -175,7 +175,7 @@ public class RobotContainer {
       
       driveSubsystemRightFrontAzimuth = new CANSparkMaxSendable(2, MotorType.kBrushless);
       driveSubsystemRightFrontAzimuthEncoder = driveSubsystemRightFrontAzimuth.getEncoder();
-              
+
       driveSubsystemLeftFrontDrive = new CANSparkMaxSendable(3, MotorType.kBrushless);
       driveSubsystemLeftFrontDriveEncoder = driveSubsystemLeftFrontDrive.getEncoder();
               
@@ -334,7 +334,7 @@ public class RobotContainer {
       shooterSubsystemHoodMax.setOpenLoopRampRate(.3);
       shooterSubsystemHoodMax.setClosedLoopRampRate(.3);
       shooterSubsystemHoodMax.setSmartCurrentLimit(10);
-    } 
+  }
 
     if(climberExtentionMotor != null) {
       resetMaxToKnownState(climberExtentionMotor, true);
@@ -463,7 +463,7 @@ public class RobotContainer {
     SmartDashboard.putData(new SetHoodPositionCommand());
     SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
     SmartDashboard.putData("Find target",new FindTargetCommand(turretSubsystem, visionSubsystem));
-    
+
 
     SmartDashboard.putData("Shooter Test Command", new ShooterTestCommand(shooterSubsystem));
 
@@ -474,13 +474,13 @@ public class RobotContainer {
     SmartDashboard.putData("Climber Tilt Out", new ClimberTiltTestCommandOut());
     SmartDashboard.putData("Climber Tilt In", new ClimberTiltTestCommandIn());
 
-    SmartDashboard.putData("Find target",new FindTargetCommand(turretSubsystem, visionSubsystem));
+    SmartDashboard.putData("Find Target",new FindTargetCommand(turretSubsystem, visionSubsystem));
+    SmartDashboard.putData("Find Target and Wiggle", new MassageOperatorToShootCommand(visionSubsystem, driverRumbleSubsystem));
 
     SmartDashboard.putData("Rumble Command", new RumbleCommand(driverRumbleSubsystem, Hand.BOTH, 1.0, 3.0));
     SmartDashboard.putData("Rumble Command 2", new RumbleCommand(driverRumbleSubsystem, .5, 5.0));
     SmartDashboard.putData("Rumble Command 3", new RumbleCommand(driverRumbleSubsystem,Hand.LEFT, .5, 3.0));
     SmartDashboard.putData("Rumble Command 4", new RumbleCommand(driverRumbleSubsystem,Hand.RIGHT, .5, 3.0));
-
     SmartDashboard.putData("Top shooter to 0.1", new ShooterPowerTest());
   }
 

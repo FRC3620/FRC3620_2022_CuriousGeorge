@@ -164,5 +164,6 @@ bin/
 ######## FRC3620 additions follow ########
 gitgraph*
 .idea/*
+networktables.ini
 simgui-ds.json
 simgui.json

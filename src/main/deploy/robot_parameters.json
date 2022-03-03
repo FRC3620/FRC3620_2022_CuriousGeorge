@@ -54,8 +54,14 @@
   },
   {
     "name": "simulator",
-    "macAddress": "(simulator)",
-    "makeAllCANDevices": false,
-    "has_shooter": true
-  }
+    "macAddress": "(simulation)",
+    "makeAllCANDevices": true,
+
+    "has_climber": true,
+    "has_intake": true,
+    "has_shooter": true,
+    "has_turret": true,
+
+    "should_run_compressor": true
+ }
 ]
