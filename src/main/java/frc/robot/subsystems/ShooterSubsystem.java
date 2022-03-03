@@ -191,6 +191,9 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setBackRPM(double r) {
+    if (r < 0){
+      r = 0;
+    }
     setRpm(m_back, r, s_back);
   }
   
