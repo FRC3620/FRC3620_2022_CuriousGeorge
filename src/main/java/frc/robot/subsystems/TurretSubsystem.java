@@ -61,14 +61,14 @@ public class TurretSubsystem extends SubsystemBase {
   
         if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
           if (!encoderIsValid) {
-            turnTurret(-0.045);
+            turnTurret(0.06);  //.045
 
             if (calibrationTimer == null) {
               calibrationTimer = new Timer();
               calibrationTimer.reset();
               calibrationTimer.start();
             } else {
-              if (calibrationTimer.get() > 0.5){
+              if (calibrationTimer.get() > 2){
                 if (Math.abs(turretSpeed) < 20) {
                   encoderIsValid = true;
                   turnTurret(0.0);
@@ -97,7 +97,8 @@ public class TurretSubsystem extends SubsystemBase {
     if (encoderIsValid) {
       if(angle<5) angle = 0;
       if(angle>220) angle =220;
-      turretPID.setReference(angle, ControlType.kPosition);
+      // TODO reenable after we know we are sane
+      // turretPID.setReference(angle, ControlType.kPosition);
     }
   }
   public double getCurrentTurretPosition(){
