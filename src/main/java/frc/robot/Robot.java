@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.DataLogger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
+import org.usfirst.frc3620.misc.FileSaver;
 import org.usfirst.frc3620.misc.GitNess;
 import org.usfirst.frc3620.misc.RobotMode;
 
@@ -73,6 +74,8 @@ public class Robot extends TimedRobot {
     new RobotDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);
     robotDataLogger.setInterval(0.25);
     robotDataLogger.start();
+
+    FileSaver.add("networktables.ini");
   }
 
   /**
