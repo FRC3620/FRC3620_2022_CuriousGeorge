@@ -11,8 +11,10 @@ public class PreshooterAutoFireCommand extends CommandBase {
   /** Creates a new PreshooterAutoFireCommand. */
   PreShooterSubsystem preShooterSubsystem = RobotContainer.preShooterSubsystem;
   IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
-  boolean intakeRunning = false;
+  boolean intakeBeltRunning = false;
+  boolean intakeWheelbarRunning = false;
   Timer preshooterTimer = new Timer();
+  boolean weAreDone = false;
   public PreshooterAutoFireCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intakeSubsystem, preShooterSubsystem);
@@ -22,44 +24,49 @@ public class PreshooterAutoFireCommand extends CommandBase {
   public void initialize() {
     preshooterTimer.reset();
     preshooterTimer.start();
-    if(intakeSubsystem.getIntakeSpeed() > 0) {
-      intakeRunning = true;
+    if(intakeSubsystem.getIntakeBeltSpeed() > 0) {
+      intakeBeltRunning = true;
     }
+    if(intakeSubsystem.getIntakeWheelbarSpeed() > 0) {
+      intakeWheelbarRunning = true;
+    }
+    weAreDone = false;
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeSubsystem.spinIntakeBelt(0.0);
-    spinPreShooter();
-  }
-  public void spinPreShooter(){
-    if(preshooterTimer.get() < 0.2) {
-    preShooterSubsystem.preshooterOn(1.0);
+    if(preshooterTimer.get() < 2.0) {
+        preShooterSubsystem.preshooterOn(1.0);
+        intakeSubsystem.spinIntakeBelt(0.0);
+        intakeSubsystem.spinIntakeWheelBar(0.0);
+    } else if (preshooterTimer.get() < 4.0) {
+        preShooterSubsystem.preshooterOff();
+        intakeSubsystem.spinIntakeBelt(0.4);
     } else {
-      preShooterSubsystem.preshooterOff();
+        weAreDone = true;
     }
   }
 
-  public void spinIntakeAfterPreshooter() {
-    //if(intakeRunning = true) {
-      intakeSubsystem.spinIntakeBelt(0.4);
-    //} else {
-    //  intakeSubsystem.spinIntakeBelt(0.0);
-    //}
-  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    preShooterSubsystem.preshooterOff();
-    if(preshooterTimer.get() < 0.4) {
-      spinIntakeAfterPreshooter();
+    if(intakeBeltRunning == true) {
+      intakeSubsystem.spinIntakeBelt(0.4);
+    } else {
+      intakeSubsystem.spinIntakeBelt(0.0);
+    }
+    if(intakeWheelbarRunning == true) {
+      intakeSubsystem.spinIntakeWheelBar(0.4);
+    } else {
+      intakeSubsystem.spinIntakeWheelBar(0.0);
     }
   }
+  
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(preshooterTimer.get() > 0.2){
+    if(weAreDone){
       return true;
     }
     return false;

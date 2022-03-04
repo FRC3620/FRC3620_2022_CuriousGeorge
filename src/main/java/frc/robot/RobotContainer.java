@@ -470,6 +470,7 @@ public class RobotContainer {
     SmartDashboard.putData("Eject Ball", new EjectBallCommand());
     SmartDashboard.putData("Intake Ball", new IntakeBallCommand());
     SmartDashboard.putData("pre shooter", new PreshooterFireCommand());
+    SmartDashboard.putData("preshooter with intake", new PreshooterAutoFireCommand());
 
     SmartDashboard.putData("Climber Tilt Out", new ClimberTiltTestCommandOut());
     SmartDashboard.putData("Climber Tilt In", new ClimberTiltTestCommandIn());
