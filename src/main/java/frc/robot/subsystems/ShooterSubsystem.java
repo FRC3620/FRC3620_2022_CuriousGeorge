@@ -60,7 +60,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
 
   //hood
-  private final double hoodP = 0;
+  private final double hoodP = 0.1;
   private final double hoodI = 0;
   private final double hoodD = 0;
   private final double maximumHoodPosition = 110;
@@ -114,7 +114,7 @@ public class ShooterSubsystem extends SubsystemBase {
       anglePID.setP(hoodP);
       anglePID.setI(hoodI);
       anglePID.setD(hoodD);
-      anglePID.setOutputRange(-0.5, 0.5);
+      anglePID.setOutputRange(-0.25, 0.25); //TODO Set back to 0.5 after testing
     }
 
     //Load "cargo.desireRPM" value in SmartDashboard
@@ -190,13 +190,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
   void setHoodPositionToRotations(double position) {
     if (hoodEncoderIsValid) {
-      if(position >= 100){
-        requestedHoodPosition = 100;
-      } else if (position < 0) {
-        requestedHoodPosition=0;
+      if(position >= 108){
+        requestedHoodPosition = 108;
+      } else if (position < 2) {
+        requestedHoodPosition=2;
       } else {
         requestedHoodPosition=position;
-      }   
+      }
       hoodMotor.getPIDController().setReference(requestedHoodPosition,CANSparkMax.ControlType.kPosition );
     }
   }
@@ -251,6 +251,9 @@ public class ShooterSubsystem extends SubsystemBase {
     s_back.gatherActuals(m_back, "back");
     SmartDashboard.putNumber("hood.actual", getHoodPosition());
     SmartDashboard.putBoolean("hood.encoderisvalid", hoodEncoderIsValid);
+    SmartDashboard.putNumber("hood.requested.position", requestedHoodPosition);
+    SmartDashboard.putNumber("hood.applied.power", hoodMotor.getAppliedOutput());
+    SmartDashboard.putNumber("hood.output.current", hoodMotor.getOutputCurrent());
 
     if (hoodMotor != null) { 
       double hoodSpeed = hoodEncoder.getVelocity();  // motor revolutions per minute
