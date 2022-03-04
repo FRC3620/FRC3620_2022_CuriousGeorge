@@ -105,4 +105,8 @@ public class IntakeSubsystem extends SubsystemBase {
       intakeArm.set(false);
     }
   }
+
+  public double getIntakeSpeed() {
+    return intakeBelt.get();
+  }
 }

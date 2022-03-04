@@ -33,22 +33,33 @@ public class PreshooterAutoFireCommand extends CommandBase {
     spinPreShooter();
   }
   public void spinPreShooter(){
+    if(preshooterTimer.get() < 0.2) {
     preShooterSubsystem.preshooterOn(1.0);
+    } else {
+      preShooterSubsystem.preshooterOff();
+    }
   }
+
+  public void spinIntakeAfterPreshooter() {
+    //if(intakeRunning = true) {
+      intakeSubsystem.spinIntakeBelt(0.4);
+    //} else {
+    //  intakeSubsystem.spinIntakeBelt(0.0);
+    //}
+  }
+
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     preShooterSubsystem.preshooterOff();
-    if(intakeRunning = true) {
-      intakeSubsystem.spinIntakeBelt(0.4);
-    } else {
-      intakeSubsystem.spinIntakeBelt(0.0);
+    if(preshooterTimer.get() < 0.4) {
+      spinIntakeAfterPreshooter();
     }
   }
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(preshooterTimer.get() > 1){
+    if(preshooterTimer.get() > 0.2){
       return true;
     }
     return false;
