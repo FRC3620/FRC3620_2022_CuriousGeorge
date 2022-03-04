@@ -17,7 +17,7 @@ public class ShootingDataLogger {
 
     static void addDataProviders (IFastDataLogger dl, MotorStatus s) {
         String n = s.getName();
-        dl.addDataProvider(n + ".velocity.requested", () -> s.getRequestedRPM());
+        dl.addDataProvider(n + ".velocity.requested", () -> s.getRequestedSensorVelocity());
         dl.addDataProvider(n + ".velocity.actual", () -> s.getActualSensorVelocity());
         dl.addDataProvider(n + ".rpm.requested", () -> s.getRequestedRPM());
         dl.addDataProvider(n + ".rpm.actual", () -> s.getActualRPM());
