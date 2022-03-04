@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.RobotMode;
+import org.usfirst.frc3620.misc.XBoxConstants;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Timer;
@@ -182,14 +183,19 @@ public class ShooterSubsystem extends SubsystemBase {
     return s_back;
   }
 
-  public void setPosition(double position) {
-    if(hoodEncoderIsValid){
-      if(position >= maximumHoodPosition){
-        requestedHoodPosition = maximumHoodPosition;
-      } else if (position < minimumHoodPosition) {
-        requestedHoodPosition = minimumHoodPosition;
+  public void setHoodPositionToDegrees(double degrees) {
+    double calcuated = ShooterSubsystem.calculateHoodRotations(degrees);
+    setHoodPositionToRotations(calcuated);
+  }
+
+  void setHoodPositionToRotations(double position) {
+    if (hoodEncoderIsValid) {
+      if(position >= 100){
+        requestedHoodPosition = 100;
+      } else if (position < 0) {
+        requestedHoodPosition=0;
       } else {
-        requestedHoodPosition = position;
+        requestedHoodPosition=position;
       }   
       hoodMotor.getPIDController().setReference(requestedHoodPosition,CANSparkMax.ControlType.kPosition );
     }
@@ -232,6 +238,11 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
   
+
+  public static double calculateHoodRotations (double angle) {
+    return (212.32 - 2.5581 * angle);
+  }
+
 
   @Override
   public void periodic() {

@@ -37,7 +37,7 @@ public class ShooterTestCommand extends CommandBase {
 
     SmartDashboard.putNumber("main.set", 0.0);
     SmartDashboard.putNumber("back.set", 0.0);
-    SmartDashboard.putNumber("hood.set",5.0);
+    SmartDashboard.putNumber("hood.set",44.0);
     SmartDashboard.putBoolean("manual backspin", false);
     SmartDashboard.putNumber("back.calculated", 0);
     SmartDashboard.putBoolean("shooter.datalogging.enabled", false);
@@ -60,7 +60,7 @@ public class ShooterTestCommand extends CommandBase {
   public void execute() {
     double t = SmartDashboard.getNumber("main.set", 0.0);
     double b = SmartDashboard.getNumber("back.set", 0.0);
-    double h = SmartDashboard.getNumber("hood.set", 0.0);
+    double h = SmartDashboard.getNumber("hood.set", 44);
     //logger.info ("execute: {} {}", t, b);
     m_subsystem.setMainRPM(t);
     
@@ -75,11 +75,8 @@ public class ShooterTestCommand extends CommandBase {
     else{ 
          m_subsystem.setBackRPM(backspinRPM);
     }
-    m_subsystem.setPosition(h);
-    m_subsystem.setPosition(SmartDashboard.getNumber("hood.set", 5));
-      
+    m_subsystem.setHoodPositionToDegrees(h);
   }
-  
   
   // Called once the command ends or is interrupted.
   @Override
