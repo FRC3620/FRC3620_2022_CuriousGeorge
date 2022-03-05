@@ -28,7 +28,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-
+import edu.wpi.first.wpilibj.simulation.JoystickSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -419,9 +419,10 @@ public class RobotContainer {
     climberTiltInButton.whenPressed(new ClimberTiltTestCommandIn());
     
     operatorDPad.up().whenPressed(new MoveTurretCommand(turretSubsystem, 0));
+    operatorDPad.right().whenPressed(new MoveTurretCommand(turretSubsystem, 90));
     operatorDPad.down().whenPressed(new MoveTurretCommand(turretSubsystem, 180));
     operatorDPad.left().whenPressed(new MoveTurretCommand(turretSubsystem, 270));
-    operatorDPad.right().whenPressed(new MoveTurretCommand(turretSubsystem, 90));
+   
 
     JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);
     centerOnBallButton.whileHeld(new InstantCenterOnBallCommand(driveSubsystem, visionSubsystem));
@@ -434,7 +435,11 @@ public class RobotContainer {
 
 
     JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
-    intakeButton.toggleWhenPressed(new IntakeBallCommand());
+    intakeButton.toggleWhenPressed(new IntakeOnCommand());
+    JoystickButton intakeOffButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    intakeOffButton.toggleWhenPressed(new IntakeOffCommand());
+    JoystickButton intakeArmButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B); 
+    intakeArmButton.toggleWhenPressed(new IntakeArmCommand());
     JoystickButton ejectButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
     ejectButton.whileHeld(new EjectBallCommand());
   }
@@ -468,7 +473,7 @@ public class RobotContainer {
     SmartDashboard.putData("Shooter Test Command", new ShooterTestCommand(shooterSubsystem));
 
     SmartDashboard.putData("Eject Ball", new EjectBallCommand());
-    SmartDashboard.putData("Intake Ball", new IntakeBallCommand());
+    SmartDashboard.putData("Intake Ball", new IntakeOnCommand());
     SmartDashboard.putData("pre shooter", new PreshooterFireCommand());
     SmartDashboard.putData("preshooter with intake", new PreshooterAutoFireCommand());
 

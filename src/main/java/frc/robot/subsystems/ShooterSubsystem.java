@@ -252,8 +252,6 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("hood.actual", getHoodPosition());
     SmartDashboard.putBoolean("hood.encoderisvalid", hoodEncoderIsValid);
     SmartDashboard.putNumber("hood.requested.position", requestedHoodPosition);
-    SmartDashboard.putNumber("hood.applied.power", hoodMotor.getAppliedOutput());
-    SmartDashboard.putNumber("hood.output.current", hoodMotor.getOutputCurrent());
 
     if (hoodMotor != null) { 
       double hoodSpeed = hoodEncoder.getVelocity();  // motor revolutions per minute
@@ -276,6 +274,8 @@ public class ShooterSubsystem extends SubsystemBase {
           } 
         } 
       }
+      SmartDashboard.putNumber("hood.applied.power", hoodMotor.getAppliedOutput());
+      SmartDashboard.putNumber("hood.output.current", hoodMotor.getOutputCurrent());
     }
   }
 

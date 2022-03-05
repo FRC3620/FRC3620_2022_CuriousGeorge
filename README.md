@@ -2,9 +2,10 @@
 
 ## Driver Controls
 * A - X Mode
-* LB - Intake arm up and down plus roller and belt (clockwise)
+* LB -  roller and belt (clockwise)
 * RT - Fire
-
+* RB - intake does not spin (IntakeOffCommand)
+* B - up and down arm 
 ## Operator Controls
 
 * Dpad - Turret left, forward, right, reverse
@@ -12,7 +13,7 @@
 * Right Stick - Climber up + down
 * A - Climber tilt out
 * B - Climber tilt in
-  
+* RB - eject ball
 # Hardware Assignments
 
 * SparkMAX 17 - climber
