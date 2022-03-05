@@ -4,15 +4,12 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.RelativeEncoder;
 
 import org.usfirst.frc3620.misc.RobotMode;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,7 +21,6 @@ public class ClimberSubsystem extends SubsystemBase {
   DigitalInput climberStationaryHookContact = RobotContainer.climberStationaryHookContact; 
   CANSparkMaxSendable climberExtentionMotor = RobotContainer.climberExtentionMotor; 
   RelativeEncoder climberEncoder;
-  Solenoid climberArmTilt = RobotContainer.climberArmTilt;
   boolean encoderIsValid = false;
   Timer calibrationTimer;
 
@@ -92,25 +88,9 @@ public class ClimberSubsystem extends SubsystemBase {
     return rv; 
   }
 
- 
-
   public void spinClimberExtentionMotor(double speed) {
     if (climberExtentionMotor != null) { 
       climberExtentionMotor.set(speed);
     }
   }
-
-  public void climberArmTiltIn() {
-    if (climberArmTilt != null) { 
-      climberArmTilt.set(false);
-    }
-  }
-
-  public void climberArmTiltOut() {
-    if (climberArmTilt != null) { 
-      climberArmTilt.set(true);
-    }
-  }
-
-
 }

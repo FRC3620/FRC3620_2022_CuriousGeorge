@@ -5,12 +5,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
 public class IntakeArmSubsystem extends SubsystemBase {
-  Solenoid intakeArm = RobotContainer.intakeArm;
+  DoubleSolenoid intakeArm = RobotContainer.intakeArm;
   /** Creates a new IntakeArmSubsystem. */
   public IntakeArmSubsystem() {
     if (intakeArm != null) {
@@ -23,14 +25,22 @@ public class IntakeArmSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public void extendIntake() {
+  public void extendIntakeArm() {
     if (intakeArm != null) {
-      intakeArm.set(true);
+      intakeArm.set(Value.kForward);
     }
   }
-  public void retractIntake() {
+
+  public void retractIntakeArm() {
     if (intakeArm != null) {
-      intakeArm.set(false);
+      intakeArm.set(Value.kReverse);
     }
   }
+
+  public void turnOffIntakeArm() {
+    if (intakeArm != null) {
+      intakeArm.set(Value.kOff);
+    }
+  }
+
 }

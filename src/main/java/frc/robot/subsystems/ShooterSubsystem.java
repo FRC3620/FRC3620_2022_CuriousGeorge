@@ -276,7 +276,7 @@ public class ShooterSubsystem extends SubsystemBase {
       }
       SmartDashboard.putNumber("hood.applied.power", hoodMotor.getAppliedOutput());
       SmartDashboard.putNumber("hood.output.current", hoodMotor.getOutputCurrent());
-     }
+    }
   }
 
   @Override
