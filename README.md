@@ -1,8 +1,10 @@
 # 2022 Controls
 
 ## Driver Controls
-* A - X Mode
+* A - X Mode (not added yet)
 * X - Reset NavX
+* Y - Center on Ball
+* RB - Stop Drive
 * LB - Intake arm up and down plus roller and belt (clockwise)
 * RT - Fire
 
