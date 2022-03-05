@@ -95,8 +95,6 @@ public class CenterOnBallCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-
-
     // This method should return true when the the x-value from the network table reads 0.5 +/- TOLERANCE
     if (Math.abs(targetX-0.5) <= BALL_LOCATION_TOLERANCE){
       return true;

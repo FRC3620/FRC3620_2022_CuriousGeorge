@@ -412,7 +412,7 @@ public class RobotContainer {
     DPad driverDPad = new DPad(driverJoystick, 0);
     DPad operatorDPad = new DPad(operatorJoystick, 0);
 
-    //Climber Tilt Buttons
+    //Climber Buttons
     JoystickButton climberTiltOutButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
     climberTiltOutButton.whenPressed(new ClimberTiltTestCommandOut());
     JoystickButton climberTiltInButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
@@ -487,6 +487,8 @@ public class RobotContainer {
     SmartDashboard.putData("Rumble Command 3", new RumbleCommand(driverRumbleSubsystem,Hand.LEFT, .5, 3.0));
     SmartDashboard.putData("Rumble Command 4", new RumbleCommand(driverRumbleSubsystem,Hand.RIGHT, .5, 3.0));
     SmartDashboard.putData("Top shooter to 0.1", new ShooterPowerTest());
+
+    SmartDashboard.putData("Get ready to climb", new GetReadyToClimbCommand());
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
