@@ -353,7 +353,7 @@ public class RobotContainer {
     }
 
     if(turretSubsystemturretSpinner != null) {
-      resetMaxToKnownState(turretSubsystemturretSpinner, false);
+      resetMaxToKnownState(turretSubsystemturretSpinner, true);
       turretSubsystemturretSpinner.setSmartCurrentLimit(10);
     }
   }
