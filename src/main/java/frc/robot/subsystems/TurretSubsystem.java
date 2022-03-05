@@ -63,7 +63,7 @@ public class TurretSubsystem extends SubsystemBase {
   
         if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
           if (!encoderIsValid) {
-            turnTurret(0.045); //turns turret clockwise
+            turnTurret(0.06); //turns turret clockwise
 
             if (calibrationTimer == null) {
               calibrationTimer = new Timer();
@@ -79,6 +79,8 @@ public class TurretSubsystem extends SubsystemBase {
               }
             }
           }
+        } else {
+          calibrationTimer = null; // start over!
         }
       }
     }

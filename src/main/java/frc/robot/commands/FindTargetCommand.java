@@ -22,9 +22,6 @@ public class FindTargetCommand extends CommandBase {
     addRequirements(_subsystem);
     turretSubsystem = _subsystem;
     visionSubsystem = _vsubsystem;
-    SmartDashboard.putBoolean("Target Found", true);
-     
-   
   }
 
   // Called when the command is initially scheduled.
@@ -34,7 +31,6 @@ public class FindTargetCommand extends CommandBase {
     turretTimer.reset();
     turretTimer.start();
   }
-  
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
