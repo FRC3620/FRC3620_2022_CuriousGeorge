@@ -62,6 +62,8 @@ public class VisionSubsystem extends SubsystemBase {
       updateTargetInfoFromTargetJson(json);
     }
 
+    visionLight.set(true);
+
     nt_target_json.addListener(new TargetJsonListener(), EntryListenerFlags.kUpdate | EntryListenerFlags.kImmediate | EntryListenerFlags.kNew);
   }
 
