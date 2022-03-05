@@ -21,7 +21,7 @@ public class EjectBallCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intakeArmSubsystem.extendIntake();
+    intakeArmSubsystem.extendIntakeArm();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -40,7 +40,7 @@ public class EjectBallCommand extends CommandBase {
   public void end(boolean interrupted) {
     intakeSubsystem.spinIntakeWheelBar(0.0);
     intakeSubsystem.spinIntakeBelt(0.0);
-    intakeArmSubsystem.retractIntake();
+    intakeArmSubsystem.retractIntakeArm();
   }
 
   // Returns true when the command should end.

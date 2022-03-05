@@ -97,7 +97,7 @@ public class RobotContainer {
   //intake
   public static CANSparkMaxSendable intakeWheelbar;
   public static CANSparkMaxSendable intakeBelt;
-  public static Solenoid intakeArm;
+  public static DoubleSolenoid intakeArm;
 
   // vision
   public static Solenoid ringLight;
@@ -278,7 +278,7 @@ public class RobotContainer {
         climberArmTilt = new Solenoid(pneumaticModuleType, 0);
       }
       if (robotParameters.hasIntake()){
-        intakeArm = new Solenoid(pneumaticModuleType, 1);
+        intakeArm = new DoubleSolenoid(pneumaticModuleType, 2, 3);
       }
     }
   }
