@@ -2,6 +2,7 @@
 
 ## Driver Controls
 * A - X Mode
+* X - Reset NavX
 * LB - Intake arm up and down plus roller and belt (clockwise)
 * RT - Fire
 
