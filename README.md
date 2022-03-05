@@ -9,6 +9,7 @@
 
 * Dpad - Turret left, forward, right, reverse
 * X - Shooter ("fire up")
+* Y - Turret to 0 degrees & intake arm up (GetReadyToClimbCommand)
 * Right Stick - Climber up + down
 * A - Climber tilt out
 * B - Climber tilt in

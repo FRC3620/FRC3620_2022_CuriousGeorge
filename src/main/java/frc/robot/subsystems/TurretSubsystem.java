@@ -61,7 +61,7 @@ public class TurretSubsystem extends SubsystemBase {
   
         if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
           if (!encoderIsValid) {
-            turnTurret(-0.045);
+            turnTurret(0.045); //turns turret clockwise
 
             if (calibrationTimer == null) {
               calibrationTimer = new Timer();
@@ -72,7 +72,7 @@ public class TurretSubsystem extends SubsystemBase {
                 if (Math.abs(turretSpeed) < 20) {
                   encoderIsValid = true;
                   turnTurret(0.0);
-                  turretEncoder.setPosition(0.0);
+                  turretEncoder.setPosition(0.0); //check encoder position
                 }
               }
             }
@@ -95,8 +95,8 @@ public class TurretSubsystem extends SubsystemBase {
   public void setTurretPosition (double angle) {
     SmartDashboard.putNumber("turretRequestedAngle", angle);
     if (encoderIsValid) {
-      if(angle<5) angle = 0;
-      if(angle>220) angle =220;
+      if(angle < -45) angle = -45;
+      if(angle > 270) angle = 270;
       turretPID.setReference(angle, ControlType.kPosition);
     }
   }
