@@ -25,8 +25,10 @@ public class RobotDataLogger {
 		}
 
 		if (RobotContainer.climberExtentionMotor != null) {
-			dataLogger.addDataProvider("climber.power", () -> RobotContainer.climberExtentionMotor.getAppliedOutput());
-			dataLogger.addDataProvider("climber.current", () -> RobotContainer.climberExtentionMotor.getOutputCurrent());
+			dataLogger.addDataProvider("climber.power", () -> DataLogger.f2(RobotContainer.climberExtentionMotor.getAppliedOutput()));
+			dataLogger.addDataProvider("climber.current", () -> DataLogger.f2(RobotContainer.climberExtentionMotor.getOutputCurrent()));
 		}
+
+		dataLogger.addDataProvider("vision.target_data_age", () -> DataLogger.f2(RobotContainer.visionSubsystem.getTargetDataAge()));
 	}
 }
