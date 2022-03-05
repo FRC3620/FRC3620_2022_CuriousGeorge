@@ -117,7 +117,7 @@ public class RobotContainer {
   // climber
   public static DigitalInput climberStationaryHookContact;
   public static CANSparkMaxSendable climberExtentionMotor; 
-  public static Solenoid climberArmTilt;
+  public static DoubleSolenoid climberArmTilt;
 
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
@@ -275,7 +275,7 @@ public class RobotContainer {
       ringLight = new Solenoid(pneumaticModuleType, 7);
       ringLight.set(true);
       if (robotParameters.hasClimber()){
-        climberArmTilt = new Solenoid(pneumaticModuleType, 0);
+        climberArmTilt = new DoubleSolenoid(pneumaticModuleType, 0, 1);
       }
       if (robotParameters.hasIntake()){
         intakeArm = new DoubleSolenoid(pneumaticModuleType, 2, 3);
