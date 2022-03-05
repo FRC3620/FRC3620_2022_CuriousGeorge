@@ -37,7 +37,7 @@ public class IntakeBallCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     intakeSubsystem.spinIntakeWheelBar(0.0);
-    intakeSubsystem.spinIntakeBelt(0.0);
+    //intakeSubsystem.spinIntakeBelt(0.0);
     intakeSubsystem.retractIntake();
   }
 
