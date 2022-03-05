@@ -425,6 +425,10 @@ public class RobotContainer {
 
     JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);
     centerOnBallButton.whileHeld(new InstantCenterOnBallCommand(driveSubsystem, visionSubsystem));
+    JoystickButton resetNavXButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
+    resetNavXButton.whenPressed(new ResetNavXCommand(driveSubsystem));
+    JoystickButton stopDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    stopDriveButton.toggleWhenPressed(new StopDriveCommand(driveSubsystem));
 
     /*AnalogJoystickButton climberExtendUp = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.2);
     climberExtendUp.whileHeld(new ClimberTestCommandUp());
