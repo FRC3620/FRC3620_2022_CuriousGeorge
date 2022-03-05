@@ -5,13 +5,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 
 public class GetReadyToClimbCommand extends CommandBase {
   /** Creates a new GetReadyToClimb. */
-  private TurretSubsystem turretSubsystem;
+  private TurretSubsystem turretSubsystem = RobotContainer.turretSubsystem;
   private IntakeSubsystem intakeSubsystem;
 
   public GetReadyToClimbCommand() {

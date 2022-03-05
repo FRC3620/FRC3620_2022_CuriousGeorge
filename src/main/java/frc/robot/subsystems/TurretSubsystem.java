@@ -37,7 +37,7 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     if (turretEncoder != null) {
-      turretEncoder.setPositionConversionFactor(90/7.8);
+      turretEncoder.setPositionConversionFactor(1);
       turretEncoder.setVelocityConversionFactor(1);
     }
 
