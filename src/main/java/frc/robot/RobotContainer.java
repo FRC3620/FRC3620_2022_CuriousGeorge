@@ -124,6 +124,7 @@ public class RobotContainer {
   public static VisionSubsystem visionSubsystem;
   public static ClimberSubsystem climberSubsystem; 
   public static IntakeSubsystem intakeSubsystem;
+  public static IntakeArmSubsystem intakeArmSubsystem;
   public static TurretSubsystem turretSubsystem;
   public static ShooterSubsystem shooterSubsystem;
   public static ArmSubsystem armSubsystem;
@@ -390,6 +391,7 @@ public class RobotContainer {
     visionSubsystem = new VisionSubsystem();
     climberSubsystem = new ClimberSubsystem();
     intakeSubsystem = new IntakeSubsystem();
+    intakeArmSubsystem = new IntakeArmSubsystem();
     turretSubsystem = new TurretSubsystem();
     shooterSubsystem = new ShooterSubsystem();
     armSubsystem = new ArmSubsystem();
