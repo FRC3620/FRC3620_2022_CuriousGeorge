@@ -10,11 +10,13 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.IntakeSubsystem;
 
 public class IntakeOffCommand extends CommandBase {
-  IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
+  IntakeSubsystem intakeSubsystem;
   /** Creates a new IntakeBallCommand. */
-  public IntakeOffCommand() {
+  public IntakeOffCommand(IntakeSubsystem intakeSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intakeSubsystem);
+
+    this.intakeSubsystem = intakeSubsystem;
   }
 
   // Called when the command is initially scheduled.
