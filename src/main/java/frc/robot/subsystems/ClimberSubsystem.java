@@ -45,29 +45,28 @@ public class ClimberSubsystem extends SubsystemBase {
 
           if (calibrationTimer == null) {
             calibrationTimer = new Timer();
-            calibrationTimer.reset(); 
+            calibrationTimer.reset();
             calibrationTimer.start();
           } else {
-            if (calibrationTimer.get() > 0.5){
+            if (calibrationTimer.get() > 0.5) {
               if (Math.abs(climberSpeed) < 0.1) {
                 encoderIsValid = true;
                 spinClimberExtentionMotor(0.0);
                 climberEncoder.setPosition(0.0);
+              }
             }
           }
-        }
-       } else {
-          
+        } else {
           if(RobotContainer.getOperatorJoystickRightY()<0 && getClimberExtensionInInches()<=0) {
             spinClimberExtentionMotor(0.0);
-            
-          }else if(RobotContainer.getOperatorJoystickRightY()>0 && getClimberExtensionInInches()>22.0) {
+          } else if(RobotContainer.getOperatorJoystickRightY()>0 && getClimberExtensionInInches()>22.0) {
             spinClimberExtentionMotor(0.0);
-          }else{
+          } else {
             spinClimberExtentionMotor(RobotContainer.getOperatorJoystickRightY());
           }
         }
-
+      } else {
+        calibrationTimer = null; // start over
       }
       SmartDashboard.putBoolean("climber.doesstationaryhookhavebar", doesStationaryHookHaveBar());
       SmartDashboard.putNumber("climber.encoder",climberEncoder.getPosition());

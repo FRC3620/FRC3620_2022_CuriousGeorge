@@ -273,6 +273,8 @@ public class ShooterSubsystem extends SubsystemBase {
             }
           } 
         } 
+      } else {
+        hoodTimer = null; // start over
       }
       SmartDashboard.putNumber("hood.applied.power", hoodMotor.getAppliedOutput());
       SmartDashboard.putNumber("hood.output.current", hoodMotor.getOutputCurrent());
