@@ -19,6 +19,7 @@ public class PreshooterAutoFireCommand extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intakeSubsystem, preShooterSubsystem);
   }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -32,6 +33,7 @@ public class PreshooterAutoFireCommand extends CommandBase {
     }
     weAreDone = false;
   }
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {

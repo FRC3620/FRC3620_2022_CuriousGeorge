@@ -1,4 +1,3 @@
-
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -6,39 +5,31 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
 
-public class IntakeOffCommand extends CommandBase {
-  IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
-  /** Creates a new IntakeBallCommand. */
-  public IntakeOffCommand() {
+public class StopDriveCommand extends CommandBase {
+  private DriveSubsystem driveSubsystem;
+
+  /** Creates a new StopDriveCommand. */
+  public StopDriveCommand(DriveSubsystem m_driveSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intakeSubsystem);
+    this.driveSubsystem = m_driveSubsystem;
+    addRequirements(driveSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeOff();
-  }
-
-  public void intakeOff() {
-    intakeSubsystem.spinIntakeWheelBar(0);
-    intakeSubsystem.spinIntakeBelt(0);
+    driveSubsystem.stopDrive();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    intakeOff();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

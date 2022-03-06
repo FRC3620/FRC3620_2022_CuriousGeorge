@@ -62,6 +62,8 @@ public class VisionSubsystem extends SubsystemBase {
       updateTargetInfoFromTargetJson(json);
     }
 
+    visionLight.set(true);
+
     nt_target_json.addListener(new TargetJsonListener(), EntryListenerFlags.kUpdate | EntryListenerFlags.kImmediate | EntryListenerFlags.kNew);
   }
 
@@ -100,25 +102,36 @@ public class VisionSubsystem extends SubsystemBase {
     } else {
       allianceColor.setString("blue");
     }
+
+    SmartDashboard.putNumber("vision.target.data_age", getTargetDataAge());
+    SmartDashboard.putBoolean("vision.target.data_is_fresh", ! isTargetDataStale());
   }
 
   public boolean isTargetFound() {
-    return targetData.found;
+    return targetData.found && ! isTargetDataStale();
   }
 
   public double getTargetXLocation(){
-    if (!targetData.found) return Double.NaN;
+    if (!isTargetFound()) return Double.NaN;
     return targetData.x;
   }
 
   public double getTargetYLocation(){
-    if (!targetData.found) return Double.NaN;
+    if (!isTargetFound()) return Double.NaN;
     return targetData.y;
   }
 
   public double getTargetXDegrees() {
-    if (!targetData.found) return Double.NaN;
+    if (!isTargetFound()) return Double.NaN;
     return ((targetData.x - 0.5)/0.0825)*5;
+  }
+
+  /**
+   * is target data stale
+   * @return 
+   */
+  public boolean isTargetDataStale() {
+    return getTargetDataAge() > 0.5;
   }
 
   /**
@@ -146,7 +159,12 @@ public class VisionSubsystem extends SubsystemBase {
   public double getBallYLocation(){
     return ballY.getDouble(-1);
   }
+
   public void turnVisionLightOn() {
     visionLight.set(true);
+  }
+
+  public void turnVisionLightOff() {
+    visionLight.set(false);
   }
 }

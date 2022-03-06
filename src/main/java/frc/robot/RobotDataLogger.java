@@ -16,6 +16,9 @@ public class RobotDataLogger {
 		dataLogger.addDataProvider("robotMode", () -> Robot.currentRobotMode.toString());
 		dataLogger.addDataProvider("robotModeInt", () -> Robot.currentRobotMode.ordinal());
 		dataLogger.addDataProvider("batteryVoltage", () -> DataLogger.f2(RobotController.getBatteryVoltage()));
+		dataLogger.addDataProvider("can.utilization", () -> DataLogger.f2(RobotController.getCANStatus().percentBusUtilization));
+		dataLogger.addDataProvider("can.receive_errors", () -> DataLogger.f2(RobotController.getCANStatus().receiveErrorCount));
+		dataLogger.addDataProvider("can.transmit_errors", () -> DataLogger.f2(RobotController.getCANStatus().transmitErrorCount));
 
 		if (canDeviceFinder.isPowerDistributionPresent()) {
 			powerDistribution = new PowerDistribution();
@@ -25,8 +28,20 @@ public class RobotDataLogger {
 		}
 
 		if (RobotContainer.climberExtentionMotor != null) {
-			dataLogger.addDataProvider("climber.power", () -> RobotContainer.climberExtentionMotor.getAppliedOutput());
-			dataLogger.addDataProvider("climber.current", () -> RobotContainer.climberExtentionMotor.getOutputCurrent());
+			dataLogger.addDataProvider("climber.power", () -> DataLogger.f2(RobotContainer.climberExtentionMotor.getAppliedOutput()));
+			dataLogger.addDataProvider("climber.current", () -> DataLogger.f2(RobotContainer.climberExtentionMotor.getOutputCurrent()));
+			dataLogger.addDataProvider("climber.temperature", () -> DataLogger.f2(RobotContainer.climberExtentionMotor.getMotorTemperature()));
+		}
+
+		if (RobotContainer.driveSubsystemLeftFrontDrive != null) {
+			dataLogger.addDataProvider("drive.lf.az.home_encoder", () -> DataLogger.f2(RobotContainer.driveSubsystemLeftFrontHomeEncoder.getVoltage()));
+			dataLogger.addDataProvider("drive.lf.az.encoder", () -> DataLogger.f2(RobotContainer.driveSubsystemLeftFrontAzimuthEncoder.getPosition()));
+			dataLogger.addDataProvider("drive.rf.az.home_encoder", () -> DataLogger.f2(RobotContainer.driveSubsystemRightFrontHomeEncoder.getVoltage()));
+			dataLogger.addDataProvider("drive.rf.az.encoder", () -> DataLogger.f2(RobotContainer.driveSubsystemRightFrontAzimuthEncoder.getPosition()));
+			dataLogger.addDataProvider("drive.lb.az.home_encoder", () -> DataLogger.f2(RobotContainer.driveSubsystemLeftBackHomeEncoder.getVoltage()));
+			dataLogger.addDataProvider("drive.lb.az.encoder", () -> DataLogger.f2(RobotContainer.driveSubsystemLeftBackAzimuthEncoder.getPosition()));
+			dataLogger.addDataProvider("drive.rb.az.home_encoder", () -> DataLogger.f2(RobotContainer.driveSubsystemRightBackHomeEncoder.getVoltage()));
+			dataLogger.addDataProvider("drive.rb.az.encoder", () -> DataLogger.f2(RobotContainer.driveSubsystemRightBackAzimuthEncoder.getPosition()));
 		}
 	}
 }

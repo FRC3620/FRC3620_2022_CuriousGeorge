@@ -16,10 +16,11 @@ public class MotorStatus {
     String name;
     double requestedRPM = -1;
     double requestedSensorVelocity = -1;
-    double actualSensorVelocity = -1;
     double actualRPM = -1;
+    double actualSensorVelocity = -1;
     double statorCurrent = -1;
     double supplyCurrent = -1;
+    double appliedPower = -1;
 
     public MotorStatus(String _name) {
       this.name = _name;
@@ -53,6 +54,10 @@ public class MotorStatus {
       return supplyCurrent;
     }
 
+    public double getAppliedPower() {
+      return appliedPower;
+    }
+
     public void setRequestedRPM(double r){
         requestedRPM = r;
         SmartDashboard.putNumber(name + ".rpm.target", r);
@@ -69,17 +74,23 @@ public class MotorStatus {
       actualRPM = actualSensorVelocity * 600 / 2048;
       statorCurrent = m.getStatorCurrent();
       supplyCurrent = m.getSupplyCurrent();
+      appliedPower = m.getMotorOutputPercent() / 100.0;
     } else {
       actualSensorVelocity = -1;
       actualRPM = -1;
       statorCurrent = -1;
       supplyCurrent = -1;
+      appliedPower = -1;
     }
+    updateDashboard(prefix);
+  }
 
+  void updateDashboard(String prefix) {
     SmartDashboard.putNumber(prefix + ".velocity.actual", actualSensorVelocity);
     SmartDashboard.putNumber(prefix + ".rpm.actual", actualRPM);
     SmartDashboard.putNumber(prefix + ".current.stator", statorCurrent);
     SmartDashboard.putNumber(prefix + ".current.supply", supplyCurrent);
+    SmartDashboard.putNumber(prefix + ".applied.power", appliedPower);
   }
 
   public void gatherActuals(CANSparkMax m, String prefix) {
@@ -89,17 +100,14 @@ public class MotorStatus {
       actualRPM = actualSensorVelocity;
       statorCurrent = m.getOutputCurrent();
       supplyCurrent = -1;
+      appliedPower = m.getAppliedOutput();
     } else {
       actualSensorVelocity = -1;
       actualRPM = -1;
       statorCurrent = -1;
       supplyCurrent = -1;
+      appliedPower = -1;
     }
-
-    SmartDashboard.putNumber(prefix + ".velocity.actual", actualSensorVelocity);
-    SmartDashboard.putNumber(prefix + ".rpm.actual", actualRPM);
-    SmartDashboard.putNumber(prefix + ".current.stator", statorCurrent);
-    SmartDashboard.putNumber(prefix + ".current.supply", supplyCurrent);
-   
+    updateDashboard(prefix);
   }
 }

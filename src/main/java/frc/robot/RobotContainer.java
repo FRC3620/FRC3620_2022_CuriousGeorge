@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj.simulation.JoystickSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
@@ -97,7 +98,7 @@ public class RobotContainer {
   //intake
   public static CANSparkMaxSendable intakeWheelbar;
   public static CANSparkMaxSendable intakeBelt;
-  public static Solenoid intakeArm;
+  public static DoubleSolenoid intakeArm;
 
   // vision
   public static Solenoid ringLight;
@@ -117,13 +118,14 @@ public class RobotContainer {
   // climber
   public static DigitalInput climberStationaryHookContact;
   public static CANSparkMaxSendable climberExtentionMotor; 
-  public static Solenoid climberArmTilt;
+  public static DoubleSolenoid climberArmTilt;
 
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
   public static VisionSubsystem visionSubsystem;
   public static ClimberSubsystem climberSubsystem; 
   public static IntakeSubsystem intakeSubsystem;
+  public static IntakeArmSubsystem intakeArmSubsystem;
   public static TurretSubsystem turretSubsystem;
   public static ShooterSubsystem shooterSubsystem;
   public static ArmSubsystem armSubsystem;
@@ -274,10 +276,10 @@ public class RobotContainer {
       ringLight = new Solenoid(pneumaticModuleType, 7);
       ringLight.set(true);
       if (robotParameters.hasClimber()){
-        climberArmTilt = new Solenoid(pneumaticModuleType, 0);
+        climberArmTilt = new DoubleSolenoid(pneumaticModuleType, 0, 1);
       }
       if (robotParameters.hasIntake()){
-        intakeArm = new Solenoid(pneumaticModuleType, 1);
+        intakeArm = new DoubleSolenoid(pneumaticModuleType, 2, 3);
       }
     }
   }
@@ -352,7 +354,7 @@ public class RobotContainer {
     }
 
     if(turretSubsystemturretSpinner != null) {
-      resetMaxToKnownState(turretSubsystemturretSpinner, false);
+      resetMaxToKnownState(turretSubsystemturretSpinner, true);
       turretSubsystemturretSpinner.setSmartCurrentLimit(10);
     }
   }
@@ -390,6 +392,7 @@ public class RobotContainer {
     visionSubsystem = new VisionSubsystem();
     climberSubsystem = new ClimberSubsystem();
     intakeSubsystem = new IntakeSubsystem();
+    intakeArmSubsystem = new IntakeArmSubsystem();
     turretSubsystem = new TurretSubsystem();
     shooterSubsystem = new ShooterSubsystem();
     armSubsystem = new ArmSubsystem();
@@ -412,7 +415,7 @@ public class RobotContainer {
     DPad driverDPad = new DPad(driverJoystick, 0);
     DPad operatorDPad = new DPad(operatorJoystick, 0);
 
-    //Climber Tilt Buttons
+    //Climber Buttons
     JoystickButton climberTiltOutButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
     climberTiltOutButton.whenPressed(new ClimberTiltTestCommandOut());
     JoystickButton climberTiltInButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
@@ -426,6 +429,10 @@ public class RobotContainer {
 
     JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);
     centerOnBallButton.whileHeld(new InstantCenterOnBallCommand(driveSubsystem, visionSubsystem));
+    JoystickButton resetNavXButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
+    resetNavXButton.whenPressed(new ResetNavXCommand(driveSubsystem));
+    JoystickButton stopDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
+    stopDriveButton.toggleWhenPressed(new StopDriveCommand(driveSubsystem));
 
     /*AnalogJoystickButton climberExtendUp = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.2);
     climberExtendUp.whileHeld(new ClimberTestCommandUp());
@@ -440,6 +447,10 @@ public class RobotContainer {
     intakeOffButton.toggleWhenPressed(new IntakeOffCommand());
     JoystickButton intakeArmButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B); 
     intakeArmButton.toggleWhenPressed(new IntakeArmCommand());
+
+    // driver right trigger fires
+    new TriggerButton(driverJoystick, false).whenPressed(new PreshooterAutoFireCommand());
+
     JoystickButton ejectButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
     ejectButton.whileHeld(new EjectBallCommand());
   }
@@ -488,6 +499,8 @@ public class RobotContainer {
     SmartDashboard.putData("Rumble Command 3", new RumbleCommand(driverRumbleSubsystem,Hand.LEFT, .5, 3.0));
     SmartDashboard.putData("Rumble Command 4", new RumbleCommand(driverRumbleSubsystem,Hand.RIGHT, .5, 3.0));
     SmartDashboard.putData("Top shooter to 0.1", new ShooterPowerTest());
+
+    SmartDashboard.putData("Get ready to climb", new GetReadyToClimbCommand());
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();

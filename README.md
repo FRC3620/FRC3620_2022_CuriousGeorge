@@ -2,20 +2,24 @@
 
 ## Driver Controls
 * A - X Mode
+* A - X Mode (not added yet)
+* X - Reset NavX
+* Y - Center on Ball
 * LB -  roller and belt (clockwise)
-* RT - Fire
 * RB - intake does not spin (IntakeOffCommand)
+* RT - Fire
 * B - up and down arm 
-## Operator Controls
 
+## Operator Controls
 * Dpad - Turret left, forward, right, reverse
 * X - Shooter ("fire up")
+* Y - Turret to 0 degrees & intake arm up (GetReadyToClimbCommand)
 * Right Stick - Climber up + down
 * A - Climber tilt out
 * B - Climber tilt in
 * RB - eject ball
-# Hardware Assignments
 
+# Hardware Assignments
 * SparkMAX 17 - climber
 <br></br>
 * TalonFX 13 - Top Shooter 1
@@ -38,5 +42,5 @@
 * SparkMAX 8 - right back azimuth
 <br></br>
 * PCM 7 - RingLight
-* PCM 0 - ClimberTilt
-* PCM 1 - IntakeArm
+* PCM 0, 1 - ClimberTilt
+* PCM 2, 3 - IntakeArm

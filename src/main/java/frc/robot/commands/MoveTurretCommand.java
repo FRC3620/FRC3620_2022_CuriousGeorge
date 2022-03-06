@@ -35,7 +35,7 @@ public class MoveTurretCommand extends CommandBase {
 
   @Override
   public void execute() {
-    RobotContainer.visionSubsystem.turnVisionLightOn();
+   
   }
 
   // Called once the command ends or is interrupted.

@@ -14,12 +14,12 @@ import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
 import frc.robot.RobotContainer;
+import frc.robot.commands.IntakeOffCommand;
 import frc.robot.miscellaneous.CANSparkMaxSendable;
 
 public class IntakeSubsystem extends SubsystemBase {
   CANSparkMaxSendable intakeWheelbar = RobotContainer.intakeWheelbar;
   CANSparkMaxSendable intakeBelt = RobotContainer.intakeBelt;
-  Solenoid intakeArm = RobotContainer.intakeArm;
 
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
@@ -47,9 +47,8 @@ public class IntakeSubsystem extends SubsystemBase {
     if (intakeBelt != null) {
       SendableRegistry.addLW(intakeBelt, getName(), "intake belt");
     }
-    if (intakeArm != null) {
-      SendableRegistry.addLW(intakeArm, getName(), "intake arm");
-    }
+
+    setDefaultCommand(new IntakeOffCommand());
   }
 
   @Override
@@ -92,17 +91,6 @@ public class IntakeSubsystem extends SubsystemBase {
   public void spinIntakeBelt(double speed) {
     if (intakeBelt != null) {
       intakeBelt.set(speed);
-    }
-  }
-
-  public void extendIntake() {
-    if (intakeArm != null) {
-      intakeArm.set(true);
-    }
-  }
-  public void retractIntake() {
-    if (intakeArm != null) {
-      intakeArm.set(false);
     }
   }
 
