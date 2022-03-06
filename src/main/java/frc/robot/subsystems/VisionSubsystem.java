@@ -22,6 +22,7 @@ import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import frc.robot.RobotContainer;
+import frc.robot.miscellaneous.ShooterCalculator;
 
 public class VisionSubsystem extends SubsystemBase {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
@@ -102,9 +103,12 @@ public class VisionSubsystem extends SubsystemBase {
     } else {
       allianceColor.setString("blue");
     }
-
+    double targetDistance = ShooterCalculator.calcDistanceFromHub(getTargetYLocation());
+    double targetRPM = ShooterCalculator.calcMainRPM(targetDistance);
     SmartDashboard.putNumber("vision.target.data_age", getTargetDataAge());
     SmartDashboard.putBoolean("vision.target.data_is_fresh", ! isTargetDataStale());
+    SmartDashboard.putNumber("vision.calculated.distance", targetDistance);
+    SmartDashboard.putNumber("vision.calculated.RPM",targetRPM);
   }
 
   public boolean isTargetFound() {
