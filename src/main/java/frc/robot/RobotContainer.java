@@ -443,9 +443,7 @@ public class RobotContainer {
 
     JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
     intakeButton.toggleWhenPressed(new IntakeOnCommand());
-    JoystickButton intakeOffButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
-    intakeOffButton.toggleWhenPressed(new IntakeOffCommand());
-    JoystickButton intakeArmButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B); 
+    JoystickButton intakeArmButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
     intakeArmButton.toggleWhenPressed(new IntakeArmCommand());
 
     // driver right trigger fires
@@ -501,6 +499,8 @@ public class RobotContainer {
     SmartDashboard.putData("Top shooter to 0.1", new ShooterPowerTest());
 
     SmartDashboard.putData("Get ready to climb", new GetReadyToClimbCommand());
+
+    SmartDashboard.putData("Shoot", new PreshooterAutoFireCommand());
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
