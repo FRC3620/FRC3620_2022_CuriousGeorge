@@ -48,7 +48,7 @@ public class IntakeSubsystem extends SubsystemBase {
       SendableRegistry.addLW(intakeBelt, getName(), "intake belt");
     }
 
-    setDefaultCommand(new IntakeOffCommand());
+    setDefaultCommand(new IntakeOffCommand(this));
   }
 
   @Override

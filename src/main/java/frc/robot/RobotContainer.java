@@ -421,9 +421,9 @@ public class RobotContainer {
     JoystickButton climberTiltInButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
     climberTiltInButton.whenPressed(new ClimberTiltTestCommandIn());
     
-    operatorDPad.up().whenPressed(new MoveTurretCommand(turretSubsystem, 0));
+    operatorDPad.up().whenPressed(new MoveTurretCommand(turretSubsystem, -5));
     operatorDPad.right().whenPressed(new MoveTurretCommand(turretSubsystem, 90));
-    operatorDPad.down().whenPressed(new MoveTurretCommand(turretSubsystem, 180));
+    operatorDPad.down().whenPressed(new MoveTurretCommand(turretSubsystem, 175));
     operatorDPad.left().whenPressed(new MoveTurretCommand(turretSubsystem, 270));
    
 
@@ -444,7 +444,7 @@ public class RobotContainer {
     JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
     intakeButton.toggleWhenPressed(new IntakeOnCommand());
     JoystickButton intakeOffButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
-    intakeOffButton.toggleWhenPressed(new IntakeOffCommand());
+    intakeOffButton.toggleWhenPressed(new IntakeOffCommand(intakeSubsystem));
     JoystickButton intakeArmButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B); 
     intakeArmButton.toggleWhenPressed(new IntakeArmCommand());
 
