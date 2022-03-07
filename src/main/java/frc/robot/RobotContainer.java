@@ -508,10 +508,11 @@ public class RobotContainer {
     chooser.addOption("3 Ball Q Auto", new ThreeBallAutoQ(driveSubsystem, visionSubsystem));
   }
   
+  static double driverStrafeDeadzone = 0.1;
   public static double getDriveVerticalJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y);
     SmartDashboard.putNumber("driver.raw.y", axisValue);
-    if (axisValue < 0.15 && axisValue > -0.15) {
+    if (Math.abs(axisValue) < driverStrafeDeadzone) {
       return 0;
     }
     if (axisValue < 0){
@@ -523,7 +524,7 @@ public class RobotContainer {
   public static double getDriveHorizontalJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X);
     SmartDashboard.putNumber("driver.raw.x", axisValue);
-    if (axisValue < 0.15 && axisValue > -0.15) {
+    if (Math.abs(axisValue) < driverStrafeDeadzone) {
       return 0;
     }
     if (axisValue < 0){
@@ -532,10 +533,11 @@ public class RobotContainer {
     return axisValue*axisValue;
   }
 
+  static double driverSpinDeadzone = 0.1;
   public static double getDriveSpinJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X);
     SmartDashboard.putNumber("driver.raw.spin", axisValue);
-    if (axisValue < 0.2 && axisValue > -0.2) {
+    if (Math.abs(axisValue) < driverSpinDeadzone) {
       return 0;
     }
     if (axisValue < 0){
@@ -543,15 +545,9 @@ public class RobotContainer {
     }
     return axisValue*axisValue;
   }
-    
-  public static double getOperatorSpinJoystick() {
-    double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X);
-    if (axisValue < 0.15 && axisValue > -0.15) {
-      return 0;
-    }
-    return -axisValue;
-  }
 
+  static double operatorDeadzone = 0.1;
+    
   /**
    * return the position of the operator's right vertical joystick
    * @return the joystick position, positive is up (away from driver), negative is down
@@ -559,7 +555,7 @@ public class RobotContainer {
    */
   public static double getOperatorVerticalJoystick() {
     double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y);
-    if (axisValue < 0.15 && axisValue > -0.15) {
+    if (Math.abs(axisValue) < operatorDeadzone) {
       return 0;
     }
     return -axisValue;
