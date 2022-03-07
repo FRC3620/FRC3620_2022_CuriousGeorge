@@ -11,27 +11,22 @@ public class PreshooterAutoFireCommand extends CommandBase {
   /** Creates a new PreshooterAutoFireCommand. */
   PreShooterSubsystem preShooterSubsystem = RobotContainer.preShooterSubsystem;
   IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
-  boolean intakeBeltRunning = false;
-  boolean intakeWheelbarRunning = false;
+
   Timer preshooterTimer = new Timer();
   boolean weAreDone = false;
   public PreshooterAutoFireCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intakeSubsystem, preShooterSubsystem);
   }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     preshooterTimer.reset();
     preshooterTimer.start();
-    if(intakeSubsystem.getIntakeBeltSpeed() > 0) {
-      intakeBeltRunning = true;
-    }
-    if(intakeSubsystem.getIntakeWheelbarSpeed() > 0) {
-      intakeWheelbarRunning = true;
-    }
     weAreDone = false;
   }
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
@@ -51,16 +46,7 @@ public class PreshooterAutoFireCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if(intakeBeltRunning == true) {
-      intakeSubsystem.spinIntakeBelt(0.4);
-    } else {
-      intakeSubsystem.spinIntakeBelt(0.0);
-    }
-    if(intakeWheelbarRunning == true) {
-      intakeSubsystem.spinIntakeWheelBar(0.4);
-    } else {
-      intakeSubsystem.spinIntakeWheelBar(0.0);
-    }
+    intakeSubsystem.startPreviousCommand();
   }
   
   // Returns true when the command should end.

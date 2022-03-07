@@ -123,7 +123,10 @@ public class VisionSubsystem extends SubsystemBase {
 
   public double getTargetXDegrees() {
     if (!isTargetFound()) return Double.NaN;
-    return ((targetData.x - 0.5)/0.0825)*5;
+    // 5.0 / 0.08.25 was the original
+    // 20.0 / 27.0 was an empirical correction
+    double k = (5.0 / 0.0825) * (20.0 / 27.0);
+    return (targetData.x - 0.5) * k;
   }
 
   /**
