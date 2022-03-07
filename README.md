@@ -1,14 +1,12 @@
 # 2022 Controls
 
 ## Driver Controls
-* A - X Mode
 * A - X Mode (not added yet)
 * X - Reset NavX
 * Y - Center on Ball
-* LB -  roller and belt (clockwise)
-* RB - intake does not spin (IntakeOffCommand)
+* LB -  roller and belt (clockwise) [toggle]
 * RT - Fire
-* B - up and down arm 
+* B - up and down arm [toggle]
 
 ## Operator Controls
 * Dpad - Turret left, forward, right, reverse

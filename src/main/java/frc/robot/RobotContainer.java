@@ -434,18 +434,9 @@ public class RobotContainer {
     JoystickButton stopDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
     stopDriveButton.toggleWhenPressed(new StopDriveCommand(driveSubsystem));
 
-    /*AnalogJoystickButton climberExtendUp = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.2);
-    climberExtendUp.whileHeld(new ClimberTestCommandUp());
-    AnalogJoystickButton climberExtendDown = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, 0.2);
-    climberExtendDown.whileHeld(new ClimberTestCommandDown());*/
-
-
-
     JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
     intakeButton.toggleWhenPressed(new IntakeOnCommand());
-    JoystickButton intakeOffButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
-    intakeOffButton.toggleWhenPressed(new IntakeOffCommand(intakeSubsystem));
-    JoystickButton intakeArmButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B); 
+    JoystickButton intakeArmButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
     intakeArmButton.toggleWhenPressed(new IntakeArmCommand());
 
     // driver right trigger fires
@@ -501,6 +492,8 @@ public class RobotContainer {
     SmartDashboard.putData("Top shooter to 0.1", new ShooterPowerTest());
 
     SmartDashboard.putData("Get ready to climb", new GetReadyToClimbCommand());
+
+    SmartDashboard.putData("Shoot", new PreshooterAutoFireCommand());
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
