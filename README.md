@@ -11,11 +11,14 @@
 ## Operator Controls
 
 * Dpad - Turret left, forward, right, reverse
-* X - Shooter ("fire up")
-* Y - Turret to 0 degrees & intake arm up (GetReadyToClimbCommand)
+* A - Set up everything to shoot (GetVisionReadyToShootCommand)
+* B - Bloop shot (GetBloopReadyToShootCommand)
+* X - Shoot from tarmac (GetTarmacReadyToShootCommand)
+* Y - Shoot from safe zone (GetSafeZoneReadyToShootCommand)
+* Left Interior - Climber out
+* Right Interior - Climber in
+* Left Stick Button - Shooter off
 * Right Stick - Climber up + down
-* A - Climber tilt out
-* B - Climber tilt in
   
 # Hardware Assignments
 

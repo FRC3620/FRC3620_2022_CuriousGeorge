@@ -413,13 +413,26 @@ public class RobotContainer {
     //Dpad 
     DPad driverDPad = new DPad(driverJoystick, 0);
     DPad operatorDPad = new DPad(operatorJoystick, 0);
+   
+    //Dead reckon shots
+    //Sets up turret and shooter and hood
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A).whenPressed(new GetVisionReadyToShootCommand());
+    //B for bloop shot up against lower hub
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B).whenPressed(new GetBloopReadyToShootCommand());
+    //X is the dead reckon from tarmac shot
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X).whenPressed(new GetTarmacReadyToShootCommand());
+    //Y is the dead reckon from the safe zone
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y).whenPressed(new GetSafeZoneReadyToShootCommnd());
 
-    //Climber Buttons
-    JoystickButton climberTiltOutButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
-    climberTiltOutButton.whenPressed(new ClimberTiltTestCommandOut());
-    JoystickButton climberTiltInButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
-    climberTiltInButton.whenPressed(new ClimberTiltTestCommandIn());
-    
+    //Climber buttons
+    //left interior
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_BACK).whenPressed(new ClimberTiltTestCommandOut());
+    //right interior
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_START).whenPressed(new ClimberTiltTestCommandIn());
+
+    //Shooter
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_STICK).whenPressed(new ShooterOffCommand());
+
     operatorDPad.up().whenPressed(new MoveTurretCommand(turretSubsystem, 0));
     operatorDPad.down().whenPressed(new MoveTurretCommand(turretSubsystem, 180));
     operatorDPad.left().whenPressed(new MoveTurretCommand(turretSubsystem, 270));
@@ -436,8 +449,6 @@ public class RobotContainer {
     climberExtendUp.whileHeld(new ClimberTestCommandUp());
     AnalogJoystickButton climberExtendDown = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, 0.2);
     climberExtendDown.whileHeld(new ClimberTestCommandDown());*/
-
-
 
     JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
     intakeButton.toggleWhenPressed(new IntakeBallCommand());
