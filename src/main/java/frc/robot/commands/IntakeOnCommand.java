@@ -9,19 +9,20 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.IntakeArmSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class IntakeBallCommand extends CommandBase {
+public class IntakeOnCommand extends CommandBase {
   IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
   IntakeArmSubsystem intakeArmSubsystem = RobotContainer.intakeArmSubsystem;
   /** Creates a new IntakeBallCommand. */
-  public IntakeBallCommand() {
+  public IntakeOnCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intakeSubsystem, intakeArmSubsystem);
+    addRequirements(intakeSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     intakeArmSubsystem.extendIntakeArm();
+    intakeSubsystem.rememberPreviousCommand(this);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,8 +40,7 @@ public class IntakeBallCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     intakeSubsystem.spinIntakeWheelBar(0.0);
-    //intakeSubsystem.spinIntakeBelt(0.0);
-    intakeArmSubsystem.retractIntakeArm();
+    intakeSubsystem.spinIntakeBelt(0.0);
   }
 
   // Returns true when the command should end.

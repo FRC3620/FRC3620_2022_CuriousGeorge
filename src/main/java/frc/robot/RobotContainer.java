@@ -28,10 +28,11 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-
+import edu.wpi.first.wpilibj.simulation.JoystickSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
@@ -413,17 +414,31 @@ public class RobotContainer {
     //Dpad 
     DPad driverDPad = new DPad(driverJoystick, 0);
     DPad operatorDPad = new DPad(operatorJoystick, 0);
+   
+    //Dead reckon shots
+    //Sets up turret and shooter and hood
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A).whenPressed(new GetVisionReadyToShootCommand());
+    //B for bloop shot up against lower hub
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B).whenPressed(new GetBloopReadyToShootCommand());
+    //X is the dead reckon from tarmac shot
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_X).whenPressed(new GetTarmacReadyToShootCommand());
+    //Y is the dead reckon from the safe zone
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y).whenPressed(new GetSafeZoneReadyToShootCommnd());
 
-    //Climber Buttons
-    JoystickButton climberTiltOutButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_A);
-    climberTiltOutButton.whenPressed(new ClimberTiltTestCommandOut());
-    JoystickButton climberTiltInButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_B);
-    climberTiltInButton.whenPressed(new ClimberTiltTestCommandIn());
-    
-    operatorDPad.up().whenPressed(new MoveTurretCommand(turretSubsystem, 0));
-    operatorDPad.down().whenPressed(new MoveTurretCommand(turretSubsystem, 180));
-    operatorDPad.left().whenPressed(new MoveTurretCommand(turretSubsystem, 270));
+    //Climber buttons
+    //left interior
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_BACK).whenPressed(new ClimberTiltTestCommandOut());
+    //right interior
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_START).whenPressed(new ClimberTiltTestCommandIn());
+
+    //Shooter
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_STICK).whenPressed(new ShooterOffCommand());
+
+    operatorDPad.up().whenPressed(new MoveTurretCommand(turretSubsystem, -5));
     operatorDPad.right().whenPressed(new MoveTurretCommand(turretSubsystem, 90));
+    operatorDPad.down().whenPressed(new MoveTurretCommand(turretSubsystem, 175));
+    operatorDPad.left().whenPressed(new MoveTurretCommand(turretSubsystem, 270));
+   
 
     JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);
     centerOnBallButton.whileHeld(new InstantCenterOnBallCommand(driveSubsystem, visionSubsystem));
@@ -432,15 +447,14 @@ public class RobotContainer {
     JoystickButton stopDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
     stopDriveButton.toggleWhenPressed(new StopDriveCommand(driveSubsystem));
 
-    /*AnalogJoystickButton climberExtendUp = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, -0.2);
-    climberExtendUp.whileHeld(new ClimberTestCommandUp());
-    AnalogJoystickButton climberExtendDown = new AnalogJoystickButton(operatorJoystick, XBoxConstants.AXIS_RIGHT_Y, 0.2);
-    climberExtendDown.whileHeld(new ClimberTestCommandDown());*/
-
-
-
     JoystickButton intakeButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_LEFT_BUMPER);
-    intakeButton.toggleWhenPressed(new IntakeBallCommand());
+    intakeButton.toggleWhenPressed(new IntakeOnCommand());
+    JoystickButton intakeArmButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_B);
+    intakeArmButton.toggleWhenPressed(new IntakeArmCommand());
+
+    // driver right trigger fires
+    new TriggerButton(driverJoystick, false).whenPressed(new ShootCommand());
+
     JoystickButton ejectButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
     ejectButton.whileHeld(new EjectBallCommand());
   }
@@ -463,10 +477,7 @@ public class RobotContainer {
     SmartDashboard.putData("4 Ball Auto Q", new FourBallAutoQ(driveSubsystem, visionSubsystem));
     SmartDashboard.putData("3 Ball Auto Q", new ThreeBallAutoQ(driveSubsystem,  visionSubsystem));
 
-    SmartDashboard.putData("DougTestAutoDrive", new DougTestAutoDrive(driveSubsystem));
-    SmartDashboard.putData("DougTestAutoSpin", new DougTestAutoSpin(driveSubsystem));
     SmartDashboard.putData("Reset NavX", new ResetNavXCommand(driveSubsystem));
-    SmartDashboard.putData(new SetHoodPositionCommand());
     SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
     SmartDashboard.putData("Find target",new FindTargetCommand(turretSubsystem, visionSubsystem));
 
@@ -474,9 +485,8 @@ public class RobotContainer {
     SmartDashboard.putData("Shooter Test Command", new ShooterTestCommand(shooterSubsystem));
 
     SmartDashboard.putData("Eject Ball", new EjectBallCommand());
-    SmartDashboard.putData("Intake Ball", new IntakeBallCommand());
-    SmartDashboard.putData("pre shooter", new PreshooterFireCommand());
-    SmartDashboard.putData("preshooter with intake", new PreshooterAutoFireCommand());
+    SmartDashboard.putData("Intake Ball", new IntakeOnCommand());
+    SmartDashboard.putData("preshooter with intake", new ShootCommand());
 
     SmartDashboard.putData("Climber Tilt Out", new ClimberTiltTestCommandOut());
     SmartDashboard.putData("Climber Tilt In", new ClimberTiltTestCommandIn());
@@ -491,6 +501,8 @@ public class RobotContainer {
     SmartDashboard.putData("Top shooter to 0.1", new ShooterPowerTest());
 
     SmartDashboard.putData("Get ready to climb", new GetReadyToClimbCommand());
+
+    SmartDashboard.putData("Shoot", new ShootCommand());
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
@@ -505,10 +517,11 @@ public class RobotContainer {
     chooser.addOption("3 Ball Q Auto", new ThreeBallAutoQ(driveSubsystem, visionSubsystem));
   }
   
+  static double driverStrafeDeadzone = 0.1;
   public static double getDriveVerticalJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y);
     SmartDashboard.putNumber("driver.raw.y", axisValue);
-    if (axisValue < 0.15 && axisValue > -0.15) {
+    if (Math.abs(axisValue) < driverStrafeDeadzone) {
       return 0;
     }
     if (axisValue < 0){
@@ -520,7 +533,7 @@ public class RobotContainer {
   public static double getDriveHorizontalJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X);
     SmartDashboard.putNumber("driver.raw.x", axisValue);
-    if (axisValue < 0.15 && axisValue > -0.15) {
+    if (Math.abs(axisValue) < driverStrafeDeadzone) {
       return 0;
     }
     if (axisValue < 0){
@@ -529,10 +542,11 @@ public class RobotContainer {
     return axisValue*axisValue;
   }
 
+  static double driverSpinDeadzone = 0.1;
   public static double getDriveSpinJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X);
     SmartDashboard.putNumber("driver.raw.spin", axisValue);
-    if (axisValue < 0.2 && axisValue > -0.2) {
+    if (Math.abs(axisValue) < driverSpinDeadzone) {
       return 0;
     }
     if (axisValue < 0){
@@ -540,15 +554,9 @@ public class RobotContainer {
     }
     return axisValue*axisValue;
   }
-    
-  public static double getOperatorSpinJoystick() {
-    double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X);
-    if (axisValue < 0.15 && axisValue > -0.15) {
-      return 0;
-    }
-    return -axisValue;
-  }
 
+  static double operatorDeadzone = 0.1;
+    
   /**
    * return the position of the operator's right vertical joystick
    * @return the joystick position, positive is up (away from driver), negative is down
@@ -556,7 +564,7 @@ public class RobotContainer {
    */
   public static double getOperatorVerticalJoystick() {
     double axisValue = operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y);
-    if (axisValue < 0.15 && axisValue > -0.15) {
+    if (Math.abs(axisValue) < operatorDeadzone) {
       return 0;
     }
     return -axisValue;

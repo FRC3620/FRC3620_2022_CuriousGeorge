@@ -5,38 +5,37 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
-import frc.robot.subsystems.PreShooterSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
-public class PreshooterFireCommand extends CommandBase {
-  /** Creates a new PreshooterFireCommand. */
-  PreShooterSubsystem preShooterSubsystem = RobotContainer.preShooterSubsystem;
-  public PreshooterFireCommand() {
+public class BloopCommand extends CommandBase {
+  ShooterSubsystem shooterSubsystem;
+  
+  final double bloopMain = 875;
+  final double bloopBack = 75;
+  final double bloopHood = 60; 
+  /** Creates a new BloopCommand. */
+  public BloopCommand(ShooterSubsystem shooterSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.shooterSubsystem = shooterSubsystem;
+    addRequirements(shooterSubsystem);
+
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    shooterSubsystem.setMainRPM(bloopMain);
+    shooterSubsystem.setBackRPM(bloopBack);
+    shooterSubsystem.setHoodPositionToDegrees(bloopHood);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    spinPreShooter();
-  }
-
-
-  public void spinPreShooter(){
-    preShooterSubsystem.preshooterOn(1);
-
-  }
-
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    preShooterSubsystem.preshooterOff();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

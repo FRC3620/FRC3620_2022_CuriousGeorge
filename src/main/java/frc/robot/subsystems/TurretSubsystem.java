@@ -20,6 +20,8 @@ public class TurretSubsystem extends SubsystemBase {
   RelativeEncoder turretEncoder = RobotContainer.turretSubsystemturretEncoder;
   SparkMaxPIDController turretPID = null;
   Timer calibrationTimer;
+
+  double requestedTurretPosition;
   /**
    * Creates a new turretSubsystem.
    */
@@ -97,13 +99,19 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void setTurretPosition (double angle) {
+    if(angle < -45) angle = -45;
+    if(angle > 265) angle = 265;
     SmartDashboard.putNumber("turretRequestedAngle", angle);
+    requestedTurretPosition = angle;
     if (encoderIsValid) {
-      if(angle < -45) angle = -45;
-      if(angle > 265) angle = 265;
       turretPID.setReference(angle, ControlType.kPosition);
     }
   }
+
+  public double getRequestedTurretPosition(){
+    return requestedTurretPosition;
+  }
+
   public double getCurrentTurretPosition(){
     return turretEncoder.getPosition();
   }

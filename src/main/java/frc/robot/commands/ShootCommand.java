@@ -7,39 +7,33 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PreShooterSubsystem;
-public class PreshooterAutoFireCommand extends CommandBase {
-  /** Creates a new PreshooterAutoFireCommand. */
+public class ShootCommand extends CommandBase {
   PreShooterSubsystem preShooterSubsystem = RobotContainer.preShooterSubsystem;
   IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
-  boolean intakeBeltRunning = false;
-  boolean intakeWheelbarRunning = false;
+
   Timer preshooterTimer = new Timer();
   boolean weAreDone = false;
-  public PreshooterAutoFireCommand() {
+  public ShootCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intakeSubsystem, preShooterSubsystem);
   }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     preshooterTimer.reset();
     preshooterTimer.start();
-    if(intakeSubsystem.getIntakeBeltSpeed() > 0) {
-      intakeBeltRunning = true;
-    }
-    if(intakeSubsystem.getIntakeWheelbarSpeed() > 0) {
-      intakeWheelbarRunning = true;
-    }
     weAreDone = false;
   }
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(preshooterTimer.get() < 2.0) {
+    if(preshooterTimer.get() < 1.0) {
         preShooterSubsystem.preshooterOn(1.0);
         intakeSubsystem.spinIntakeBelt(0.0);
         intakeSubsystem.spinIntakeWheelBar(0.0);
-    } else if (preshooterTimer.get() < 4.0) {
+    } else if (preshooterTimer.get() < 2.0) {
         preShooterSubsystem.preshooterOff();
         intakeSubsystem.spinIntakeBelt(0.4);
     } else {
@@ -51,15 +45,8 @@ public class PreshooterAutoFireCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if(intakeBeltRunning == true) {
-      intakeSubsystem.spinIntakeBelt(0.4);
-    } else {
-      intakeSubsystem.spinIntakeBelt(0.0);
-    }
-    if(intakeWheelbarRunning == true) {
-      intakeSubsystem.spinIntakeWheelBar(0.4);
-    } else {
-      intakeSubsystem.spinIntakeWheelBar(0.0);
+    if (!interrupted) {
+      intakeSubsystem.startPreviousCommand(this);
     }
   }
   
