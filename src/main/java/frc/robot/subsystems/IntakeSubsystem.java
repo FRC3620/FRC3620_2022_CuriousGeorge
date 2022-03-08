@@ -12,6 +12,11 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.ColorSensorV3;
+
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
 import frc.robot.RobotContainer;
@@ -19,6 +24,8 @@ import frc.robot.commands.IntakeOffCommand;
 import frc.robot.miscellaneous.CANSparkMaxSendable;
 
 public class IntakeSubsystem extends SubsystemBase {
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+  
   CANSparkMaxSendable intakeWheelbar = RobotContainer.intakeWheelbar;
   CANSparkMaxSendable intakeBelt = RobotContainer.intakeBelt;
 
@@ -39,16 +46,26 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    Command runningNow = getCurrentCommand();
-    if (runningNow != currentCommand) {
-      previousCommand = currentCommand;
-      currentCommand = runningNow;
-    }
   }
 
-  public void startPreviousCommand() {
+  public void rememberPreviousCommand(Command c) {
+    previousCommand = c;
+    logger.info("remembering {} as previous command", c);
+  }
+
+  int recusion_level = 0;
+  public void startPreviousCommand(Command c) {
     if (previousCommand != null) {
-      previousCommand.schedule();
+      recusion_level++;
+      if (recusion_level > 1) {
+        logger.warn ("recursing! previous: {}, caller: {}, current: {}", previousCommand, c, getCurrentCommand());
+      } else {
+        if (c.getClass() != previousCommand.getClass()) {
+          logger.info ("scheduling previous command {}", previousCommand);
+          previousCommand.schedule();
+        }
+      }
+      recusion_level--;
     }
   }
 

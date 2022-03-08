@@ -12,19 +12,17 @@ public class IntakeArmCommand extends CommandBase {
     addRequirements(intakeArmSubsystem);
   }
 
-  private void addRequirements(IntakeArmSubsystem intakeArmSubsystem) {
-  }
-
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     intakeArmSubsystem.extendIntakeArm();
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
+  /**
+   * Called every time the scheduler runs while the command is scheduled.
+   */
   public void execute() {
-  
   }
 
   // Called once the command ends or is interrupted.

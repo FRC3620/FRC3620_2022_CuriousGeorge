@@ -167,3 +167,6 @@ gitgraph*
 networktables.ini
 simgui-ds.json
 simgui.json
+*.png
+*.svg
+*.pdf

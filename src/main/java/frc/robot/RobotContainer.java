@@ -453,7 +453,7 @@ public class RobotContainer {
     intakeArmButton.toggleWhenPressed(new IntakeArmCommand());
 
     // driver right trigger fires
-    new TriggerButton(driverJoystick, false).whenPressed(new PreshooterAutoFireCommand());
+    new TriggerButton(driverJoystick, false).whenPressed(new ShootCommand());
 
     JoystickButton ejectButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
     ejectButton.whileHeld(new EjectBallCommand());
@@ -477,10 +477,7 @@ public class RobotContainer {
     SmartDashboard.putData("4 Ball Auto Q", new FourBallAutoQ(driveSubsystem, visionSubsystem));
     SmartDashboard.putData("3 Ball Auto Q", new ThreeBallAutoQ(driveSubsystem,  visionSubsystem));
 
-    SmartDashboard.putData("DougTestAutoDrive", new DougTestAutoDrive(driveSubsystem));
-    SmartDashboard.putData("DougTestAutoSpin", new DougTestAutoSpin(driveSubsystem));
     SmartDashboard.putData("Reset NavX", new ResetNavXCommand(driveSubsystem));
-    SmartDashboard.putData(new SetHoodPositionCommand());
     SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
     SmartDashboard.putData("Find target",new FindTargetCommand(turretSubsystem, visionSubsystem));
 
@@ -489,8 +486,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Eject Ball", new EjectBallCommand());
     SmartDashboard.putData("Intake Ball", new IntakeOnCommand());
-    SmartDashboard.putData("pre shooter", new PreshooterFireCommand());
-    SmartDashboard.putData("preshooter with intake", new PreshooterAutoFireCommand());
+    SmartDashboard.putData("preshooter with intake", new ShootCommand());
 
     SmartDashboard.putData("Climber Tilt Out", new ClimberTiltTestCommandOut());
     SmartDashboard.putData("Climber Tilt In", new ClimberTiltTestCommandIn());
@@ -506,7 +502,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Get ready to climb", new GetReadyToClimbCommand());
 
-    SmartDashboard.putData("Shoot", new PreshooterAutoFireCommand());
+    SmartDashboard.putData("Shoot", new ShootCommand());
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();

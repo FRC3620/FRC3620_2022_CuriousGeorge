@@ -15,13 +15,14 @@ public class IntakeOnCommand extends CommandBase {
   /** Creates a new IntakeBallCommand. */
   public IntakeOnCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intakeSubsystem, intakeArmSubsystem);
+    addRequirements(intakeSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     intakeArmSubsystem.extendIntakeArm();
+    intakeSubsystem.rememberPreviousCommand(this);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
