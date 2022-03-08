@@ -73,6 +73,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double back_IVelocity = 0.00;//0.0000001
   private final double back_DVelocity = 0;//7.5
 
+  private double requestedMainVelocity;
+
 
   public ShooterSubsystem() {
     if (m_main1 != null) {
@@ -129,7 +131,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
-  void setRpm(TalonFX m, double r, MotorStatus s) {
+  double setRpm(TalonFX m, double r, MotorStatus s) {
     double targetVelocity = 0.0;
     if (m != null) {
       if (r == 0) {
@@ -142,9 +144,10 @@ public class ShooterSubsystem extends SubsystemBase {
     //logger.info ("setRpm {} {}", s.name, r);
     s.setRequestedRPM(r);
     s.setRequestedSensorVelocity(targetVelocity);
+    return targetVelocity;
   }
 
-  public static void setRpm(CANSparkMax m, double r, MotorStatus s) {
+  public static double setRpm(CANSparkMax m, double r, MotorStatus s) {
     double targetVelocity = 0;
     if (m != null) {
       if (r == 0) {
@@ -157,12 +160,21 @@ public class ShooterSubsystem extends SubsystemBase {
     //logger.info ("setRpm {} {}", s.name, r);
     s.setRequestedRPM(r);
     s.setRequestedSensorVelocity(targetVelocity);
+    return targetVelocity;
   }
 
   public void setMainRPM(double r) {
-    setRpm(m_main1, r, s_main);
+    requestedMainVelocity = setRpm(m_main1, r, s_main);
 
    // setBackRPM(ShooterCalculator.calculateBackspinRPM(r));
+  }
+
+  public double getRequestedMainShooterVelocity(){
+    return requestedMainVelocity;
+  }
+
+  public double getActualMainShooterVelocity(){
+    return m_main1.getSelectedSensorVelocity();
   }
 
   public void setBackRPM(double r) {
@@ -204,12 +216,14 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setHoodPower(double power){
     if (hoodMotor != null) {
       hoodMotor.set(power);
+      requestedHoodPosition = 0;
     }
   }
 
   public void resetHoodEncoder() {
     if (hoodEncoder != null) {
       hoodEncoder.setPosition(0);
+      requestedHoodPosition = 0;
     }
   }
 
@@ -219,6 +233,10 @@ public class ShooterSubsystem extends SubsystemBase {
     } else {
       return 0.0;
     }
+  }
+
+  public double getRequestedHoodPosition(){
+    return requestedHoodPosition;
   }
 
   public void shooterOff(){
