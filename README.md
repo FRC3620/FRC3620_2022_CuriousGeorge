@@ -4,12 +4,11 @@
 * A - X Mode (not added yet)
 * X - Reset NavX
 * Y - Center on Ball
-* RB - Stop Drive
-* LB - Intake arm up and down plus roller and belt (clockwise)
+* LB -  roller and belt (clockwise) [toggle]
 * RT - Fire
+* B - up and down arm [toggle]
 
 ## Operator Controls
-
 * Dpad - Turret left, forward, right, reverse
 * A - Set up everything to shoot (GetVisionReadyToShootCommand)
 * B - Bloop shot (GetBloopReadyToShootCommand)
@@ -19,9 +18,9 @@
 * Right Interior - Climber in
 * Left Stick Button - Shooter off
 * Right Stick - Climber up + down
-  
-# Hardware Assignments
+* RB - eject ball
 
+# Hardware Assignments
 * SparkMAX 17 - climber
 <br></br>
 * TalonFX 13 - Top Shooter 1

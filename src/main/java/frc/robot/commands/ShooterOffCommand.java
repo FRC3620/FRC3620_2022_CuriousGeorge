@@ -22,5 +22,6 @@ public class ShooterOffCommand extends InstantCommand {
   @Override
   public void initialize() {
     shooterSubsystem.setTopPower(0.0);
+    shooterSubsystem.setBackRPM(0.0);
   }
 }
