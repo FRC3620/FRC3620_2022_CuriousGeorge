@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.DriveSubsystem;
@@ -10,6 +11,8 @@ public class FiveBallAuto extends SequentialCommandGroup {
 
       addCommands(
       new setInitialNavXOffsetCommand(driveSubsystem, 90)
+      ,
+      new ScheduleCommand(new IntakeArmDownCommand())
       ,
       new WaitCommand(.5) //shooting
       ,
