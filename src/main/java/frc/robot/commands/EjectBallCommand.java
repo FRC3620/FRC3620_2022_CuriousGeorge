@@ -11,7 +11,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 
 public class EjectBallCommand extends CommandBase {
   IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
-  IntakeArmSubsystem intakeArmSubsystem = RobotContainer.intakeArmSubsystem;
+
   /** Creates a new EjectBallCommand. */
   public EjectBallCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -21,7 +21,7 @@ public class EjectBallCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intakeArmSubsystem.extendIntakeArm();
+    intakeSubsystem.rememberPreviousCommand(null);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -40,7 +40,6 @@ public class EjectBallCommand extends CommandBase {
   public void end(boolean interrupted) {
     intakeSubsystem.spinIntakeWheelBar(0.0);
     intakeSubsystem.spinIntakeBelt(0.0);
-    intakeArmSubsystem.retractIntakeArm();
   }
 
   // Returns true when the command should end.

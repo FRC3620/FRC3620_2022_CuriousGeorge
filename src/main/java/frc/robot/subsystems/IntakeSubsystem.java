@@ -46,11 +46,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    Command runningNow = getCurrentCommand();
-    if (runningNow != currentCommand) {
-      previousCommand = currentCommand;
-      currentCommand = runningNow;
-    }
+  }
+
+  public void rememberPreviousCommand(Command c) {
+    previousCommand = c;
+    logger.info("remembering {} as previous command", c);
   }
 
   int recusion_level = 0;
@@ -58,9 +58,10 @@ public class IntakeSubsystem extends SubsystemBase {
     if (previousCommand != null) {
       recusion_level++;
       if (recusion_level > 1) {
-        logger.warn ("recursing! {} {} {}", previousCommand, currentCommand, getCurrentCommand());
+        logger.warn ("recursing! previous: {}, caller: {}, current: {}", previousCommand, c, getCurrentCommand());
       } else {
         if (c.getClass() != previousCommand.getClass()) {
+          logger.info ("scheduling previous command {}", previousCommand);
           previousCommand.schedule();
         }
       }
