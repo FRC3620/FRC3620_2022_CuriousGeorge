@@ -46,7 +46,7 @@ public class PreshooterAutoFireCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intakeSubsystem.startPreviousCommand();
+    //intakeSubsystem.startPreviousCommand();
   }
   
   // Returns true when the command should end.

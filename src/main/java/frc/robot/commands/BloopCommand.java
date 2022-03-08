@@ -24,7 +24,9 @@ public class BloopCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    shooterSubsystem.setMainRPM(bloopMain);
+    shooterSubsystem.setBackRPM(bloopBack);
+    shooterSubsystem.setHoodPositionToDegrees(bloopHood);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
