@@ -46,19 +46,16 @@ public class ShooterCalculator {
     }
 
 
-    public double calcHoodPosition(double cy) {
+    public double calcHoodPosition(double distance) {
         double calcHoodPosition;
-        if(cy < 224){
-            calcHoodPosition = 3.73187317480733 + 0.0327847309136473*cy +-0.0000114726741759497*cy*cy;
-            calcHoodPosition = calcHoodPosition + SmartDashboard.getNumber("manualHoodPosition", 5);
-        } else if(cy < 336){
-            calcHoodPosition = 3.85000000000 + 0.0369791667*cy + -0.0000325521*cy*cy;
-        }else if(cy < 403){
-            calcHoodPosition = -28.1396700696 + 0.2136292223*cy + -0.0002749411*cy*cy;
+        if(distance < 12.5){
+            calcHoodPosition = 129 + -9.9*distance + 0.36*distance*distance;
+        } else if(distance < 17.5){
+            calcHoodPosition = 74 + -0.5*distance + -0.04*distance*distance;
         } else {
-            calcHoodPosition = -56.8299016952515 + 0.355106208706275*cy + -0.000449346405275719*cy*cy;
+            calcHoodPosition = 109 + -4.6*distance + 0.08*distance*distance;
         }
-        return 5.0 * calcHoodPosition;
+        return calcHoodPosition;
     }
 
     public static double calcMainRPM(double distance) {
