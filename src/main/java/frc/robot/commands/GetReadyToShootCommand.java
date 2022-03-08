@@ -21,11 +21,17 @@ public abstract class GetReadyToShootCommand extends CommandBase {
     turretSubsystem = RobotContainer.turretSubsystem;
     rumbleCommandOperator = new RumbleCommand(RobotContainer.operatorRumbleSubsystem);
     rumbleCommandDriver = new RumbleCommand(RobotContainer.driverRumbleSubsystem);
+    addRequirements(shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    SmartDashboard.putBoolean("shooter.ready.shooter", false);
+    SmartDashboard.putBoolean("shooter.ready.hood", false);
+    SmartDashboard.putBoolean("shooter.ready.turret", false);
+    SmartDashboard.putBoolean("shooter.ready", false);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -38,6 +44,7 @@ public abstract class GetReadyToShootCommand extends CommandBase {
     if (ts != 0.0) {
       terror = ta / ts;
     }
+    SmartDashboard.putNumber("shooter.error.shooter", terror);
     boolean answer;
     if (terror >= 0.98 && terror <= 1.02) {
       answer = true;
@@ -55,6 +62,7 @@ public abstract class GetReadyToShootCommand extends CommandBase {
     if (hs != 0.0) {
       herror = ha / hs;
     }
+    SmartDashboard.putNumber("shooter.error.hood", herror);
     boolean answer;
     if (herror >= 0.98 && herror <= 1.02) {
       answer = true;
@@ -69,6 +77,7 @@ public abstract class GetReadyToShootCommand extends CommandBase {
     double tra = turretSubsystem.getCurrentTurretPosition();
     double trs = turretSubsystem.getRequestedTurretPosition();
     double trerror = Math.abs(trs - tra);
+    SmartDashboard.putNumber("shooter.error.turret", trerror);
     boolean answer;
     if (trerror < 2) {
       answer = true;
@@ -93,8 +102,6 @@ public abstract class GetReadyToShootCommand extends CommandBase {
     SmartDashboard.putBoolean("shooter.ready", answer);
     return answer;
   }
-
-  
 
   // Called once the command ends or is interrupted.
   @Override
