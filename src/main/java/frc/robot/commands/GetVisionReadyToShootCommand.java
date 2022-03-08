@@ -46,11 +46,13 @@ public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
       double targetx = spinTurretDegrees + currentTurretPosition;
       turretSubsystem.setTurretPosition(targetx);
 
-      //double targetDistance = ShooterCalculator.calcDistanceFromHub(visionSubsystem.getTargetYLocation());
-      //double targetRPM = ShooterCalculator.calcMainRPM(targetDistance);
+      double targetDistance = ShooterCalculator.calcDistanceFromHub(visionSubsystem.getTargetYLocation());
+      double targetRPM = ShooterCalculator.calcMainRPM(targetDistance);
+      double targetHood = ShooterCalculator.calcHoodPosition(targetDistance);
 
-      //shooterSubsystem.setMainRPM(targetRPM);
-      //shooterSubsystem.setBackRPM(ShooterCalculator.calculateBackspinRPM(targetRPM));
+      shooterSubsystem.setMainRPM(targetRPM);
+      shooterSubsystem.setBackRPM(ShooterCalculator.calculateBackspinRPM(targetRPM));
+      shooterSubsystem.setHoodPositionToDegrees(targetHood);
     }
   }
 

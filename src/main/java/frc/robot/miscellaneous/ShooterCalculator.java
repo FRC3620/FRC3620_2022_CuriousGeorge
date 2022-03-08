@@ -46,7 +46,7 @@ public class ShooterCalculator {
     }
 
 
-    public double calcHoodPosition(double distance) {
+    public static double calcHoodPosition(double distance) {
         double calcHoodPosition;
         if(distance < 12.5){
             calcHoodPosition = 129 + -9.9*distance + 0.36*distance*distance;
