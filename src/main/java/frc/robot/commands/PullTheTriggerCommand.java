@@ -52,6 +52,7 @@ public class PullTheTriggerCommand extends CommandBase {
       //intakeSubsystem.startPreviousCommand(this);
     }
     intakeSubsystem.clearIntakeShootingOverrides();
+    preShooterSubsystem.preshooterOff();
   }
   
   // Returns true when the command should end.
