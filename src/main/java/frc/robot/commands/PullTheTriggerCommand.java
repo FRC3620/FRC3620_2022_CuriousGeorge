@@ -7,13 +7,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PreShooterSubsystem;
-public class ShootCommand extends CommandBase {
+public class PullTheTriggerCommand extends CommandBase {
   PreShooterSubsystem preShooterSubsystem = RobotContainer.preShooterSubsystem;
   IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
 
   Timer preshooterTimer = new Timer();
   boolean weAreDone = false;
-  public ShootCommand() {
+  public PullTheTriggerCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intakeSubsystem, preShooterSubsystem);
   }

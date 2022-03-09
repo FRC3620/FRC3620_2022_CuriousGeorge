@@ -33,7 +33,7 @@ public class IntakeOnCommand extends CommandBase {
 
   public void intakeBall() {
     intakeSubsystem.spinIntakeWheelBar(0.6);
-    intakeSubsystem.spinIntakeBelt(0.6);
+    intakeSubsystem.spinIntakeBelt(0.8);
   }
 
   // Called once the command ends or is interrupted.

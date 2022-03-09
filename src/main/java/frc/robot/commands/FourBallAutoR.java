@@ -7,11 +7,11 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-public class FourBallAutoP extends SequentialCommandGroup {
-  public FourBallAutoP(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem) {
+public class FourBallAutoR extends SequentialCommandGroup {
+  public FourBallAutoR(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem) {
 
       addCommands(
-      new setInitialNavXOffsetCommand(driveSubsystem, 90)
+      new setInitialNavXOffsetCommand(driveSubsystem, 225)
       ,
       new ScheduleCommand(new MoveTurretCommand(turretSubsystem, 180))
       ,
@@ -19,15 +19,19 @@ public class FourBallAutoP extends SequentialCommandGroup {
       ,
       new ScheduleCommand(new IntakeSpinCommand())
       ,
-      new AutoDriveCommand(40, 90, .5, 90, driveSubsystem) //drive to position A
+      new AutoDriveCommand(40, 225, .5, 225, driveSubsystem) //drive to position A
       ,
       new AutoShootCommand()
       ,
-      new AutoDriveCommand(12*12, 180, 1, 135, driveSubsystem) //drive to position D
+      new ScheduleCommand(new IntakeArmUpCommand())
       ,
-      new AutoDriveCommand(108, 205, .5, 135, driveSubsystem)
+      new AutoDriveCommand(12*12, 135, 0.5, 135, driveSubsystem) //drive to position D
       ,
-      new AutoDriveToCargoCommand(10, 135, .5, 135, driveSubsystem, visionSubsystem)
+      new ScheduleCommand(new IntakeArmDownCommand())
+      ,
+      new ScheduleCommand(new IntakeSpinCommand())
+      ,
+      new AutoDriveToCargoCommand(12*12, 135, 0.5, 135, driveSubsystem, visionSubsystem)
       ,
       new WaitCommand(2)
       ,

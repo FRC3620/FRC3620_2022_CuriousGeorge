@@ -8,8 +8,8 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-public class ThreeBallAutoQ extends SequentialCommandGroup {
-  public ThreeBallAutoQ(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem) {
+public class TwoBallAutoQ extends SequentialCommandGroup {
+  public TwoBallAutoQ(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem) {
 
       addCommands(
       new setInitialNavXOffsetCommand(driveSubsystem, 145)
@@ -24,11 +24,7 @@ public class ThreeBallAutoQ extends SequentialCommandGroup {
       ,
       new AutoShootCommand()
       ,
-      new AutoDriveCommand(145, 185, .3, 135, driveSubsystem)
-      ,
-      new AutoDriveToCargoCommand(10*12, 135, .3, 135, driveSubsystem, visionSubsystem)
-      ,
-      new AutoShootCommand()
+      new IntakeArmUpCommand()
       );
 
       
