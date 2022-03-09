@@ -25,6 +25,7 @@ import org.usfirst.frc3620.misc.XBoxConstants;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
@@ -43,7 +44,6 @@ public class ShooterSubsystem extends SubsystemBase {
   RelativeEncoder hoodEncoder;
   boolean hoodEncoderIsValid = false;
   Timer hoodTimer;
-  
 
   double mainShooterRPM = 2000;
   
@@ -57,7 +57,6 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double mainPVelocity = 0.45; //0.60
   private final double mainIVelocity = 0.0; //0.000003
   private final double mainDVelocity = 7.75; //7.75
-
 
   //hood
   private final double hoodP = 0.1;
@@ -74,7 +73,6 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double back_DVelocity = 0;//7.5
 
   private double requestedMainVelocity;
-
 
   public ShooterSubsystem() {
     if (m_main1 != null) {
@@ -261,9 +259,16 @@ public class ShooterSubsystem extends SubsystemBase {
     return (212.32 - 2.5581 * angle);
   }
 
-
+  Command lastCommand = null;
+  
   @Override
   public void periodic() {
+    Command currentCommand = getCurrentCommand();
+    if (currentCommand != lastCommand) {
+      logger.info("new command: {} -> {}", lastCommand, currentCommand);
+      lastCommand = currentCommand;
+    }
+
     // This method will be called once per scheduler run
     s_main.gatherActuals(m_main1, "main");
     s_back.gatherActuals(m_back, "back");

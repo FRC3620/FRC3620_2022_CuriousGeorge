@@ -15,7 +15,9 @@ public class PullTheTriggerCommand extends CommandBase {
   boolean weAreDone = false;
   public PullTheTriggerCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intakeSubsystem, preShooterSubsystem);
+
+    // do not require the intake!!!!!!!!
+    addRequirements(preShooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -31,11 +33,12 @@ public class PullTheTriggerCommand extends CommandBase {
   public void execute() {
     if(preshooterTimer.get() < 1.0) {
         preShooterSubsystem.preshooterOn(1.0);
-        intakeSubsystem.spinIntakeBelt(0.0);
-        intakeSubsystem.spinIntakeWheelBar(0.0);
+        intakeSubsystem.overrideIntakeBeltForShooting(0.0);
+        intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);
     } else if (preshooterTimer.get() < 2.0) {
         preShooterSubsystem.preshooterOff();
-        intakeSubsystem.spinIntakeBelt(0.4);
+        intakeSubsystem.overrideIntakeBeltForShooting(0.4);
+        intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);
     } else {
         weAreDone = true;
     }
@@ -46,8 +49,9 @@ public class PullTheTriggerCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     if (!interrupted) {
-      intakeSubsystem.startPreviousCommand(this);
+      //intakeSubsystem.startPreviousCommand(this);
     }
+    intakeSubsystem.clearIntakeShootingOverrides();
   }
   
   // Returns true when the command should end.

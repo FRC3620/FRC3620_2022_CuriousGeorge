@@ -473,7 +473,7 @@ public class RobotContainer {
   
     SmartDashboard.putData("TestAuto", new TestAuto(driveSubsystem));
     SmartDashboard.putData("AutoDriveToCargo Test", new DriveToCargoTestAuto(driveSubsystem, visionSubsystem));
-    SmartDashboard.putData("5 Ball Auto P", new FiveBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem));
+    SmartDashboard.putData("5 Ball Auto P", new DougOtto(driveSubsystem, visionSubsystem, turretSubsystem));
     SmartDashboard.putData("4 Ball Auto P", new FourBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem));
     SmartDashboard.putData("4 Ball Auto Q", new FourBallAutoQ(driveSubsystem, visionSubsystem, turretSubsystem));
     SmartDashboard.putData("4 Ball Auto R", new FourBallAutoR(driveSubsystem, visionSubsystem, turretSubsystem));
@@ -489,7 +489,6 @@ public class RobotContainer {
 
     SmartDashboard.putData("Eject Ball", new EjectBallCommand());
     SmartDashboard.putData("Intake Ball", new IntakeOnCommand());
-    SmartDashboard.putData("preshooter with intake", new PullTheTriggerCommand());
 
     SmartDashboard.putData("Climber Tilt Out", new ClimberTiltTestCommandOut());
     SmartDashboard.putData("Climber Tilt In", new ClimberTiltTestCommandIn());
@@ -512,6 +511,7 @@ public class RobotContainer {
   public void setupAutonomousCommands() {
     SmartDashboard.putData("Auto mode", chooser);
 
+    chooser.addOption("Doug Otto", new DougOtto(driveSubsystem, visionSubsystem, turretSubsystem));
     chooser.addOption("TestAuto", new TestAuto(driveSubsystem));
     chooser.addOption("AutoDriveToCargo Test", new DriveToCargoTestAuto(driveSubsystem, visionSubsystem));
     chooser.addOption("5 Ball P Auto", new FiveBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem));

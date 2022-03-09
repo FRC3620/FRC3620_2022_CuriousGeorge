@@ -4,12 +4,17 @@
 
 package frc.robot.commands;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.EventLogging.Level;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 
 public class AutoShootCommand extends GetVisionReadyToShootCommand {
-  Command pullTheTriggerCommand = new PullTheTriggerCommand();
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+
   /** Creates a new AutoShootCommand. */
   public AutoShootCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -19,6 +24,7 @@ public class AutoShootCommand extends GetVisionReadyToShootCommand {
   @Override
   public void initialize() {
     super.initialize();
+    EventLogging.commandMessage(logger);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -30,15 +36,12 @@ public class AutoShootCommand extends GetVisionReadyToShootCommand {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (!interrupted){
-      pullTheTriggerCommand.schedule();
-    }
+    EventLogging.commandMessage(logger, interrupted);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return 
-    super.isFinished();
+    return super.isFinished();
   }
 }

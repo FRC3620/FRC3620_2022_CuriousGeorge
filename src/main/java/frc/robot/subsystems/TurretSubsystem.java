@@ -4,17 +4,24 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+import org.usfirst.frc3620.logger.LoggingMaster;
+import org.usfirst.frc3620.logger.EventLogging.Level;
 import org.usfirst.frc3620.misc.RobotMode;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.miscellaneous.CANSparkMaxSendable;
 
 public class TurretSubsystem extends SubsystemBase {
+  Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+
   boolean encoderIsValid = false;
   CANSparkMaxSendable turretDrive = RobotContainer.turretSubsystemturretSpinner;
   RelativeEncoder turretEncoder = RobotContainer.turretSubsystemturretEncoder;
@@ -44,11 +51,17 @@ public class TurretSubsystem extends SubsystemBase {
       turretEncoder.setPositionConversionFactor(90.0/115.0);
       turretEncoder.setVelocityConversionFactor(1);
     }
-
   }
+
+  Command lastCommand = null;
 
   @Override
   public void periodic() {
+    Command currentCommand = getCurrentCommand();
+    if (currentCommand != lastCommand) {
+      logger.info("new command: {} -> {}", lastCommand, currentCommand);
+      lastCommand = currentCommand;
+    }
     // This method will be called once per scheduler run
     if (turretDrive != null) {
       double turretCurrent = turretDrive.getOutputCurrent();
@@ -99,8 +112,13 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void setTurretPosition (double angle) {
-    if(angle < -45) angle = -45;
-    if(angle > 265) angle = 265;
+    logger.info("setTurretPosition set to {} by {}", angle, EventLogging.callerName());
+    if(angle < -45) {
+      angle = -45;
+    }
+    if(angle > 265) {
+      angle = 265;
+    }
     SmartDashboard.putNumber("turretRequestedAngle", angle);
     requestedTurretPosition = angle;
     if (encoderIsValid) {
