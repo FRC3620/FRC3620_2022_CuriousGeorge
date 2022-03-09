@@ -40,29 +40,6 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
   }
 
-  public void rememberPreviousCommand(Command c) {
-    previousCommand = c;
-    logger.info("remembering {} as previous command", c);
-  }
-
-  int recusion_level = 0;
-  public void startPreviousCommand(Command c) {
-    /*
-    if (previousCommand != null) {
-      recusion_level++;
-      if (recusion_level > 1) {
-        logger.warn ("recursing! previous: {}, caller: {}, current: {}", previousCommand, c, getCurrentCommand());
-      } else {
-        if (c.getClass() != previousCommand.getClass()) {
-          logger.info ("scheduling previous command {}", previousCommand);
-          previousCommand.schedule();
-        }
-      }
-      recusion_level--;
-    }
-    */
-  }
-
   Double intakeBeltSpeedShootingOverride = null;
   Double intakeWheelBarSpeedShootingOverride = null;
 

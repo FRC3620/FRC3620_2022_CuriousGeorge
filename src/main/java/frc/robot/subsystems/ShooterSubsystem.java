@@ -198,16 +198,23 @@ public class ShooterSubsystem extends SubsystemBase {
     setHoodPositionToRotations(calcuated);
   }
 
+  public void setHoodPositionToHome() {
+    setHoodPositionToRotations(0);
+  }
+
+  Double requestedHoodPositionDuringCalibration = null;
   void setHoodPositionToRotations(double position) {
+    if(position >= 108){
+      requestedHoodPosition = 108;
+    } else if (position < 2) {
+      requestedHoodPosition=2;
+    } else {
+      requestedHoodPosition=position;
+    }
     if (hoodEncoderIsValid) {
-      if(position >= 108){
-        requestedHoodPosition = 108;
-      } else if (position < 2) {
-        requestedHoodPosition=2;
-      } else {
-        requestedHoodPosition=position;
-      }
       hoodMotor.getPIDController().setReference(requestedHoodPosition,CANSparkMax.ControlType.kPosition );
+    } else {
+      requestedHoodPositionDuringCalibration = requestedHoodPosition;
     }
   }
 
@@ -254,7 +261,6 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
   
-
   public static double calculateHoodRotations (double angle) {
     return (212.32 - 2.5581 * angle);
   }
@@ -292,6 +298,10 @@ public class ShooterSubsystem extends SubsystemBase {
                 hoodEncoderIsValid = true;
                 setHoodPower(0.0);
                 resetHoodEncoder();
+                if (requestedHoodPositionDuringCalibration != null) {
+                  hoodMotor.getPIDController().setReference(requestedHoodPositionDuringCalibration,CANSparkMax.ControlType.kPosition );
+                  requestedHoodPositionDuringCalibration = null;
+                }
               }
             }
           } 

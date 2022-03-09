@@ -28,6 +28,8 @@ public class TurretSubsystem extends SubsystemBase {
   SparkMaxPIDController turretPID = null;
   Timer calibrationTimer;
 
+  Double requestedTurretPositionWhileCalibrating = null;
+
   double requestedTurretPosition;
   /**
    * Creates a new turretSubsystem.
@@ -89,7 +91,11 @@ public class TurretSubsystem extends SubsystemBase {
                 if (Math.abs(turretSpeed) < 20) {
                   encoderIsValid = true;
                   turnTurret(0.0);
-                  turretEncoder.setPosition(270.0); //check encoder position
+                  turretEncoder.setPosition(270.0);
+                  if (requestedTurretPositionWhileCalibrating != null) {
+                    setTurretPosition(requestedTurretPositionWhileCalibrating);
+                    requestedTurretPositionWhileCalibrating = null;
+                  }
                 }
               }
             }
@@ -112,7 +118,7 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void setTurretPosition (double angle) {
-    logger.info("setTurretPosition set to {} by {}", angle, EventLogging.callerName());
+    // logger.info("setTurretPosition set to {} by {}", angle, EventLogging.callerName());
     if(angle < -45) {
       angle = -45;
     }
@@ -123,6 +129,8 @@ public class TurretSubsystem extends SubsystemBase {
     requestedTurretPosition = angle;
     if (encoderIsValid) {
       turretPID.setReference(angle, ControlType.kPosition);
+    } else {
+      requestedTurretPositionWhileCalibrating = angle;
     }
   }
 

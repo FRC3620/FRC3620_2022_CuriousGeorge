@@ -22,7 +22,6 @@ public class IntakeOnCommand extends CommandBase {
   @Override
   public void initialize() {
     intakeArmSubsystem.extendIntakeArm();
-    intakeSubsystem.rememberPreviousCommand(this);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

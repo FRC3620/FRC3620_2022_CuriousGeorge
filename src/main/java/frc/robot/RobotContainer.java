@@ -505,6 +505,8 @@ public class RobotContainer {
     SmartDashboard.putData("Get ready to climb", new GetReadyToClimbCommand());
 
     SmartDashboard.putData("Shoot", new PullTheTriggerCommand());
+
+    SmartDashboard.putData("Send hood home", new HoodToHomeCommand());
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
