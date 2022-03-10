@@ -18,6 +18,7 @@
 * Right Interior - Climber in
 * Left Stick Button - Shooter off
 * Right Stick - Climber up + down
+* LB - GetReadyToClimb
 * RB - eject ball
 
 # Hardware Assignments
