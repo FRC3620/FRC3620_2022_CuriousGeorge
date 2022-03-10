@@ -32,13 +32,13 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void climberArmTiltIn() {
     if (climberArmTilt != null) { 
-      climberArmTilt.set(Value.kReverse);
+      climberArmTilt.set(Value.kForward);
     }
   }
 
   public void climberArmTiltOut() {
     if (climberArmTilt != null) { 
-      climberArmTilt.set(Value.kForward);
+      climberArmTilt.set(Value.kReverse);
     }
   }
 
