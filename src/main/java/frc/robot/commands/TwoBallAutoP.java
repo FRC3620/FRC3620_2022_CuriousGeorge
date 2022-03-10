@@ -16,14 +16,14 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-public class TwoBallAutoQ extends SequentialCommandGroup {
+public class TwoBallAutoP extends SequentialCommandGroup {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
   
-  public TwoBallAutoQ(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem){
+  public TwoBallAutoP(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem){
     addCommands(
-      new setInitialNavXOffsetCommand(driveSubsystem, 153),
+      new setInitialNavXOffsetCommand(driveSubsystem, 90),
   
-      new MoveTurretCommand(turretSubsystem, 170), 
+      new MoveTurretCommand(turretSubsystem, 180), 
 
       new LogCommand("Moved turret"),
   
@@ -33,7 +33,7 @@ public class TwoBallAutoQ extends SequentialCommandGroup {
         new SequentialCommandGroup(
           new LogCommand("Starting AutoDrive"),
 
-          new AutoDriveCommand(55, 153, .5, 153, driveSubsystem)
+          new AutoDriveCommand(40, 90, .5, 90, driveSubsystem)
         ), 
         new IntakeOnCommand()
       ),
@@ -54,7 +54,7 @@ public class TwoBallAutoQ extends SequentialCommandGroup {
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
           new IntakeArmUpCommand(),
-          new AutoDriveCommand(3, 150, 0.5, 150, driveSubsystem)
+          new AutoDriveCommand(0, 90, 0.5, 90, driveSubsystem)
         ),
         new IntakeOffCommand(intakeSubsystem),
         new ShooterOffCommand()

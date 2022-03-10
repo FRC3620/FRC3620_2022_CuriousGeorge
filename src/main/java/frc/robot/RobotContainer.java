@@ -478,7 +478,6 @@ public class RobotContainer {
     SmartDashboard.putData("4 Ball Auto Q", new FourBallAutoQ(driveSubsystem, visionSubsystem, turretSubsystem));
     SmartDashboard.putData("4 Ball Auto R", new FourBallAutoR(driveSubsystem, visionSubsystem, turretSubsystem));
     SmartDashboard.putData("3 Ball Auto Q", new ThreeBallAutoQ(driveSubsystem,  visionSubsystem, turretSubsystem));
-    SmartDashboard.putData("2 Ball Auto Q", new TwoBallAutoQ(driveSubsystem,  visionSubsystem, turretSubsystem));
 
     SmartDashboard.putData("Reset NavX", new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
@@ -521,7 +520,9 @@ public class RobotContainer {
     chooser.addOption("4 Ball Q Auto", new FourBallAutoQ(driveSubsystem, visionSubsystem, turretSubsystem));
     chooser.addOption("4 Ball R Auto", new FourBallAutoR(driveSubsystem, visionSubsystem, turretSubsystem));
     chooser.addOption("3 Ball Q Auto", new ThreeBallAutoQ(driveSubsystem, visionSubsystem,turretSubsystem));
-    chooser.addOption("2 Ball Q Auto", new TwoBallAutoQ(driveSubsystem, visionSubsystem,turretSubsystem));
+    chooser.addOption("2 Ball P Auto", new TwoBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("2 Ball Q Auto", new TwoBallAutoQ(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("2 Ball R Auto", new TwoBallAutoR(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
   }
   
   static double driverStrafeDeadzone = 0.1;

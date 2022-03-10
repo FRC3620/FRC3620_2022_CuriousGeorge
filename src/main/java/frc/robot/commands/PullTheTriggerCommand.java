@@ -31,11 +31,11 @@ public class PullTheTriggerCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(preshooterTimer.get() < 1.0) {
+    if(preshooterTimer.get() < 0.5) {
         preShooterSubsystem.preshooterOn(1.0);
         intakeSubsystem.overrideIntakeBeltForShooting(0.0);
         intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);
-    } else if (preshooterTimer.get() < 2.0) {
+    } else if (preshooterTimer.get() < 1.0) {
         preShooterSubsystem.preshooterOff();
         intakeSubsystem.overrideIntakeBeltForShooting(0.4);
         intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);
