@@ -105,10 +105,12 @@ public class AutoDriveToCargoCommand extends CommandBase {
         }
         else{
             //robot sees ball, adjust heading towards ball
-            double desiredAngleRelativeToRobot  = ((targetX - 0.5)/0.0825)*5;
+            double desiredAngleRelativeToRobot  = ((targetX - 0.5)/0.0608)*5;  //0.0825
             driveSubsystem.autoDrive(desiredAngleRelativeToRobot, pathSpeed, spinX);
             driveSubsystem.setTargetHeading(driveSubsystem.getNavXFixedAngle() + desiredAngleRelativeToRobot);
         }
+
+        SmartDashboard.putNumber("AutoDrive.desiredAngle", desiredAngle);
 
         // need to correct for what direction we are heading
         //double desiredAngleRelativeToRobot = desiredAngle - driveSubsystem.getNavXFixedAngle();
@@ -126,8 +128,9 @@ public class AutoDriveToCargoCommand extends CommandBase {
 
         distanceTravelled = (distanceTravelledRightFront + distanceTravelledLeftFront + distanceTravelledRightBack + distanceTravelledLeftBack) / 4;
         
-        if ((targetY >= 0.4) && (targetY <= 0.6)){
-            desiredDistance = distanceTravelled + (30 + ((0.6 - targetY)*1.45));
+        if ((targetY >= 0.15) && (targetY <= 0.25))
+        {
+            desiredDistance = distanceTravelled + (30 + ((0.25 - targetY)*1.45));
         }
 
         if (autonomousLogger != null) {

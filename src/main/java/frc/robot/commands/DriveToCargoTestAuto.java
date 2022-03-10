@@ -11,6 +11,10 @@ public class DriveToCargoTestAuto extends SequentialCommandGroup {
       addCommands(
       new setInitialNavXOffsetCommand(driveSubsystem, 0)
       ,
+      new IntakeArmDownCommand()
+      ,
+      new AutoDriveCommand(5*12, 0, 0.3, 0, driveSubsystem)
+      ,
       new AutoDriveToCargoCommand(11*12, 0, 0.3, 0, driveSubsystem, visionSubsystem)
       /*,
       new AutoDriveCommand(5*12, 90, .3, 85, driveSubsystem)
