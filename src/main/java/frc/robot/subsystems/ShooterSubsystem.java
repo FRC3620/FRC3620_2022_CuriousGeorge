@@ -72,7 +72,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double back_IVelocity = 0.00;//0.0000001
   private final double back_DVelocity = 0;//7.5
 
-  private double requestedMainVelocity;
+  private double requestedMainVelocity, requestedBackSpinShooterVelocity;
 
   public ShooterSubsystem() {
     if (m_main1 != null) {
@@ -163,8 +163,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setMainRPM(double r) {
     requestedMainVelocity = setRpm(m_main1, r, s_main);
-
-   // setBackRPM(ShooterCalculator.calculateBackspinRPM(r));
   }
 
   public double getRequestedMainShooterVelocity(){
@@ -172,14 +170,28 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double getActualMainShooterVelocity(){
-    return m_main1.getSelectedSensorVelocity();
+    if (m_main1 != null) {
+      return m_main1.getSelectedSensorVelocity();
+    }
+    return -1;
   }
 
   public void setBackRPM(double r) {
     if (r < 0){
       r = 0;
     }
-    setRpm(m_back, r, s_back);
+    requestedBackSpinShooterVelocity = setRpm(m_back, r, s_back);
+  }
+
+  public double getRequestedBackSpinShooterVelocity() {
+    return requestedBackSpinShooterVelocity;
+  }
+
+  public double getActualBackSpinShooterVelocity() {
+    if (m_back != null) {
+      return m_back.getSelectedSensorVelocity();
+    }
+    return -1;
   }
   
   MotorStatus s_main = new MotorStatus("main");
