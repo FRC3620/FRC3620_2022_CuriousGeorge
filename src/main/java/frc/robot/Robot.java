@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.DataLogger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
+import org.usfirst.frc3620.misc.FileSaver;
 import org.usfirst.frc3620.misc.GitNess;
 import org.usfirst.frc3620.misc.RobotMode;
 
@@ -43,8 +44,8 @@ public class Robot extends TimedRobot {
     logger = EventLogging.getLogger(Robot.class, Level.INFO);
     logger.info ("I'm alive! {}", GitNess.gitDescription());
 
-    PortForwarder.add (10080, "frcvision.local", 80);
-    PortForwarder.add (10022, "frcvision.local", 22);
+    PortForwarder.add (10080, "wpilibpi.local", 80);
+    PortForwarder.add (10022, "wpilibpi.local", 22);
 
     CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {//whenever a command initializes, the function declared bellow will run.
       public void accept(Command command) {
@@ -74,6 +75,8 @@ public class Robot extends TimedRobot {
     new RobotDataLogger(robotDataLogger, RobotContainer.canDeviceFinder);
     robotDataLogger.setInterval(0.25);
     robotDataLogger.start();
+
+    FileSaver.add("networktables.ini");
   }
 
   /**

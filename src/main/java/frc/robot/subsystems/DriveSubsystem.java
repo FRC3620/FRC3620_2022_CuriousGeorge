@@ -17,49 +17,53 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
-import org.usfirst.frc3620.misc.ConfigurationItem;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.RobotParameters2022;
 import frc.robot.commands.TeleOpDriveCommand;
+import frc.robot.miscellaneous.CANSparkMaxSendable;
 import frc.robot.miscellaneous.DriveVectors;
 import frc.robot.miscellaneous.SwerveCalculator;
 import frc.robot.miscellaneous.Vector;
-import frc.robot.miscellaneous.HomeEncoders;
 
 public class DriveSubsystem extends SubsystemBase {
 
 	Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
-  
-    public final CANSparkMax rightFrontDriveMaster = RobotContainer.driveSubsystemRightFrontDrive;
-	public final CANSparkMax rightFrontAzimuth = RobotContainer.driveSubsystemRightFrontAzimuth;
+
+	private boolean logSpinTransitions = false;
+	private boolean putDriveVectorsInNetworkTables = false;
+
+    public final CANSparkMaxSendable rightFrontDriveMaster = RobotContainer.driveSubsystemRightFrontDrive;
+	public final CANSparkMaxSendable rightFrontAzimuth = RobotContainer.driveSubsystemRightFrontAzimuth;
 	public final RelativeEncoder rightFrontDriveEncoder = RobotContainer.driveSubsystemRightFrontDriveEncoder;
 	public final RelativeEncoder rightFrontAzimuthEncoder = RobotContainer.driveSubsystemRightFrontAzimuthEncoder;
 	public final AnalogInput rightFrontHomeEncoder = RobotContainer.driveSubsystemRightFrontHomeEncoder;
 	public SparkMaxPIDController rightFrontVelPID; // don't assign unless we have the motor controller
 	public SparkMaxPIDController rightFrontPositionPID;
 
-	public final CANSparkMax leftFrontDriveMaster = RobotContainer.driveSubsystemLeftFrontDrive;
-	public final CANSparkMax leftFrontAzimuth = RobotContainer.driveSubsystemLeftFrontAzimuth;
+	public final CANSparkMaxSendable leftFrontDriveMaster = RobotContainer.driveSubsystemLeftFrontDrive;
+	public final CANSparkMaxSendable leftFrontAzimuth = RobotContainer.driveSubsystemLeftFrontAzimuth;
 	public final RelativeEncoder leftFrontDriveEncoder = RobotContainer.driveSubsystemLeftFrontDriveEncoder;
 	public final RelativeEncoder leftFrontAzimuthEncoder = RobotContainer.driveSubsystemLeftFrontAzimuthEncoder;
 	public final AnalogInput leftFrontHomeEncoder = RobotContainer.driveSubsystemLeftFrontHomeEncoder;
 	public SparkMaxPIDController leftFrontVelPID;
 	public SparkMaxPIDController leftFrontPositionPID;
 
-	public final CANSparkMax leftBackDriveMaster = RobotContainer.driveSubsystemLeftBackDrive;
-	public final CANSparkMax leftBackAzimuth = RobotContainer.driveSubsystemLeftBackAzimuth;
+	public final CANSparkMaxSendable leftBackDriveMaster = RobotContainer.driveSubsystemLeftBackDrive;
+	public final CANSparkMaxSendable leftBackAzimuth = RobotContainer.driveSubsystemLeftBackAzimuth;
 	public final RelativeEncoder leftBackDriveEncoder = RobotContainer.driveSubsystemLeftBackDriveEncoder;
 	public final RelativeEncoder leftBackAzimuthEncoder = RobotContainer.driveSubsystemLeftBackAzimuthEncoder;
 	public final AnalogInput leftBackHomeEncoder = RobotContainer.driveSubsystemLeftBackHomeEncoder;
 	public SparkMaxPIDController leftBackVelPID;
 	public SparkMaxPIDController leftBackPositionPID;
 
-	public final CANSparkMax rightBackDriveMaster = RobotContainer.driveSubsystemRightBackDrive;
-	public final CANSparkMax rightBackAzimuth = RobotContainer.driveSubsystemRightBackAzimuth;
+	public final CANSparkMaxSendable rightBackDriveMaster = RobotContainer.driveSubsystemRightBackDrive;
+	public final CANSparkMaxSendable rightBackAzimuth = RobotContainer.driveSubsystemRightBackAzimuth;
 	public final RelativeEncoder rightBackDriveEncoder = RobotContainer.driveSubsystemRightBackDriveEncoder;
 	public final RelativeEncoder rightBackAzimuthEncoder = RobotContainer.driveSubsystemRightBackAzimuthEncoder;
 	public final AnalogInput rightBackHomeEncoder = RobotContainer.driveSubsystemRightBackHomeEncoder;
@@ -72,8 +76,10 @@ public class DriveSubsystem extends SubsystemBase {
 	//                    MUST MAKE SURE THESE VALUES ARE RIGHT BEFORE RUNNING SWERVE CODE
 	//***********************************************************************************************************
 
-	private final double CHASIS_WIDTH = 22.25; //inches
-	private final double CHASIS_LENGTH = 24.25; //inches
+	// these will get overwritten from the robot_parameters.json. Putting something here so that we don't get
+	// divide by zero errors if the dimensions are missing in the .json.
+	private double CHASIS_WIDTH = 22.25; //inches
+	private double CHASIS_LENGTH = 24.25; //inches
 
 	private final double AZIMUTH_ENCODER_CONVERSION_FACTOR = (1/(11.7))*235; //units are tics*motor revolutions
 	private final double SPEED_ENCODER_TICS = 42;
@@ -102,10 +108,10 @@ public class DriveSubsystem extends SubsystemBase {
 	
 	private double kPositionMinOutput = -1;
 	
-	private double kVelocityP = 0.01;
+	private double kVelocityP = 0.01;  //0.01
 	private double kVelocityI = 0.000000;
-	private double kVelocityD = 0.1;
-	private double kVelocityFF = .006;
+	private double kVelocityD = 0.1;  //0.1
+	private double kVelocityFF = 0.0;
 	private double kVelocityIz = 0;
 	private double kVelocityMaxOutput = 1;
 	private double kVelocityMinOutput = -1;
@@ -115,42 +121,53 @@ public class DriveSubsystem extends SubsystemBase {
 	private boolean fieldRelative = true;
 
 	private PIDController spinPIDController;
-	private double kSpinP = 0.013;
-	private double kSpinI = 0.00001;
-	private double kSpinD = 0.003;
+	private double kSpinP = 0.02; //0.013
+	private double kSpinI = 0.00000; //0.00001
+	private double kSpinD = 0.000; //0.003
 	private boolean autoSpinMode;
 	private boolean forceManualMode = false;
 	private double currentHeading;
 	private double targetHeading;
 	private double spinPower;
 
-	private double NavXOffset = 0;  
-
+	private double NavXOffset = 0;
 
 	//***********************************************************************************************************
 	//***********************************************************************************************************
 
-	SwerveCalculator sc = new SwerveCalculator(CHASIS_WIDTH, CHASIS_LENGTH, MAX_VELOCITY_IN_PER_SEC);
+	SwerveCalculator sc;
 	DriveVectors oldVectors;
 
   	public DriveSubsystem() {
-		String macAddress = ConfigurationItem.identifyRoboRIO();
-		logger.info("ETHERNET MAC address: {}", macAddress);
-		if (macAddress.equals("00-80-2F-18-5C-5F")) {
-			logger.info("I THINK IM A PRACTICE BOT");
-			RIGHT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_RIGHT_FRONT_ABSOLUTE_OFFSET;
-			LEFT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_LEFT_FRONT_ABSOLUTE_OFFSET;
-			RIGHT_BACK_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_RIGHT_BACK_ABSOLUTE_OFFSET;
-			LEFT_BACK_ABSOLUTE_OFFSET = HomeEncoders.PRACTICE_LEFT_BACK_ABSOLUTE_OFFSET;
+		RobotParameters2022 p = RobotContainer.robotParameters;
+		String missingSwerveParameters = p.whichSwerveParametersAreMissing();
+		if (missingSwerveParameters != null) {
+			logger.error("missing swerve parameters: {}", missingSwerveParameters);
 		} else {
-			logger.info("I THINK IM A COMPETITION BOT");
-			RIGHT_BACK_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_RIGHT_BACK_ABSOLUTE_OFFSET;
-			LEFT_BACK_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_LEFT_BACK_ABSOLUTE_OFFSET;
-			RIGHT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_RIGHT_FRONT_ABSOLUTE_OFFSET;
-			LEFT_FRONT_ABSOLUTE_OFFSET = HomeEncoders.COMPETITION_LEFT_FRONT_ABSOLUTE_OFFSET;
+			RIGHT_BACK_ABSOLUTE_OFFSET = p.getRightBackAbsoluteOffset();
+			LEFT_BACK_ABSOLUTE_OFFSET = p.getLeftBackAbsoluteOffset();
+			RIGHT_FRONT_ABSOLUTE_OFFSET = p.getRightFrontAbsoluteOffset();
+			LEFT_FRONT_ABSOLUTE_OFFSET = p.getLeftFrontAbsoluteOffset();
+			CHASIS_LENGTH = p.getChassisLength();
+			CHASIS_WIDTH = p.getChassisWidth();
 		}
+		sc = new SwerveCalculator(CHASIS_WIDTH, CHASIS_LENGTH, MAX_VELOCITY_IN_PER_SEC);
+
+		SendableRegistry.addLW(leftFrontHomeEncoder, getName(), "left front home encoder");
+		SendableRegistry.addLW(rightFrontHomeEncoder, getName(), "right front home encoder");
+		SendableRegistry.addLW(leftBackHomeEncoder, getName(), "left back home encoder");
+		SendableRegistry.addLW(rightBackHomeEncoder, getName(), "right back home encoder");
 
 		if (rightFrontDriveMaster != null) {
+			SendableRegistry.addLW(rightFrontDriveMaster, getName(), "right front drive");
+			SendableRegistry.addLW(leftFrontDriveMaster, getName(), "left front drive");
+			SendableRegistry.addLW(leftBackDriveMaster, getName(), "left back drive");
+			SendableRegistry.addLW(rightBackDriveMaster, getName(), "right back drive");
+			SendableRegistry.addLW(rightFrontAzimuth, getName(), "right front azimuth");
+			SendableRegistry.addLW(leftFrontAzimuth, getName(), "left front azimuth");
+			SendableRegistry.addLW(leftBackAzimuth, getName(), "left back azimuth");
+			SendableRegistry.addLW(rightBackAzimuth, getName(), "right back azimuth");
+
 			rightFrontVelPID = rightFrontDriveMaster.getPIDController();
 			rightFrontPositionPID = rightFrontAzimuth.getPIDController();
 			leftFrontVelPID = leftFrontDriveMaster.getPIDController();
@@ -239,11 +256,15 @@ public class DriveSubsystem extends SubsystemBase {
 	public void periodic() {
 		SmartDashboard.putNumber("Conversion Factor", (WHEEL_TO_ENCODER_RATIO_VELOCITY*WHEEL_CIRCUMFERENCE)/60);
 
+		SmartDashboard.putNumber("Right Front Home Encoder", getHomeEncoderHeading(rightFrontHomeEncoder));
+		SmartDashboard.putNumber("Left Front Home Encoder", getHomeEncoderHeading(leftFrontHomeEncoder));
+		SmartDashboard.putNumber("Left Back Home Encoder", getHomeEncoderHeading(leftBackHomeEncoder));
+		SmartDashboard.putNumber("Right Back Home Encoder", getHomeEncoderHeading(rightBackHomeEncoder));
+
 		if (rightFrontDriveEncoder != null) {
 			SmartDashboard.putNumber("Right Front Velocity", rightFrontDriveEncoder.getVelocity());
 			SmartDashboard.putNumber("Right Front Azimuth", rightFrontAzimuthEncoder.getPosition());
 			SmartDashboard.putNumber("Right Front Azimuth fixed", getFixedPosition(rightFrontAzimuthEncoder));
-			SmartDashboard.putNumber("Right Front Home Encoder", getHomeEncoderHeading(rightFrontHomeEncoder));
 			SmartDashboard.putNumber("Right Front Drive Current Draw", rightFrontDriveMaster.getOutputCurrent());
 			SmartDashboard.putNumber("Right Front Drive Voltage", rightFrontDriveMaster.getAppliedOutput());
 		}
@@ -251,7 +272,6 @@ public class DriveSubsystem extends SubsystemBase {
 			SmartDashboard.putNumber("Left Front Velocity", leftFrontDriveEncoder.getVelocity());
 			SmartDashboard.putNumber("Left Front Azimuth", leftFrontAzimuthEncoder.getPosition());
 			SmartDashboard.putNumber("Left Front Azimuth fixed", getFixedPosition(leftFrontAzimuthEncoder));
-			SmartDashboard.putNumber("Left Front Home Encoder", getHomeEncoderHeading(leftFrontHomeEncoder));
 			SmartDashboard.putNumber("Left Front Drive Current Draw", leftFrontDriveMaster.getOutputCurrent());
 			SmartDashboard.putNumber("Left Front Drive Voltage", leftFrontDriveMaster.getAppliedOutput());
 		}
@@ -259,24 +279,19 @@ public class DriveSubsystem extends SubsystemBase {
 			SmartDashboard.putNumber("Left Back Velocity", leftBackDriveEncoder.getVelocity());
 			SmartDashboard.putNumber("Left Back Azimuth", leftBackAzimuthEncoder.getPosition());
 			SmartDashboard.putNumber("Left Back Azimuth fixed", getFixedPosition(leftBackAzimuthEncoder));
-			SmartDashboard.putNumber("Left Back Home Encoder", getHomeEncoderHeading(leftBackHomeEncoder));
 			SmartDashboard.putNumber("Left Back Drive Current Draw", leftBackDriveMaster.getOutputCurrent());
-
+			SmartDashboard.putNumber("Left Back Drive Voltage", leftBackDriveMaster.getAppliedOutput());
 		}
 		if (rightBackDriveEncoder != null) {
 			SmartDashboard.putNumber("Right Back Velocity", rightBackDriveEncoder.getVelocity());
 			SmartDashboard.putNumber("Right Back Azimuth", rightBackAzimuthEncoder.getPosition());
 			SmartDashboard.putNumber("Right Back Azimuth fixed", getFixedPosition(rightBackAzimuthEncoder));
-			SmartDashboard.putNumber("Right Back Home Encoder", getHomeEncoderHeading(rightBackHomeEncoder));
 			SmartDashboard.putNumber("Right Back Drive Current Draw", rightBackDriveMaster.getOutputCurrent());
-			SmartDashboard.putNumber("Right Back Drive Motor Position", rightBackDriveEncoder.getPosition());
+			SmartDashboard.putNumber("Right Back Drive Voltage", rightBackDriveMaster.getAppliedOutput());
 		}
 
 		if (rightFrontDriveMaster  != null) {
-			updateVelocityPID(rightFrontVelPID);
-			updateVelocityPID(leftFrontVelPID);
-			updateVelocityPID(leftBackVelPID);
-			updateVelocityPID(rightBackVelPID);
+			updateVelocityPIDs(rightFrontVelPID, leftFrontVelPID, leftBackVelPID, rightBackVelPID);
 		}
 
 		drivePIDTuning = SmartDashboard.getBoolean("Are We Tuning Drive PID?", false);
@@ -307,15 +322,13 @@ public class DriveSubsystem extends SubsystemBase {
 		SmartDashboard.putNumber("NavX heading", currentHeading);
 		SmartDashboard.putNumber("spin power", spinPower);
 
+		SmartDashboard.putBoolean("drive.autoSpinMode", autoSpinMode);
 		SmartDashboard.putBoolean("drive.field.relative", fieldRelative);
 
 		SmartDashboard.putNumber("driver.joy.x", RobotContainer.getDriveHorizontalJoystick());
 		SmartDashboard.putNumber("driver.joy.y", RobotContainer.getDriveVerticalJoystick());
 		SmartDashboard.putNumber("driver.joy.spin", RobotContainer.getDriveSpinJoystick());	
-		SmartDashboard.putNumber("driver.joy.c", joystick_count++);
 	}
-
-	int joystick_count = 0;
 
   	public void periodicManualSpinMode(){
 		setTargetHeading(currentHeading);
@@ -391,8 +404,8 @@ public class DriveSubsystem extends SubsystemBase {
 			leftBackPositionPID.setReference(newVectors.leftBack.getDirection(), ControlType.kPosition);
 			rightBackPositionPID.setReference(newVectors.rightBack.getDirection(), ControlType.kPosition);
 		}
-		SmartDashboard.putNumber("Commanded Azimuth Left Back", newVectors.leftBack.getDirection());
-			//SmartDashboard.putBoolean("Change Test Heading", false);
+		//SmartDashboard.putNumber("Commanded Azimuth Left Back", newVectors.leftBack.getDirection());
+		//SmartDashboard.putBoolean("Change Test Heading", false);
 	}
 
 	/**
@@ -411,9 +424,6 @@ public class DriveSubsystem extends SubsystemBase {
 	DriveVectors calculateEverything (double vx, double vy, double vr, boolean doFieldRelative) {
 		double strafeVectorAngle = SwerveCalculator.calculateStrafeAngle(vx, vy);
 		double strafeVectorMagnitude = SwerveCalculator.calculateStrafeVectorMagnitude(vx, vy);
-		SmartDashboard.putNumber("drive.vx", vx);
-		SmartDashboard.putNumber("drive.vy", vy);
-		SmartDashboard.putNumber("drive.strafeVectorAngle", strafeVectorAngle);
 		if (doFieldRelative) {
 			double robotHeading = getNavXFixedAngle();
 			 //get NavX heading in degrees (from -180 to 180)
@@ -422,8 +432,13 @@ public class DriveSubsystem extends SubsystemBase {
 			// not sure this is wise!
 			strafeVectorAngle = SwerveCalculator.normalizeAngle(strafeVectorAngle);
 		}
-		SmartDashboard.putNumber("drive.strafeVectorAngle+correction", strafeVectorAngle);
-		SmartDashboard.putNumber("drive.strafeVectorMagnitude", strafeVectorMagnitude);
+		if (putDriveVectorsInNetworkTables) {
+			SmartDashboard.putNumber("drive.vx", vx);
+			SmartDashboard.putNumber("drive.vy", vy);
+			SmartDashboard.putNumber("drive.strafeVectorAngle", strafeVectorAngle);
+			SmartDashboard.putNumber("drive.strafeVectorAngle+correction", strafeVectorAngle);
+			SmartDashboard.putNumber("drive.strafeVectorMagnitude", strafeVectorMagnitude);
+		}
 
 		return sc.calculateEverythingFromVector(strafeVectorAngle, strafeVectorMagnitude, vr);
 	}
@@ -434,16 +449,16 @@ public class DriveSubsystem extends SubsystemBase {
 		double vr = spinX*MAX_TURN;
 
 		DriveVectors newVectors = calculateEverything(vx, vy, vr);
-
-		//SmartDashboard.putNumber("Left Front Calculated Vectors", newVectors.leftBack.getDirection());
-		//System.out.println("Left Front Calculated Vectors: " + newVectors.leftBack.getDirection());
+		if (putDriveVectorsInNetworkTables) {
+			SmartDashboard.putString("drive.teleop.dv.pre", newVectors.toString());
+		}
 
 		DriveVectors currentDirections = getCurrentVectors();
 
-		//SmartDashboard.putNumber("Left Front Current Vectors", currentDirections.leftBack.getDirection());
-		//System.out.println("Left Front Current Vectors: " + currentDirections.leftBack.getDirection());
-
 		newVectors = SwerveCalculator.fixVectors(newVectors, currentDirections);
+		if (putDriveVectorsInNetworkTables) {
+			SmartDashboard.putString("drive.teleop.dv.post", newVectors.toString());
+		}
 
 		if (rightFrontDriveMaster != null) {
 			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
@@ -516,10 +531,16 @@ public class DriveSubsystem extends SubsystemBase {
 	 */
 	public void autoDrive(double heading, double speed, double spin) {
 		DriveVectors newVectors = sc.calculateEverythingFromVector(heading, MAX_VELOCITY_IN_PER_SEC*speed, spin*MAX_TURN);
+		if (putDriveVectorsInNetworkTables) {
+			SmartDashboard.putString("drive.auto.dv.pre", newVectors.toString());
+		}
 
 		DriveVectors currentDirections = getCurrentVectors();
 
-		newVectors = SwerveCalculator.fixVectors(newVectors, currentDirections);
+		newVectors = SwerveCalculator.fixVectors(newVectors, currentDirections, 0);
+		if (putDriveVectorsInNetworkTables) {
+			SmartDashboard.putString("drive.auto.dv.post", newVectors.toString());
+		}
 
 		if (rightFrontDriveMaster != null) {
 			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
@@ -534,8 +555,13 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 	}
 
-	public void setWheelsToStrafe(double strafeAngle){            // degrees are from -180 to 180 degrees with 0 degrees pointing east
-		double vx = Math.cos(Math.toRadians(strafeAngle))*MAX_VELOCITY_IN_PER_SEC;  //both spin and speed are set as a decimal from 0 to 1 that represents the percentage of the maximum strafe or turn speed
+	/**
+	 * Set the wheels to point in a direction to strafe, but do not move the robot.
+	 * @param strafeAngle degrees are from -180 to 180 degrees with 0 degrees pointing to the robot's right
+	 */
+	public void setWheelsToStrafe(double strafeAngle){
+		// need to have non-zero velocity so that fixVectors actually changes azimuth
+		double vx = Math.cos(Math.toRadians(strafeAngle))*MAX_VELOCITY_IN_PER_SEC;
 		double vy = Math.sin(Math.toRadians(strafeAngle))*MAX_VELOCITY_IN_PER_SEC;
 		double vr = 0;
 
@@ -573,7 +599,7 @@ public class DriveSubsystem extends SubsystemBase {
 		 
 		DriveVectors newVectors = new DriveVectors();
 
-		// need to have non-zero velocity so that fixVectors actual changes azimuth.
+		// need to have non-zero velocity so that fixVectors actually changes azimuth.
 		newVectors.leftFront = new Vector (leftFrontAngle, turnSpeed);
 		newVectors.rightFront = new Vector(rightFrontAngle, turnSpeed);
 		newVectors.leftBack = new Vector(leftBackAngle, turnSpeed);  // we will fix the velocity for rear below
@@ -588,7 +614,7 @@ public class DriveSubsystem extends SubsystemBase {
 			rightBackPositionPID.setReference(newVectors.rightBack.getDirection(), ControlType.kPosition);
 			
 			rightFrontVelPID.setReference(newVectors.rightFront.getMagnitude(), ControlType.kVelocity);
-			leftFrontVelPID.setReference(0, ControlType.kVelocity);
+			leftFrontVelPID.setReference(newVectors.leftFront.getMagnitude(), ControlType.kVelocity);
 			leftBackVelPID.setReference(0, ControlType.kVelocity);
 			rightBackVelPID.setReference(0, ControlType.kVelocity);
 		}
@@ -616,8 +642,8 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 	}
 
-	public void updateVelocityPID(SparkMaxPIDController pidController) {
-		if (pidController != null) {
+	public void updateVelocityPIDs(SparkMaxPIDController... pidControllers) {
+		if (pidControllers[0] != null) {
 			double p = SmartDashboard.getNumber("P Gain Velocity", kVelocityP);
 			double i = SmartDashboard.getNumber("I Gain Velocity", kVelocityI);
 			double d = SmartDashboard.getNumber("D Gain Velocity", kVelocityD);
@@ -627,29 +653,39 @@ public class DriveSubsystem extends SubsystemBase {
 			double min = SmartDashboard.getNumber("Min Output Velocity", kVelocityMinOutput);
 
 			if((p != kVelocityP)) {
-				pidController.setP(p);
+				for (SparkMaxPIDController pidController: pidControllers) {
+					pidController.setP(p);
+				}
 				kVelocityP = p;	
-				//System.out.println("Updated P value");
-				//System.out.println(pidController.getP());
 			}
 			if((i != kVelocityI)) {
-				pidController.setI(i);
+				for (SparkMaxPIDController pidController: pidControllers) {
+					pidController.setI(i);
+				}
 				kVelocityI = i;	
 			}
 			if((d != kVelocityD)) {
-				pidController.setD(d);
+				for (SparkMaxPIDController pidController: pidControllers) {
+					pidController.setD(d);
+				}
 				kVelocityD = d;	
 			}
 			if((iz != kVelocityIz)) {
-				pidController.setIZone(iz);
+				for (SparkMaxPIDController pidController: pidControllers) {
+					pidController.setIZone(iz);
+				}
 				kVelocityIz = iz;	
 			}
 			if((ff != kVelocityFF)) {
-				pidController.setFF(ff);
+				for (SparkMaxPIDController pidController: pidControllers) {
+					pidController.setFF(ff);
+				}
 				kVelocityFF = ff;	
 			}
 			if((max != kVelocityMaxOutput) || (min != kVelocityMinOutput)) {
-				pidController.setOutputRange(min, max);
+				for (SparkMaxPIDController pidController: pidControllers) {
+					pidController.setOutputRange(min, max);
+				}
 				kVelocityMaxOutput = max;	
 				kVelocityMinOutput = min;	
 			}
@@ -657,7 +693,6 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public void updatePositionPID(SparkMaxPIDController pidController) {
-
 		double p = SmartDashboard.getNumber("P Position Gain", 0);
     	double i = SmartDashboard.getNumber("I Position Gain", 0);
     	double d = SmartDashboard.getNumber("D Position Gain", 0);
@@ -720,6 +755,7 @@ public class DriveSubsystem extends SubsystemBase {
 			rightBackAzimuthEncoder.setPosition(getHomeEncoderHeading(rightBackHomeEncoder) - RIGHT_BACK_ABSOLUTE_OFFSET);
 		}
 	}
+
 	public double getFixedPosition(RelativeEncoder encoder){
   		if (encoder != null) {
 			double azimuth = encoder.getPosition();
@@ -796,7 +832,7 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public double getNavXAbsoluteAngle(){ //returns raw degrees, can accumulate past 360 or -360 degrees 
-		double angle =ahrs.getAngle();
+		double angle = ahrs.getAngle();
 		return angle;
 	}
 	
@@ -904,7 +940,7 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public void setManualSpinMode() {
-        if (autoSpinMode){
+        if (logSpinTransitions && autoSpinMode){
            logger.info("Switching to Manual Spin Mode");
         }
         autoSpinMode = false;
@@ -917,7 +953,7 @@ public class DriveSubsystem extends SubsystemBase {
 		targetHeading = angle;
 	}
 	public void setAutoSpinMode() {
-        if (!autoSpinMode){
+        if (logSpinTransitions && !autoSpinMode){
            logger.info("Switching to Auto Spin Mode");
         }
         autoSpinMode = true;
@@ -974,7 +1010,7 @@ public class DriveSubsystem extends SubsystemBase {
 		setOneDriveClosedLoopRampRate(rightBackDriveMaster, secondsToFullThrottle, null);
 	}
 
-	private void setOneDriveIdle (CANSparkMax d, IdleMode idleMode, String name) {
+	private void setOneDriveIdle (CANSparkMax d, IdleMode idleMode) {
 		if (d != null) {
 			d.setIdleMode(idleMode);
 		}
@@ -982,18 +1018,18 @@ public class DriveSubsystem extends SubsystemBase {
 
 	public void setDriveToBrake() {
 		IdleMode idleMode = IdleMode.kBrake;
-		setOneDriveIdle(leftFrontDriveMaster, idleMode, "LF");
-		setOneDriveIdle(rightFrontDriveMaster, idleMode, "RF");
-		setOneDriveIdle(leftBackDriveMaster, idleMode, "LB");
-		setOneDriveIdle(rightBackDriveMaster, idleMode, "RB");
+		setOneDriveIdle(leftFrontDriveMaster, idleMode);
+		setOneDriveIdle(rightFrontDriveMaster, idleMode);
+		setOneDriveIdle(leftBackDriveMaster, idleMode);
+		setOneDriveIdle(rightBackDriveMaster, idleMode);
 	}
 
 	public void setDriveToCoast() {
 		IdleMode idleMode = IdleMode.kCoast;
-		setOneDriveIdle(leftFrontDriveMaster, idleMode, "LF");
-		setOneDriveIdle(rightFrontDriveMaster, idleMode, "RF");
-		setOneDriveIdle(leftBackDriveMaster, idleMode, "LB");
-		setOneDriveIdle(rightBackDriveMaster, idleMode, "RB");
+		setOneDriveIdle(leftFrontDriveMaster, idleMode);
+		setOneDriveIdle(rightFrontDriveMaster, idleMode);
+		setOneDriveIdle(leftBackDriveMaster, idleMode);
+		setOneDriveIdle(rightBackDriveMaster, idleMode);
 	}
 
 }

@@ -10,6 +10,11 @@ import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.hal.can.CANJNI;
 
+/**
+ * Class to find out which goodies are on the CAN bus. The important guts of this
+ * were provided by Omar at CTRE; see
+ * https://www.chiefdelphi.com/t/how-to-detect-missing-can-devices-from-java/147675/10
+ */
 public class CANDeviceFinder {
     static Logger logger = EventLogging.getLogger(CANDeviceFinder.class, Level.INFO);
 
@@ -48,20 +53,25 @@ public class CANDeviceFinder {
     }
 
     public boolean isPowerDistributionPresent() {
-        return isDevicePresent(CANDeviceType.CTRE_PDP, 0);
+        boolean rv = isDevicePresent(CANDeviceType.REV_PDH, 1);
+        if (!rv) rv = isDevicePresent(CANDeviceType.CTRE_PDP, 0);
+        return rv;
     }
 
     /**
      * 
-     * @return ArrayList of strings holding the names of devices we've found.
+     * @return Set of CANDeviceIDs of all the devices we've found.
      */
     public Set<CANDeviceId> getDeviceSet() {
         return deviceSet;
     }
 
     abstract class CanFinder {
+        // constructor should fill this with the IDs of the messages to look for.
         int[] ids;
         long[] ts0;
+
+        // pass2 will fill this with the IDs of messages from 'ids' that actually showed up
         Set<Integer> idsPresent = new TreeSet<>();
 
         void pass1() {
@@ -86,6 +96,7 @@ public class CANDeviceFinder {
             }
         }
 
+        // override this to process the idsPresent list
         abstract void report();
     }
 
@@ -192,11 +203,7 @@ public class CANDeviceFinder {
          */
         for (CANDeviceId canDeviceId: deviceSet) {
             CANDeviceType canDeviceType = canDeviceId.getDeviceType();
-            Set<Integer> deviceNumberSet = byDeviceType.get(canDeviceType);
-            if (deviceNumberSet == null) {
-                deviceNumberSet = new TreeSet<>();//NOPMD
-                byDeviceType.put(canDeviceType, deviceNumberSet);
-            }
+            Set<Integer> deviceNumberSet = byDeviceType.computeIfAbsent(canDeviceType, k -> new TreeSet<>());
             deviceNumberSet.add(canDeviceId.getDeviceNumber());
         }
     }

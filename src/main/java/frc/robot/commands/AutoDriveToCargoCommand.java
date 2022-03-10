@@ -8,12 +8,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
-public class AutoDriveCommandDONOTUSE extends CommandBase {
+public class AutoDriveToCargoCommand extends CommandBase {
 
     private DriveSubsystem driveSubsystem;
+    private VisionSubsystem visionSubsystem;
 
     private double initialPositionRightFront;
     private double initialPositionLeftFront;
@@ -24,19 +27,23 @@ public class AutoDriveCommandDONOTUSE extends CommandBase {
     private double desiredAngle;
     private double desiredHeading;
     private double pathSpeed;
+    private double targetX;
+    private double targetY;
 
     private Timer timer;
 
     private IAutonomousLogger autonomousLogger;
     private String legName;
 
-    public AutoDriveCommandDONOTUSE(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem) {
-        this(distance, strafeAngle, speed, heading, driveSubsystem, null, null);
+
+    public AutoDriveToCargoCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
+        this(distance, strafeAngle, speed, heading, driveSubsystem, visionSubsystem,null, null);
     }
 
-    public AutoDriveCommandDONOTUSE(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem, String legName, IAutonomousLogger autonomousLogger) {
+    public AutoDriveToCargoCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, String legName, IAutonomousLogger autonomousLogger) {
         this.driveSubsystem = driveSubsystem;
-        addRequirements(driveSubsystem);
+        this.visionSubsystem = visionSubsystem;
+        addRequirements(driveSubsystem, visionSubsystem);
 
         desiredDistance = distance;
         desiredAngle = strafeAngle;
@@ -56,6 +63,10 @@ public class AutoDriveCommandDONOTUSE extends CommandBase {
         initialPositionLeftFront = driveSubsystem.getDriveMotorPositionLeftFront();
         initialPositionRightBack = driveSubsystem.getDriveMotorPositionRightBack();
         initialPositionLeftBack = driveSubsystem.getDriveMotorPositionLeftBack();
+
+        //set targetX to -1 so we know if we didn't see a ball
+        targetX = -1;
+
         if (autonomousLogger != null) {
             if (legName == null) {
                 autonomousLogger.setLegName(getClass().getName());
@@ -77,7 +88,31 @@ public class AutoDriveCommandDONOTUSE extends CommandBase {
     @Override
     public void execute() {
         double spinX = driveSubsystem.getSpinPower();
-        driveSubsystem.autoDrive(desiredAngle, pathSpeed, spinX);
+
+        // change heading if robot sees ball
+        targetX = visionSubsystem.getBallXLocation();
+        targetY = visionSubsystem.getBallYLocation();
+        
+        if(targetX < 0){
+            //robot doesn't see ball, do original heading
+            double desiredAngleRelativeToRobot = desiredAngle - driveSubsystem.getNavXFixedAngle();
+            driveSubsystem.autoDrive(desiredAngleRelativeToRobot, pathSpeed, spinX);
+        }
+        else if(targetX > 1){
+            //should never happen, default to original heading
+            double desiredAngleRelativeToRobot = desiredAngle - driveSubsystem.getNavXFixedAngle();
+            driveSubsystem.autoDrive(desiredAngleRelativeToRobot, pathSpeed, spinX);
+        }
+        else{
+            //robot sees ball, adjust heading towards ball
+            double desiredAngleRelativeToRobot  = ((targetX - 0.5)/0.0825)*5;
+            driveSubsystem.autoDrive(desiredAngleRelativeToRobot, pathSpeed, spinX);
+            driveSubsystem.setTargetHeading(driveSubsystem.getNavXFixedAngle() + desiredAngleRelativeToRobot);
+        }
+
+        // need to correct for what direction we are heading
+        //double desiredAngleRelativeToRobot = desiredAngle - driveSubsystem.getNavXFixedAngle();
+        //driveSubsystem.autoDrive(desiredAngleRelativeToRobot, pathSpeed, spinX);
 
         double currentPositionRightFront = driveSubsystem.getDriveMotorPositionRightFront();
         double currentPositionLeftFront = driveSubsystem.getDriveMotorPositionLeftFront();
@@ -90,12 +125,20 @@ public class AutoDriveCommandDONOTUSE extends CommandBase {
         double distanceTravelledLeftBack = Math.abs(currentPositionLeftBack - initialPositionLeftBack);
 
         distanceTravelled = (distanceTravelledRightFront + distanceTravelledLeftFront + distanceTravelledRightBack + distanceTravelledLeftBack) / 4;
+        
+        if ((targetY >= 0.4) && (targetY <= 0.6)){
+            desiredDistance = distanceTravelled + (30 + ((0.6 - targetY)*1.45));
+        }
 
         if (autonomousLogger != null) {
           autonomousLogger.setCurrentDrivePositions(currentPositionLeftFront, currentPositionRightFront, currentPositionLeftBack, currentPositionRightBack);
           autonomousLogger.setElapsed(timer.get());
           autonomousLogger.doLog();
         }
+
+        SmartDashboard.putNumber("AutoDrive.desiredDistance", desiredDistance);
+
+
 
     }
 

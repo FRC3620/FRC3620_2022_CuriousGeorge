@@ -6,8 +6,8 @@ import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO
 
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2022.2.1"
-    id "com.gorylenko.gradle-git-properties" version "2.3.2"
+    id "edu.wpi.first.GradleRIO" version "2022.3.1"
+    id "com.gorylenko.gradle-git-properties" version "2.4.0"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -21,12 +21,16 @@ test {
         setFailOnNoMatchingTests(false)
 
         // run this if nothing else so only this runs
-        includeTestsMatching 'DummyTest'
+        // includeTestsMatching 'DummyTest'
 
-        includeTestsMatching 'SwerveCalcTest'
+        // includeTestsMatching 'SwerveCalcTest'
 
-        // includeTestsMatching 'ConfigurationTest.testMinifier'
-        // includeTestsMatching 'SillyTests'
+        // includeTestsMatching 'RobotParametersTest'
+        includeTestsMatching 'RobotParameters2022Test'
+
+        includeTestsMatching 'ShooterCalculatorTest'
+
+        includeTestsMatching 'HoodCalculatorTest'
     }
 }
 

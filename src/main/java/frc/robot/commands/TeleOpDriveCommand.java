@@ -50,6 +50,9 @@ public class TeleOpDriveCommand extends CommandBase {
     spinX = driveSubsystem.getSpinPower();
 
     driveSubsystem.teleOpDrive(strafeX, strafeY, spinX);
+
+
+    
   }
 
   // Called once the command ends or is interrupted.
