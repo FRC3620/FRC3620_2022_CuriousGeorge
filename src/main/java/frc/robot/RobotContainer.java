@@ -317,6 +317,7 @@ public class RobotContainer {
       resetTalonFXToKnownState(shooterSubsystemMainShooter1, InvertType.InvertMotorOutput);
     }
 
+
     if (shooterSubsystemMainShooter2 != null) {
       resetTalonFXToKnownState(shooterSubsystemMainShooter2, InvertType.OpposeMaster);
       shooterSubsystemMainShooter2.follow(shooterSubsystemMainShooter1);
@@ -426,6 +427,7 @@ public class RobotContainer {
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y).whenPressed(new GetSafeZoneReadyToShootCommnd());
 
     //Climber buttons
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER).whenPressed(new GetReadyToClimbCommand());
     //left interior
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_BACK).whenPressed(new ClimberTiltTestCommandOut());
     //right interior
@@ -453,7 +455,7 @@ public class RobotContainer {
     intakeArmButton.toggleWhenPressed(new IntakeArmCommand());
 
     // driver right trigger fires
-    new TriggerButton(driverJoystick, false).whenPressed(new ShootCommand());
+    new TriggerButton(driverJoystick, false).whenPressed(new PullTheTriggerCommand());
 
     JoystickButton ejectButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
     ejectButton.whileHeld(new EjectBallCommand());
@@ -472,21 +474,19 @@ public class RobotContainer {
   
     SmartDashboard.putData("TestAuto", new TestAuto(driveSubsystem));
     SmartDashboard.putData("AutoDriveToCargo Test", new DriveToCargoTestAuto(driveSubsystem, visionSubsystem));
-    SmartDashboard.putData("5 Ball Auto P", new FiveBallAuto(driveSubsystem, visionSubsystem));
-    SmartDashboard.putData("4 Ball Auto P", new FourBallAutoP(driveSubsystem, visionSubsystem));
-    SmartDashboard.putData("4 Ball Auto Q", new FourBallAutoQ(driveSubsystem, visionSubsystem));
-    SmartDashboard.putData("3 Ball Auto Q", new ThreeBallAutoQ(driveSubsystem,  visionSubsystem));
+    SmartDashboard.putData("5 Ball Auto P", new FiveBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    SmartDashboard.putData("4 Ball Auto P", new FourBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    SmartDashboard.putData("4 Ball Auto Q", new FourBallAutoQ(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    SmartDashboard.putData("4 Ball Auto R", new FourBallAutoR(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    SmartDashboard.putData("3 Ball Auto Q", new ThreeBallAutoQ(driveSubsystem,  visionSubsystem, turretSubsystem, intakeSubsystem));
 
     SmartDashboard.putData("Reset NavX", new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
-    SmartDashboard.putData("Find target",new FindTargetCommand(turretSubsystem, visionSubsystem));
-
 
     SmartDashboard.putData("Shooter Test Command", new ShooterTestCommand(shooterSubsystem));
 
     SmartDashboard.putData("Eject Ball", new EjectBallCommand());
     SmartDashboard.putData("Intake Ball", new IntakeOnCommand());
-    SmartDashboard.putData("preshooter with intake", new ShootCommand());
 
     SmartDashboard.putData("Climber Tilt Out", new ClimberTiltTestCommandOut());
     SmartDashboard.putData("Climber Tilt In", new ClimberTiltTestCommandIn());
@@ -502,20 +502,29 @@ public class RobotContainer {
 
     SmartDashboard.putData("Get ready to climb", new GetReadyToClimbCommand());
 
-    SmartDashboard.putData("Shoot", new ShootCommand());
+    SmartDashboard.putData("Shoot", new PullTheTriggerCommand());
+
+    SmartDashboard.putData("Send hood home", new HoodToHomeCommand());
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
   public void setupAutonomousCommands() {
     SmartDashboard.putData("Auto mode", chooser);
 
+    chooser.addOption("Doug Otto", new DougOtto(driveSubsystem, visionSubsystem, turretSubsystem));
     chooser.addOption("TestAuto", new TestAuto(driveSubsystem));
     chooser.addOption("AutoDriveToCargo Test", new DriveToCargoTestAuto(driveSubsystem, visionSubsystem));
-    chooser.addOption("5 Ball P Auto", new FiveBallAuto(driveSubsystem, visionSubsystem));
-    chooser.addOption("4 Ball P Auto", new FourBallAutoP(driveSubsystem, visionSubsystem));
-    chooser.addOption("4 Ball Q Auto", new FourBallAutoQ(driveSubsystem, visionSubsystem));
-    chooser.addOption("3 Ball Q Auto", new ThreeBallAutoQ(driveSubsystem, visionSubsystem));
+    chooser.addOption("5 Ball P Auto", new FiveBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("4 Ball P Auto", new FourBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("4 Ball Q Auto", new FourBallAutoQ(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("4 Ball R Auto", new FourBallAutoR(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("3 Ball P Auto", new ThreeBallAutoP(driveSubsystem, visionSubsystem,turretSubsystem, intakeSubsystem));
+    chooser.addOption("3 Ball Q Auto", new ThreeBallAutoQ(driveSubsystem, visionSubsystem,turretSubsystem, intakeSubsystem));
+    chooser.addOption("2 Ball P Auto", new TwoBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("2 Ball Q Auto", new TwoBallAutoQ(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("2 Ball R Auto", new TwoBallAutoR(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
   }
+  
   
   static double driverStrafeDeadzone = 0.1;
   public static double getDriveVerticalJoystick() {

@@ -26,6 +26,7 @@ public class ResetNavXCommand extends InstantCommand {
   // Called once when the command executes
   @Override
   public void initialize() {
+    m_DriveSubsystem.setNavXOffset(0);
     m_DriveSubsystem.resetNavX();
     m_DriveSubsystem.setTargetHeading(m_DriveSubsystem.getNavXFixedAngle());
   }

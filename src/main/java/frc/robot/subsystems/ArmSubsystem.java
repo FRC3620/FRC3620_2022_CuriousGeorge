@@ -18,10 +18,7 @@ public class ArmSubsystem extends SubsystemBase {
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
     if (climberArmTilt != null) {
-      logger.info("have climberArmTilt");
       SendableRegistry.addLW(climberArmTilt, getName(), "tilt");
-    } else {
-      logger.info("missing climberArmTilt");
     }
   }
 
@@ -32,13 +29,13 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void climberArmTiltIn() {
     if (climberArmTilt != null) { 
-      climberArmTilt.set(Value.kReverse);
+      climberArmTilt.set(Value.kForward);
     }
   }
 
   public void climberArmTiltOut() {
     if (climberArmTilt != null) { 
-      climberArmTilt.set(Value.kForward);
+      climberArmTilt.set(Value.kReverse);
     }
   }
 

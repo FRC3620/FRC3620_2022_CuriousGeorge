@@ -63,7 +63,7 @@ public class VisionSubsystem extends SubsystemBase {
       updateTargetInfoFromTargetJson(json);
     }
 
-    visionLight.set(true);
+    turnVisionLightOn();
 
     nt_target_json.addListener(new TargetJsonListener(), EntryListenerFlags.kUpdate | EntryListenerFlags.kImmediate | EntryListenerFlags.kNew);
   }
@@ -168,10 +168,14 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public void turnVisionLightOn() {
-    visionLight.set(true);
+    if (visionLight != null) {
+      visionLight.set(true);
+    }
   }
 
   public void turnVisionLightOff() {
-    visionLight.set(false);
+    if (visionLight != null) {
+      visionLight.set(false);
+    }
   }
 }

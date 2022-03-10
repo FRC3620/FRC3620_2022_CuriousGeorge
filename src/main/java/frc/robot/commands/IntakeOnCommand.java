@@ -22,7 +22,6 @@ public class IntakeOnCommand extends CommandBase {
   @Override
   public void initialize() {
     intakeArmSubsystem.extendIntakeArm();
-    intakeSubsystem.rememberPreviousCommand(this);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -33,7 +32,7 @@ public class IntakeOnCommand extends CommandBase {
 
   public void intakeBall() {
     intakeSubsystem.spinIntakeWheelBar(0.6);
-    intakeSubsystem.spinIntakeBelt(0.6);
+    intakeSubsystem.spinIntakeBelt(0.8);
   }
 
   // Called once the command ends or is interrupted.

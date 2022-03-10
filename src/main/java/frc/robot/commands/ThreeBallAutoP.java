@@ -15,10 +15,10 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-public class FourBallAutoP extends SequentialCommandGroup {
+public class ThreeBallAutoP extends SequentialCommandGroup {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
   
-  public FourBallAutoP(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem){
+  public ThreeBallAutoP(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem){
     addCommands(
       new setInitialNavXOffsetCommand(driveSubsystem, 90),
   
@@ -46,30 +46,29 @@ public class FourBallAutoP extends SequentialCommandGroup {
         
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new IntakeArmUpCommand(),
-          new AutoDriveCommand(144, 180, 0.5, 133, driveSubsystem)
+          new IntakeArmDownCommand(),
+          new AutoDriveCommand(12, 200, 0.5, 205, driveSubsystem),
+          new AutoDriveToCargoCommand(120, 200, 0.5, 225, driveSubsystem, visionSubsystem)
         ),
-        new IntakeOffCommand(intakeSubsystem)
-      ),
-
-      new IntakeArmDownCommand(), 
-
-      new ParallelDeadlineGroup(
-        new SequentialCommandGroup(
-          new AutoDriveCommand(108, 205, .5, 135, driveSubsystem),
-          new AutoDriveToCargoCommand(10, 135, .5, 135, driveSubsystem, visionSubsystem),
-          new WaitCommand(1)
-        ), 
         new IntakeOnCommand()
       ),
+
+      new MoveTurretCommand(turretSubsystem, 90),
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
           new AutoShootCommand(),
-          new PullTheTriggerCommand(),
           new PullTheTriggerCommand()
         ),
         new IntakeOffCommand(intakeSubsystem)
+      ),
+
+      new ParallelDeadlineGroup(
+        new SequentialCommandGroup(
+          new IntakeArmUpCommand()
+        ),
+        new IntakeOffCommand(intakeSubsystem),
+        new ShooterOffCommand()
       ),
 
       new LogCommand("All done")

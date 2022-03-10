@@ -65,10 +65,16 @@ public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    boolean rv = super.isFinished();
+    boolean ready = super.isFinished();
     if (! visionSubsystem.isTargetCentered()) {
-      rv = false;
+      ready = false;
+    } else {
+      pewPewData.put("vision.xdegrees", visionSubsystem.getTargetXDegrees());
+      double target_ylocation = visionSubsystem.getTargetYLocation();
+      pewPewData.put("vision.ylocation", target_ylocation);
+      pewPewData.put("vision.range", ShooterCalculator.calcDistanceFromHub(target_ylocation));
     }
-    return super.isFinished();
+    showReady(ready);
+    return ready;
   }
 }

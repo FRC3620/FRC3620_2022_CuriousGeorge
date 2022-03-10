@@ -34,7 +34,10 @@ import frc.robot.miscellaneous.Vector;
 public class DriveSubsystem extends SubsystemBase {
 
 	Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
-  
+
+	private boolean logSpinTransitions = false;
+	private boolean putDriveVectorsInNetworkTables = false;
+
     public final CANSparkMaxSendable rightFrontDriveMaster = RobotContainer.driveSubsystemRightFrontDrive;
 	public final CANSparkMaxSendable rightFrontAzimuth = RobotContainer.driveSubsystemRightFrontAzimuth;
 	public final RelativeEncoder rightFrontDriveEncoder = RobotContainer.driveSubsystemRightFrontDriveEncoder;
@@ -128,8 +131,6 @@ public class DriveSubsystem extends SubsystemBase {
 	private double spinPower;
 
 	private double NavXOffset = 0;
-
-	private boolean putDriveVectorsInNetworkTables = false;
 
 	//***********************************************************************************************************
 	//***********************************************************************************************************
@@ -939,7 +940,7 @@ public class DriveSubsystem extends SubsystemBase {
 	}
 
 	public void setManualSpinMode() {
-        if (autoSpinMode){
+        if (logSpinTransitions && autoSpinMode){
            logger.info("Switching to Manual Spin Mode");
         }
         autoSpinMode = false;
@@ -952,7 +953,7 @@ public class DriveSubsystem extends SubsystemBase {
 		targetHeading = angle;
 	}
 	public void setAutoSpinMode() {
-        if (!autoSpinMode){
+        if (logSpinTransitions && !autoSpinMode){
            logger.info("Switching to Auto Spin Mode");
         }
         autoSpinMode = true;

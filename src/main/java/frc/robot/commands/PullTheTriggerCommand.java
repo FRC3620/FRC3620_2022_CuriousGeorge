@@ -7,15 +7,17 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PreShooterSubsystem;
-public class ShootCommand extends CommandBase {
+public class PullTheTriggerCommand extends CommandBase {
   PreShooterSubsystem preShooterSubsystem = RobotContainer.preShooterSubsystem;
   IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
 
   Timer preshooterTimer = new Timer();
   boolean weAreDone = false;
-  public ShootCommand() {
+  public PullTheTriggerCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intakeSubsystem, preShooterSubsystem);
+
+    // do not require the intake!!!!!!!!
+    addRequirements(preShooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -29,13 +31,14 @@ public class ShootCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(preshooterTimer.get() < 1.0) {
+    if(preshooterTimer.get() < 0.5) {
         preShooterSubsystem.preshooterOn(1.0);
-        intakeSubsystem.spinIntakeBelt(0.0);
-        intakeSubsystem.spinIntakeWheelBar(0.0);
-    } else if (preshooterTimer.get() < 2.0) {
+        intakeSubsystem.overrideIntakeBeltForShooting(0.0);
+        intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);
+    } else if (preshooterTimer.get() < 1.0) {
         preShooterSubsystem.preshooterOff();
-        intakeSubsystem.spinIntakeBelt(0.4);
+        intakeSubsystem.overrideIntakeBeltForShooting(0.4);
+        intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);
     } else {
         weAreDone = true;
     }
@@ -46,8 +49,10 @@ public class ShootCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     if (!interrupted) {
-      intakeSubsystem.startPreviousCommand(this);
+      //intakeSubsystem.startPreviousCommand(this);
     }
+    intakeSubsystem.clearIntakeShootingOverrides();
+    preShooterSubsystem.preshooterOff();
   }
   
   // Returns true when the command should end.

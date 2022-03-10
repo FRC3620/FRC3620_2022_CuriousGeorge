@@ -5,6 +5,7 @@ import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
@@ -15,23 +16,29 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-public class FourBallAutoP extends SequentialCommandGroup {
+public class TwoBallAutoQ extends SequentialCommandGroup {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
   
-  public FourBallAutoP(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem){
+  public TwoBallAutoQ(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem){
     addCommands(
-      new setInitialNavXOffsetCommand(driveSubsystem, 90),
+      new setInitialNavXOffsetCommand(driveSubsystem, 153),
   
-      new MoveTurretCommand(turretSubsystem, 180), 
+      new MoveTurretCommand(turretSubsystem, 170), 
+
+      new LogCommand("Moved turret"),
   
       new IntakeArmDownCommand(), 
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new AutoDriveCommand(40, 90, .5, 90, driveSubsystem)
+          new LogCommand("Starting AutoDrive"),
+
+          new AutoDriveCommand(55, 153, .5, 153, driveSubsystem)
         ), 
         new IntakeOnCommand()
       ),
+
+      new LogCommand("Done with AutoDrive"),
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
@@ -47,29 +54,10 @@ public class FourBallAutoP extends SequentialCommandGroup {
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
           new IntakeArmUpCommand(),
-          new AutoDriveCommand(144, 180, 0.5, 133, driveSubsystem)
+          new AutoDriveCommand(3, 150, 0.5, 150, driveSubsystem)
         ),
-        new IntakeOffCommand(intakeSubsystem)
-      ),
-
-      new IntakeArmDownCommand(), 
-
-      new ParallelDeadlineGroup(
-        new SequentialCommandGroup(
-          new AutoDriveCommand(108, 205, .5, 135, driveSubsystem),
-          new AutoDriveToCargoCommand(10, 135, .5, 135, driveSubsystem, visionSubsystem),
-          new WaitCommand(1)
-        ), 
-        new IntakeOnCommand()
-      ),
-
-      new ParallelDeadlineGroup(
-        new SequentialCommandGroup(
-          new AutoShootCommand(),
-          new PullTheTriggerCommand(),
-          new PullTheTriggerCommand()
-        ),
-        new IntakeOffCommand(intakeSubsystem)
+        new IntakeOffCommand(intakeSubsystem),
+        new ShooterOffCommand()
       ),
 
       new LogCommand("All done")
