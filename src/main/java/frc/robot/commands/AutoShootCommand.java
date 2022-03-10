@@ -8,10 +8,6 @@ import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.ScheduleCommand;
-
 public class AutoShootCommand extends GetVisionReadyToShootCommand {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
@@ -37,6 +33,9 @@ public class AutoShootCommand extends GetVisionReadyToShootCommand {
   @Override
   public void end(boolean interrupted) {
     EventLogging.commandMessage(logger, interrupted);
+    if (!interrupted) {
+      logPewPewData();
+    }
   }
 
   // Returns true when the command should end.

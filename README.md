@@ -4,7 +4,8 @@
 * A - X Mode (not added yet)
 * X - Reset NavX
 * Y - Center on Ball
-* LB -  roller and belt (clockwise) [toggle]
+* LB - roller and belt (clockwise) [toggle]
+* RB - turn off drive [toggle]
 * RT - Fire
 * B - up and down arm [toggle]
 

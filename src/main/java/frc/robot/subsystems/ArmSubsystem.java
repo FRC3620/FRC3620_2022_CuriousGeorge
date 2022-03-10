@@ -18,10 +18,7 @@ public class ArmSubsystem extends SubsystemBase {
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
     if (climberArmTilt != null) {
-      logger.info("have climberArmTilt");
       SendableRegistry.addLW(climberArmTilt, getName(), "tilt");
-    } else {
-      logger.info("missing climberArmTilt");
     }
   }
 
