@@ -28,7 +28,7 @@ public class ThreeBallAutoP extends SequentialCommandGroup {
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new AutoDriveCommand(40, 90, .5, 90, driveSubsystem)
+          new AutoDriveCommand(40, 90, .6, 90, driveSubsystem)
         ), 
         new IntakeOnCommand()
       ),
@@ -47,13 +47,13 @@ public class ThreeBallAutoP extends SequentialCommandGroup {
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
           new IntakeArmDownCommand(),
-          new AutoDriveCommand(130, 200, 0.5, 205, driveSubsystem)
+          new AutoDriveCommand(130, 200, 0.6, 205, driveSubsystem)
           //new AutoDriveToCargoCommand(120, 200, 0.5, 225, driveSubsystem, visionSubsystem)
         ),
         new IntakeOnCommand()
       ),
 
-      new MoveTurretCommand(turretSubsystem, 90),
+      new MoveTurretCommand(turretSubsystem, 100),
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
