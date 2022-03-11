@@ -17,7 +17,7 @@ public class GetSafeZoneReadyToShootCommnd extends GetReadyToShootCommand {
   public void initialize() {
     super.initialize();
     shooterSubsystem.setMainRPM(1920);
-    shooterSubsystem.setBackRPM(120);
+    shooterSubsystem.setBackRPM(1760);
     shooterSubsystem.setHoodPositionToDegrees(57.5);
     turretSubsystem.setTurretPosition(180);
   }

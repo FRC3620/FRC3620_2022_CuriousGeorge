@@ -17,7 +17,7 @@ public class GetTarmacReadyToShootCommand extends GetReadyToShootCommand {
   public void initialize() {
     super.initialize();
     shooterSubsystem.setMainRPM(1700);
-    shooterSubsystem.setBackRPM(120);
+    shooterSubsystem.setBackRPM(1466);
     shooterSubsystem.setHoodPositionToDegrees(65);
     turretSubsystem.setTurretPosition(180);
   }
