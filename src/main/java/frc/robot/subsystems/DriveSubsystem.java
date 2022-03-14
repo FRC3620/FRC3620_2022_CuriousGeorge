@@ -19,6 +19,7 @@ import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,6 +31,7 @@ import frc.robot.miscellaneous.CANSparkMaxSendable;
 import frc.robot.miscellaneous.DriveVectors;
 import frc.robot.miscellaneous.SwerveCalculator;
 import frc.robot.miscellaneous.Vector;
+import frc.robot.subsystems.NavigationSubsystem.PositionEstimate;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -319,6 +321,7 @@ public class DriveSubsystem extends SubsystemBase {
 			periodicAutoSpinMode();
 		}
 		SmartDashboard.putNumber("Target Heading", targetHeading);
+		SmartDashboard.putNumber("NavX heading (raw)", getNavXAbsoluteAngle());
 		SmartDashboard.putNumber("NavX heading", currentHeading);
 		SmartDashboard.putNumber("spin power", spinPower);
 
@@ -806,8 +809,19 @@ public class DriveSubsystem extends SubsystemBase {
 		return azimuth;
 	}
 
+	double timeWhenNavXDisplacementReset = Timer.getFPGATimestamp();
+	public void resetNavXDisplacement() {
+		ahrs.resetDisplacement();
+		timeWhenNavXDisplacementReset = Timer.getFPGATimestamp();
+	}
+  
 	public void setNavXOffset(double offsetAngle){
-		NavXOffset = offsetAngle;
+		//NavXOffset = offsetAngle;
+		ahrs.setAngleAdjustment(offsetAngle);
+	}
+
+	public PositionEstimate getNavXDisplacement() {
+		return new PositionEstimate(ahrs.getDisplacementX(), ahrs.getDisplacementY(), ahrs.getDisplacementZ(), timeWhenNavXDisplacementReset);
 	}
 
 	public double getNavXOffset(){

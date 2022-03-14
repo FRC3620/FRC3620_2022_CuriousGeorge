@@ -130,6 +130,7 @@ public class RobotContainer {
   public static ShooterSubsystem shooterSubsystem;
   public static ArmSubsystem armSubsystem;
   public static PreShooterSubsystem preShooterSubsystem;
+  public static NavigationSubsystem navigationSubsystem;
   
   public static RumbleSubsystem operatorRumbleSubsystem;
   public static RumbleSubsystem driverRumbleSubsystem;
@@ -400,6 +401,7 @@ public class RobotContainer {
     preShooterSubsystem = new PreShooterSubsystem();
     operatorRumbleSubsystem = new RumbleSubsystem(1);
     driverRumbleSubsystem = new RumbleSubsystem(0);
+    navigationSubsystem = new NavigationSubsystem();
   }
 
   /**
@@ -505,6 +507,9 @@ public class RobotContainer {
     SmartDashboard.putData("Shoot", new PullTheTriggerCommand());
 
     SmartDashboard.putData("Send hood home", new HoodToHomeCommand());
+
+    SmartDashboard.putData("Doug Navigation Test", new DougNavigationTest(driveSubsystem, visionSubsystem, turretSubsystem));
+    SmartDashboard.putData("Reset NavX position", new ResetNavXPositionCommand());
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
