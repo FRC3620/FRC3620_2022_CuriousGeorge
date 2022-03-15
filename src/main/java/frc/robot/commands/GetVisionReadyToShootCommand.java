@@ -6,8 +6,8 @@ package frc.robot.commands;
 
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.ShooterDecider;
 import frc.robot.miscellaneous.ShooterCalculator;
 import frc.robot.subsystems.VisionSubsystem;
 
@@ -42,24 +42,23 @@ public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
   public void setUpStuffToShoot(){
     double currentTurretPosition = turretSubsystem.getCurrentTurretPosition();
     if (visionSubsystem.isTargetFound()){
-      double spinTurretDegrees = visionSubsystem.getTargetXDegrees();
-      double targetx = spinTurretDegrees + currentTurretPosition;
-      turretSubsystem.setTurretPosition(targetx);
+      double targetXDegrees = visionSubsystem.getTargetXDegrees();
+      double newTurretPosition = targetXDegrees + currentTurretPosition;
+      turretSubsystem.setTurretPosition(newTurretPosition);
 
-      double targetDistance = ShooterCalculator.calcDistanceFromHub(visionSubsystem.getTargetYLocation());
+      double targetYLocation = visionSubsystem.getTargetYLocation();
+      double targetDistance = ShooterCalculator.calcDistanceFromHub(targetYLocation);
       double targetRPM = ShooterCalculator.calcMainRPM(targetDistance);
       double targetHood = ShooterCalculator.calcHoodPosition(targetDistance);
 
       shooterSubsystem.setMainRPM(targetRPM);
       shooterSubsystem.setBackRPM(ShooterCalculator.calculateBackspinRPM(targetRPM));
       shooterSubsystem.setHoodPositionToDegrees(targetHood);
-    }
-  }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    super.end(interrupted);
+      pewPewData.fillInVisionXDegress(targetXDegrees);
+      pewPewData.fillInVisionYLocation(targetYLocation);
+      pewPewData.fillInVisionDistance(targetDistance);
+    }
   }
 
   // Returns true when the command should end.
@@ -68,13 +67,8 @@ public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
     boolean ready = super.isFinished();
     if (! visionSubsystem.isTargetCentered()) {
       ready = false;
-    } else {
-      pewPewData.put("vision.xdegrees", visionSubsystem.getTargetXDegrees());
-      double target_ylocation = visionSubsystem.getTargetYLocation();
-      pewPewData.put("vision.ylocation", target_ylocation);
-      pewPewData.put("vision.range", ShooterCalculator.calcDistanceFromHub(target_ylocation));
     }
-    showReady(ready);
+    ShooterDecider.showReady(ready);
     return ready;
   }
 }

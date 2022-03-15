@@ -5,14 +5,23 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.ShooterDecider;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PreShooterSubsystem;
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+
 public class PullTheTriggerCommand extends CommandBase {
+  Logger logger = EventLogging.getLogger(getClass(), EventLogging.Level.INFO);
+
   PreShooterSubsystem preShooterSubsystem = RobotContainer.preShooterSubsystem;
   IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
 
   Timer preshooterTimer = new Timer();
   boolean weAreDone = false;
+
+  ShooterDecider.PewPewData pewPewData = new ShooterDecider.PewPewData();
+
   public PullTheTriggerCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
 
@@ -26,6 +35,13 @@ public class PullTheTriggerCommand extends CommandBase {
     preshooterTimer.reset();
     preshooterTimer.start();
     weAreDone = false;
+
+    pewPewData.clear();
+    ShooterDecider.isShooterUpToSpeed(pewPewData);
+    ShooterDecider.isHoodInPosition(pewPewData);
+    ShooterDecider.isTurretInPosition(pewPewData);
+    pewPewData.fillInVisionData();
+    ShooterDecider.logPewPewData(logger, "doing", pewPewData);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

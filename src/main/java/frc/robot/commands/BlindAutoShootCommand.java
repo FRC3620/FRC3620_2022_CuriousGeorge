@@ -23,7 +23,12 @@ public class BlindAutoShootCommand extends GetVisionReadyToShootCommand {
     super.execute();
   }
 
-  // Called once the command ends or is interrupted.
+
+  /**
+   * The end() method in GetReadyToShootVision will rumble the joysticks.
+   * We don't want that, so we override.
+   * @param interrupted
+   */
   @Override
   public void end(boolean interrupted) {
     EventLogging.commandMessage(logger, interrupted);
