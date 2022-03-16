@@ -46,7 +46,7 @@ public class TurretSubsystem extends SubsystemBase {
       turretPID.setD(30);    //30
       turretPID.setFF(0.0);      //0.0
 
-      turretPID.setOutputRange(-0.60, 0.60);
+      turretPID.setOutputRange(-0.95, 0.95);
     }
 
     if (turretEncoder != null) {
