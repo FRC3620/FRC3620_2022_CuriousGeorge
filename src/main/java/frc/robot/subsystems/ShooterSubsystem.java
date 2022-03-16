@@ -114,7 +114,7 @@ public class ShooterSubsystem extends SubsystemBase {
       anglePID.setP(hoodP);
       anglePID.setI(hoodI);
       anglePID.setD(hoodD);
-      anglePID.setOutputRange(-0.25, 0.25); //TODO Set back to 0.5 after testing
+      anglePID.setOutputRange(-0.75, 0.75); //TODO Set back to 0.5 after testing
     }
 
     //Load "cargo.desireRPM" value in SmartDashboard
