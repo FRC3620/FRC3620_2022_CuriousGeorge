@@ -46,6 +46,8 @@ import frc.robot.subsystems.RumbleSubsystem.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
+import java.util.Set;
+
 /**
  * 
  * @version 11 February 2020
@@ -170,29 +172,36 @@ public class RobotContainer {
       
     // we don't *need* to use the canDeviceFinder for CAN Talons because
     // they do not put up unreasonable amounts of SPAM
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1, "Swerve") || shouldMakeAllCANDevices){
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1, "Swerve RF Drive") || shouldMakeAllCANDevices){
 
       driveSubsystemRightFrontDrive = new CANSparkMaxSendable(1, MotorType.kBrushless);
       driveSubsystemRightFrontDriveEncoder = driveSubsystemRightFrontDrive.getEncoder();
-      
+
+      canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 2, "Swerve RF Azimuth");
       driveSubsystemRightFrontAzimuth = new CANSparkMaxSendable(2, MotorType.kBrushless);
       driveSubsystemRightFrontAzimuthEncoder = driveSubsystemRightFrontAzimuth.getEncoder();
 
+      canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 3, "Swerve LF Drive");
       driveSubsystemLeftFrontDrive = new CANSparkMaxSendable(3, MotorType.kBrushless);
       driveSubsystemLeftFrontDriveEncoder = driveSubsystemLeftFrontDrive.getEncoder();
-              
+
+      canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 4, "Swerve LF Azimuth");
       driveSubsystemLeftFrontAzimuth = new CANSparkMaxSendable(4, MotorType.kBrushless);
       driveSubsystemLeftFrontAzimuthEncoder = driveSubsystemLeftFrontAzimuth.getEncoder();
 
+      canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 5, "Swerve LB Drive");
       driveSubsystemLeftBackDrive = new CANSparkMaxSendable(5, MotorType.kBrushless);
       driveSubsystemLeftBackDriveEncoder = driveSubsystemLeftBackDrive.getEncoder();
-              
+
+      canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 6, "Swerve LB Azimuth");
       driveSubsystemLeftBackAzimuth = new CANSparkMaxSendable(6, MotorType.kBrushless);
       driveSubsystemLeftBackAzimuthEncoder = driveSubsystemLeftBackAzimuth.getEncoder();
 
+      canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 7, "Swerve RB Drive");
       driveSubsystemRightBackDrive = new CANSparkMaxSendable(7, MotorType.kBrushless);
       driveSubsystemRightBackDriveEncoder = driveSubsystemRightBackDrive.getEncoder();
-      
+
+      canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 8, "Swerve RB Azimuth");
       driveSubsystemRightBackAzimuth = new CANSparkMaxSendable(8, MotorType.kBrushless);
       driveSubsystemRightBackAzimuthEncoder = driveSubsystemRightBackAzimuth.getEncoder();
     }
@@ -281,6 +290,14 @@ public class RobotContainer {
       if (robotParameters.hasIntake()){
         intakeArm = new DoubleSolenoid(pneumaticModuleType, 2, 3);
       }
+    }
+
+    Set<CANDeviceFinder.NamedCANDevice> missingDevices = canDeviceFinder.getMissingDeviceSet();
+    if (missingDevices.size() > 0) {
+      SmartDashboard.putBoolean("can.ok", false);
+      SmartDashboard.putString("can.missing", missingDevices.toString());
+    } else {
+      SmartDashboard.putBoolean("can.ok", true);
     }
   }
   
