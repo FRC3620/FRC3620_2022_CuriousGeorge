@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.RobotController;
 
 public class RobotDataLogger {
 	PowerDistribution powerDistribution = null;
+	private final boolean logDriveMotorCurrent = true;
 
 	public RobotDataLogger (DataLogger dataLogger, CANDeviceFinder canDeviceFinder) {
 		dataLogger.addDataProvider("matchTime", () -> DataLogger.f2(DriverStation.getMatchTime()));
@@ -53,6 +54,17 @@ public class RobotDataLogger {
 			dataLogger.addDataProvider("drive.lb.az.encoder", () -> DataLogger.f2(RobotContainer.driveSubsystemLeftBackAzimuthEncoder.getPosition()));
 			dataLogger.addDataProvider("drive.rb.az.home_encoder", () -> DataLogger.f2(RobotContainer.driveSubsystemRightBackHomeEncoder.getVoltage()));
 			dataLogger.addDataProvider("drive.rb.az.encoder", () -> DataLogger.f2(RobotContainer.driveSubsystemRightBackAzimuthEncoder.getPosition()));
+
+			if (logDriveMotorCurrent) {
+				dataLogger.addDataProvider("drive.lf.drive_power", () -> DataLogger.f2(RobotContainer.driveSubsystemLeftFrontDrive.getAppliedOutput()));
+				dataLogger.addDataProvider("drive.rf.drive_power", () -> DataLogger.f2(RobotContainer.driveSubsystemRightFrontDrive.getAppliedOutput()));
+				dataLogger.addDataProvider("drive.lb.drive_power", () -> DataLogger.f2(RobotContainer.driveSubsystemLeftBackDrive.getAppliedOutput()));
+				dataLogger.addDataProvider("drive.rb.drive_power", () -> DataLogger.f2(RobotContainer.driveSubsystemRightBackDrive.getAppliedOutput()));
+				dataLogger.addDataProvider("drive.lf.drive_current", () -> DataLogger.f2(RobotContainer.driveSubsystemLeftFrontDrive.getOutputCurrent()));
+				dataLogger.addDataProvider("drive.rf.drive_current", () -> DataLogger.f2(RobotContainer.driveSubsystemRightFrontDrive.getOutputCurrent()));
+				dataLogger.addDataProvider("drive.lb.drive_current", () -> DataLogger.f2(RobotContainer.driveSubsystemLeftBackDrive.getOutputCurrent()));
+				dataLogger.addDataProvider("drive.rb.drive_current", () -> DataLogger.f2(RobotContainer.driveSubsystemRightBackDrive.getOutputCurrent()));
+			}
 		}
 
 		if (RobotContainer.shooterSubsystemMainShooter1 != null) {

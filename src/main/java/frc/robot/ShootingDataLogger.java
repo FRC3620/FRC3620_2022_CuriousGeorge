@@ -3,6 +3,8 @@ package frc.robot;
 import frc.robot.miscellaneous.MotorStatus;
 import frc.robot.subsystems.ShooterSubsystem;
 
+import frc.robot.subsystems.TurretSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import org.usfirst.frc3620.logger.FastDataLoggerCollections;
 import org.usfirst.frc3620.logger.IFastDataLogger;
 
@@ -11,24 +13,17 @@ import edu.wpi.first.wpilibj.RobotController;
 import java.util.Date;
 
 public class ShootingDataLogger {
-    public static IFastDataLogger getShootingDataLogger (String name, ShooterSubsystem shooterSubsystem) {
-        return getShootingDataLogger(name, shooterSubsystem, 15.0);
+    public static IFastDataLogger getShootingDataLogger (String name) {
+        return getShootingDataLogger(name, 15.0);
     }
 
-    static void addDataProviders (IFastDataLogger dl, MotorStatus s) {
-        String n = s.getName();
-        dl.addDataProvider(n + ".velocity.requested", () -> s.getRequestedSensorVelocity());
-        dl.addDataProvider(n + ".velocity.actual", () -> s.getActualSensorVelocity());
-        dl.addDataProvider(n + ".rpm.requested", () -> s.getRequestedRPM());
-        dl.addDataProvider(n + ".rpm.actual", () -> s.getActualRPM());
-        dl.addDataProvider(n + ".current.stator", () -> s.getStatorCurrent());
-        dl.addDataProvider(n + ".current.supply", () -> s.getSupplyCurrent());
-    }
-
-    public static IFastDataLogger getShootingDataLogger (String name, ShooterSubsystem shooterSubsystem, double length) {
+    public static IFastDataLogger getShootingDataLogger (String name, double length) {
+        ShooterSubsystem shooterSubsystem = RobotContainer.shooterSubsystem;
+        TurretSubsystem turretSubsystem = RobotContainer.turretSubsystem;
+        VisionSubsystem visionSubsystem = RobotContainer.visionSubsystem;
 
         IFastDataLogger dataLogger = new FastDataLoggerCollections();
-        dataLogger.setInterval(0.005);
+        dataLogger.setInterval(0.01);
         dataLogger.setMaxLength(length);
         dataLogger.setFilename(name);
         Date timestamp = new Date();
@@ -41,8 +36,30 @@ public class ShootingDataLogger {
         addDataProviders(dataLogger, shooterSubsystem.getTopStatus());
         addDataProviders(dataLogger, shooterSubsystem.getBackStatus());
 
+        dataLogger.addDataProvider("hood.requested", () -> shooterSubsystem.getRequestedHoodPosition());
         dataLogger.addDataProvider("hood.position", () -> shooterSubsystem.getHoodPosition());
+
+        if (RobotContainer.turretSubsystemturretSpinner != null) {
+            dataLogger.addDataProvider("turret.power", () -> RobotContainer.turretSubsystemturretSpinner.getAppliedOutput());
+            dataLogger.addDataProvider("turret.current", () -> RobotContainer.turretSubsystemturretSpinner.getOutputCurrent());
+        }
+        dataLogger.addDataProvider("turret.requested", () -> turretSubsystem.getRequestedTurretPosition());
+        dataLogger.addDataProvider("turret.position", () -> turretSubsystem.getCurrentTurretPosition());
+
+        dataLogger.addDataProvider("vision.target.found", () -> visionSubsystem.isTargetFound() ? 1 : 0);
+        dataLogger.addDataProvider("vision.target.centered", () -> visionSubsystem.isTargetCentered() ? 1 : 0);
 
         return dataLogger;
     }
+
+    static void addDataProviders (IFastDataLogger dl, MotorStatus s) {
+        String n = s.getName();
+        dl.addDataProvider(n + ".velocity.requested", () -> s.getRequestedSensorVelocity());
+        dl.addDataProvider(n + ".velocity.actual", () -> s.getActualSensorVelocity());
+        dl.addDataProvider(n + ".rpm.requested", () -> s.getRequestedRPM());
+        dl.addDataProvider(n + ".rpm.actual", () -> s.getActualRPM());
+        dl.addDataProvider(n + ".current.stator", () -> s.getStatorCurrent());
+        dl.addDataProvider(n + ".current.supply", () -> s.getSupplyCurrent());
+    }
+
 }

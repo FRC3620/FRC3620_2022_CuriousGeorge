@@ -88,9 +88,9 @@ public class DriveSubsystem extends SubsystemBase {
 	private final double WHEEL_CIRCUMFERENCE = 2*Math.PI*WHEEL_RADIUS;
 	private final double DRIVE_ENCODER_CONVERSION_FACTOR = WHEEL_CIRCUMFERENCE*WHEEL_TO_ENCODER_RATIO_VELOCITY;
  
-	private final double MAX_VELOCITY_RPM = 750; //maximum velocity that the robot will travel when joystick is at full throtle, measured in RPM orignally 750
+	private final double MAX_VELOCITY_RPM = 1200; //maximum velocity that the robot will travel when joystick is at full throtle, measured in RPM orignally 750
 	public final double MAX_VELOCITY_IN_PER_SEC = MAX_VELOCITY_RPM*WHEEL_CIRCUMFERENCE/60; //max velocity in inches per second origanlly 60
-	private final double MAX_TURN = 4; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
+	private final double MAX_TURN = 6; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
 
 	// readings of the absolute encoders when the wheels are pointed at true 0 degrees (gears to front of robot)
 	// PRACTICE BOT!!!!!!!!!

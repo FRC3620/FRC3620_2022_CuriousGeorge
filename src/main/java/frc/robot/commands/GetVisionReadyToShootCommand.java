@@ -6,15 +6,20 @@ package frc.robot.commands;
 
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
 import frc.robot.ShooterDecider;
+import frc.robot.ShootingDataLogger;
 import frc.robot.miscellaneous.ShooterCalculator;
 import frc.robot.subsystems.VisionSubsystem;
+import org.usfirst.frc3620.logger.IFastDataLogger;
 
 public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
   /** Creates a new GetVisionReadyToShootCommand. */
   VisionSubsystem visionSubsystem;
   Timer turretTimer = new Timer();
+  IFastDataLogger dataLogger;
+
   public GetVisionReadyToShootCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
     visionSubsystem = RobotContainer.visionSubsystem;
@@ -26,6 +31,13 @@ public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
     super.initialize();
     turretTimer.reset();
     turretTimer.start();
+
+    boolean shouldDoDataLogging = SmartDashboard.getBoolean("shooter.datalogging.enabled", false);
+    if (shouldDoDataLogging) {
+      double length = SmartDashboard.getNumber("shooter.datalogging.length", 15);
+      dataLogger = ShootingDataLogger.getShootingDataLogger("vision_shooter_m", length);
+      dataLogger.start();
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -58,6 +70,14 @@ public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
       pewPewData.fillInVisionXDegress(targetXDegrees);
       pewPewData.fillInVisionYLocation(targetYLocation);
       pewPewData.fillInVisionDistance(targetDistance);
+    }
+  }
+
+  public void end(boolean interrupted) {
+    super.end(interrupted);
+    if (dataLogger != null) {
+      dataLogger.done();
+      dataLogger = null;
     }
   }
 
