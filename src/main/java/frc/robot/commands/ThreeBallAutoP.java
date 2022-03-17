@@ -27,7 +27,7 @@ public class ThreeBallAutoP extends SequentialCommandGroup {
 
       new SetHoodAngleForDistanceCommand(8),
 
-      new SetRPMCommand(8),
+      new SetRPMForDistanceCommand(8),
   
       new IntakeArmDownCommand(), 
 
@@ -52,7 +52,7 @@ public class ThreeBallAutoP extends SequentialCommandGroup {
 
       new SetHoodAngleForDistanceCommand(12),
 
-      new SetRPMCommand(12),
+      new SetRPMForDistanceCommand(12),
         
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(

@@ -28,7 +28,7 @@ public class TwoBallAutoP extends SequentialCommandGroup {
 
       new SetHoodAngleForDistanceCommand(8),
 
-      new SetRPMCommand(8),
+      new SetRPMForDistanceCommand(8),
 
       new LogCommand("Moved turret"),
   
