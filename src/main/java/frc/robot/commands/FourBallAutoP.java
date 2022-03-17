@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.miscellaneous.ShooterCalculator;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
@@ -21,14 +22,18 @@ public class FourBallAutoP extends SequentialCommandGroup {
   public FourBallAutoP(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem){
     addCommands(
       new setInitialNavXOffsetCommand(driveSubsystem, 90),
-  
-      new MoveTurretCommand(turretSubsystem, 180), 
+
+      new MoveTurretCommand(turretSubsystem, 180),
+
+      new SetHoodAngleForDistanceCommand(8),
+
+      new SetRPMCommand(8),
   
       new IntakeArmDownCommand(), 
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new AutoDriveCommand(40, 90, .5, 90, driveSubsystem)
+          new AutoDriveCommand(40, 90, .6, 90, driveSubsystem)
         ), 
         new IntakeOnCommand()
       ),
@@ -36,37 +41,44 @@ public class FourBallAutoP extends SequentialCommandGroup {
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
           new AutoShootCommand(),
-          new PullTheTriggerCommand(),
           new PullTheTriggerCommand()
         ),
         new IntakeOffCommand(intakeSubsystem)
       ),
 
       new LogCommand("Done with first shots"),
+
+      new MoveTurretCommand(turretSubsystem, 114),
+
+      new SetHoodAngleForDistanceCommand(12),
+
+      new SetRPMCommand(12),
         
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new IntakeArmUpCommand(),
-          new AutoDriveCommand(144, 180, 0.5, 133, driveSubsystem)
+          new IntakeArmDownCommand(),
+          new AutoDriveCommand(130, 200, 0.8, 205, driveSubsystem)
+          //new AutoDriveToCargoCommand(120, 200, 0.5, 225, driveSubsystem, visionSubsystem)
         ),
-        new IntakeOffCommand(intakeSubsystem)
+        new IntakeOnCommand()
       ),
 
-      new IntakeArmDownCommand(), 
+      new MoveTurretCommand(turretSubsystem, 180),
+
+      new SetHoodAngleForDistanceCommand(25),
+
+      new SetRPMCommand(25),
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new AutoDriveCommand(108, 205, .5, 135, driveSubsystem),
-          new AutoDriveToCargoCommand(10, 135, .5, 135, driveSubsystem, visionSubsystem),
-          new WaitCommand(1)
-        ), 
+          new AutoDriveCommand(159, 175, 0.6, 170, driveSubsystem)
+        ),
         new IntakeOnCommand()
       ),
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
           new AutoShootCommand(),
-          new PullTheTriggerCommand(),
           new PullTheTriggerCommand()
         ),
         new IntakeOffCommand(intakeSubsystem)

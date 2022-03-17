@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.miscellaneous.ShooterCalculator;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
@@ -23,6 +24,10 @@ public class ThreeBallAutoP extends SequentialCommandGroup {
       new setInitialNavXOffsetCommand(driveSubsystem, 90),
   
       new MoveTurretCommand(turretSubsystem, 180), 
+
+      new SetHoodAngleForDistanceCommand(8),
+
+      new SetRPMCommand(8),
   
       new IntakeArmDownCommand(), 
 
@@ -42,6 +47,12 @@ public class ThreeBallAutoP extends SequentialCommandGroup {
       ),
 
       new LogCommand("Done with first shots"),
+
+      new MoveTurretCommand(turretSubsystem, 114),
+
+      new SetHoodAngleForDistanceCommand(12),
+
+      new SetRPMCommand(12),
         
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
@@ -52,8 +63,6 @@ public class ThreeBallAutoP extends SequentialCommandGroup {
         new IntakeOnCommand()
       ),
 
-      new MoveTurretCommand(turretSubsystem, 100),
-
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
           new AutoShootCommand(),
@@ -62,11 +71,13 @@ public class ThreeBallAutoP extends SequentialCommandGroup {
         new IntakeOffCommand(intakeSubsystem)
       ),
 
+      new MoveTurretCommand(turretSubsystem, 180),
+
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new IntakeArmUpCommand()
+          new AutoDriveCommand(108, 205, .5, 135, driveSubsystem),
+          new AutoDriveCommand(45, 135, .5, 135, driveSubsystem)
         ),
-        new IntakeOffCommand(intakeSubsystem),
         new ShooterOffCommand()
       ),
 

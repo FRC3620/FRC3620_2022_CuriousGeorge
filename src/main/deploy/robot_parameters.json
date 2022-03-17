@@ -2,12 +2,12 @@
   {
     "name": "2022 competition",
     "macAddress": "00-80-2F-21-E4-EA",
-    "makeAllCANDevices": true,
+    "makeAllCANDevices": false,
     // azimuth home encoders
     "swerve.he.rf": -52.9,   // right front
-    "swerve.he.lf": 86.5,  // left front
-    "swerve.he.lb": 83.2, // left back
-    "swerve.he.rb": -95.3,  // right back
+    "swerve.he.lf": 86.7,  // left front
+    "swerve.he.lb": 83.0, // left back
+    "swerve.he.rb": -95.7,  // right back
     //
     "swerve.chassis_width": 23.00,  // inches
     "swerve.chassis_length": 23.00,

@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.miscellaneous.ShooterCalculator;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
@@ -24,6 +25,10 @@ public class TwoBallAutoP extends SequentialCommandGroup {
       new setInitialNavXOffsetCommand(driveSubsystem, 90),
   
       new MoveTurretCommand(turretSubsystem, 180), 
+
+      new SetHoodAngleForDistanceCommand(8),
+
+      new SetRPMCommand(8),
 
       new LogCommand("Moved turret"),
   
