@@ -17,19 +17,20 @@ public class ShooterCalculator {
         return a-a;
     }
 
+    /**
+     * This method should take as input the current RPM of the main shooter
+     *  wheel as well as the CONSTANTS for shooter diameters and desired
+     *  cargo RPM. The method will return the _desired_ RPM of the backspin
+     *  motor. 
+     *
+     *  Please Note: This method assumes that RPM is the correct metric to use.
+     *  If we need something other than RPM (like motor power) we'll need to
+     *  update the calculation to tranlate this to another measure.
+     * 
+     * @param mainShooterRPM
+     * @return desired backspin shooter RPM
+     */
     public static double calculateBackspinRPM (double mainShooterRPM) {
-
-        /* This method should take as input the current RPM of the main shooter
-        *  wheel as well as the CONSTANTS for shooter diameters and desired
-        *  cargo RPM. The method will return the _desired_ RPM of the backspin
-        *  motor. 
-        *
-        *  Please Note: This method assumes that RPM is the correct metric to use.
-        *  If we need something other than RPM (like motor power) we'll need to
-        *  update the calculation to tranlate this to another measure.
-        * 
-        */
-
         double desiredBackspinRPM;
 
         // Check to see if there is a desiredCargoRPM value in SmartDashboard

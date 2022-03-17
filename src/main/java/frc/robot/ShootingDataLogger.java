@@ -1,6 +1,8 @@
 package frc.robot;
 
 import frc.robot.miscellaneous.MotorStatus;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.PreShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 import frc.robot.subsystems.TurretSubsystem;
@@ -19,6 +21,7 @@ public class ShootingDataLogger {
 
     public static IFastDataLogger getShootingDataLogger (String name, double length) {
         ShooterSubsystem shooterSubsystem = RobotContainer.shooterSubsystem;
+        PreShooterSubsystem preShooterSubsystem = RobotContainer.preShooterSubsystem;
         TurretSubsystem turretSubsystem = RobotContainer.turretSubsystem;
         VisionSubsystem visionSubsystem = RobotContainer.visionSubsystem;
 
@@ -35,6 +38,7 @@ public class ShootingDataLogger {
 
         addDataProviders(dataLogger, shooterSubsystem.getTopStatus());
         addDataProviders(dataLogger, shooterSubsystem.getBackStatus());
+        addDataProviders(dataLogger, preShooterSubsystem.getPreshooterStatus());
 
         dataLogger.addDataProvider("hood.requested", () -> shooterSubsystem.getRequestedHoodPosition());
         dataLogger.addDataProvider("hood.position", () -> shooterSubsystem.getHoodPosition());
