@@ -22,7 +22,7 @@ public class GetSafeZoneReadyToShootCommnd extends GetReadyToShootCommand {
     double main_rpm = ShooterCalculator.calcMainRPM(distance);
     shooterSubsystem.setMainRPM(main_rpm);
     shooterSubsystem.setBackRPM(ShooterCalculator.calculateBackspinRPM(main_rpm));
-    shooterSubsystem.setHoodPositionToDegrees(ShooterCalculator.calcHoodPosition(distance));
+    shooterSubsystem.setHoodPositionToDegrees(ShooterCalculator.calcHoodAngle(distance));
 
     turretSubsystem.setTurretPosition(180);
   }

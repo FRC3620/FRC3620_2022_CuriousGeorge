@@ -224,7 +224,9 @@ public class ShooterSubsystem extends SubsystemBase {
       requestedHoodPosition=position;
     }
     if (hoodEncoderIsValid) {
-      hoodMotor.getPIDController().setReference(requestedHoodPosition,CANSparkMax.ControlType.kPosition );
+      if (hoodMotor != null) {
+        hoodMotor.getPIDController().setReference(requestedHoodPosition,CANSparkMax.ControlType.kPosition );
+      }
     } else {
       requestedHoodPositionDuringCalibration = requestedHoodPosition;
     }
@@ -248,7 +250,7 @@ public class ShooterSubsystem extends SubsystemBase {
     if (hoodMotor != null) {
       return hoodMotor.getEncoder().getPosition();
     } else {
-      return 0.0;
+      return requestedHoodPosition;
     }
   }
 
@@ -323,6 +325,9 @@ public class ShooterSubsystem extends SubsystemBase {
       }
       SmartDashboard.putNumber("hood.applied.power", hoodMotor.getAppliedOutput());
       SmartDashboard.putNumber("hood.output.current", hoodMotor.getOutputCurrent());
+    } else {
+      // no hoodmotor,so fake it
+      hoodEncoderIsValid = true;
     }
   }
 

@@ -61,7 +61,7 @@ public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
       double targetYLocation = visionSubsystem.getTargetYLocation();
       double targetDistance = ShooterCalculator.calcDistanceFromHub(targetYLocation);
       double targetRPM = ShooterCalculator.calcMainRPM(targetDistance);
-      double targetHood = ShooterCalculator.calcHoodPosition(targetDistance);
+      double targetHood = ShooterCalculator.calcHoodAngle(targetDistance);
 
       shooterSubsystem.setMainRPM(targetRPM);
       shooterSubsystem.setBackRPM(ShooterCalculator.calculateBackspinRPM(targetRPM));
