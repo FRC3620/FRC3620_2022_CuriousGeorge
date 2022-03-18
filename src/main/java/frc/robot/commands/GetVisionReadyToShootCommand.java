@@ -7,22 +7,33 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.ShooterDecider;
 import frc.robot.ShootingDataLogger;
 import frc.robot.miscellaneous.ShooterCalculator;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.RumbleSubsystem.Hand;
+
 import org.usfirst.frc3620.logger.IFastDataLogger;
+
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.RumbleSubsystem;
 
 public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
   /** Creates a new GetVisionReadyToShootCommand. */
   VisionSubsystem visionSubsystem;
+  DriveSubsystem driveSubsystem;
+  RumbleSubsystem driverRumbleSubsystem;
+  
   Timer turretTimer = new Timer();
   IFastDataLogger dataLogger;
 
   public GetVisionReadyToShootCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
     visionSubsystem = RobotContainer.visionSubsystem;
+    driveSubsystem = RobotContainer.driveSubsystem;
+    driverRumbleSubsystem = RobotContainer.driverRumbleSubsystem;
   }
 
   // Called when the command is initially scheduled.
@@ -48,6 +59,19 @@ public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
       //seconds
       setUpStuffToShoot();
       turretTimer.reset(); 
+    }
+    boolean ready = everythingIsReady();
+    if (!visionSubsystem.isTargetCentered()) {
+      ready = false;
+    }
+    ShooterDecider.showReady(ready);
+
+    boolean shouldRumble = ready && driveSubsystem.areWeStopped();
+    SmartDashboard.putBoolean("should rumble", shouldRumble);
+    if(shouldRumble){
+      driverRumbleSubsystem.setRumble(Hand.RIGHT, 0.2);
+    } else {
+      driverRumbleSubsystem.clearRumble();
     }
   }
 
@@ -84,11 +108,6 @@ public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    boolean ready = super.isFinished();
-    if (! visionSubsystem.isTargetCentered()) {
-      ready = false;
-    }
-    ShooterDecider.showReady(ready);
-    return ready;
+    return false;
   }
 }

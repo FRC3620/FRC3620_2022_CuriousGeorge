@@ -19,6 +19,7 @@ import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -289,6 +290,8 @@ public class DriveSubsystem extends SubsystemBase {
 			SmartDashboard.putNumber("Right Back Drive Current Draw", rightBackDriveMaster.getOutputCurrent());
 			SmartDashboard.putNumber("Right Back Drive Voltage", rightBackDriveMaster.getAppliedOutput());
 		}
+
+		SmartDashboard.putBoolean("Are We Stopped", areWeStopped());
 
 		if (rightFrontDriveMaster  != null) {
 			updateVelocityPIDs(rightFrontVelPID, leftFrontVelPID, leftBackVelPID, rightBackVelPID);
@@ -885,6 +888,30 @@ public class DriveSubsystem extends SubsystemBase {
 
 	public double getMaxVelocity(){
 		return MAX_VELOCITY_IN_PER_SEC;
+	}
+
+
+
+	public boolean areWeStopped(){
+		double totalVelocity = 0;
+		if(rightFrontDriveEncoder != null){
+			totalVelocity = totalVelocity + Math.abs(rightFrontDriveEncoder.getVelocity());
+		}
+		if(rightBackDriveEncoder != null){
+			totalVelocity = totalVelocity + Math.abs(rightBackDriveEncoder.getVelocity());
+		}
+		if(leftFrontDriveEncoder != null){
+			totalVelocity = totalVelocity + Math.abs(leftFrontDriveEncoder.getVelocity());
+		}
+		if(leftBackDriveEncoder != null){
+			totalVelocity = totalVelocity + Math.abs(leftBackDriveEncoder.getVelocity());
+		}
+		
+		if(totalVelocity <= 2.0){
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public double getWheelCircumference(){
