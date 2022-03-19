@@ -104,6 +104,10 @@ public class RobotContainer {
 
   // vision
   public static Solenoid ringLight;
+ 
+  //lights
+  public static Solenoid redLight, blueLight, greenLight;
+  
 
   // shooter hardware variables are currently unknown so we need to change them
   public static WPI_TalonFX shooterSubsystemMainShooter1;
@@ -124,6 +128,7 @@ public class RobotContainer {
 
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
+  public static LightSubsystem lightSubsystem;
   public static VisionSubsystem visionSubsystem;
   public static ClimberSubsystem climberSubsystem; 
   public static IntakeSubsystem intakeSubsystem;
@@ -283,6 +288,9 @@ public class RobotContainer {
       }
 
       ringLight = new Solenoid(pneumaticModuleType, 7);
+      redLight = new Solenoid(pneumaticModuleType, 15);
+      blueLight = new Solenoid(pneumaticModuleType, 14);
+      greenLight = new Solenoid(pneumaticModuleType, 13);
       ringLight.set(true);
       if (robotParameters.hasClimber()){
         climberArmTilt = new DoubleSolenoid(pneumaticModuleType, 0, 1);
@@ -407,6 +415,7 @@ public class RobotContainer {
 
   void makeSubsystems() {
     driveSubsystem = new DriveSubsystem();
+    lightSubsystem = new LightSubsystem();
     visionSubsystem = new VisionSubsystem();
     climberSubsystem = new ClimberSubsystem();
     intakeSubsystem = new IntakeSubsystem();
