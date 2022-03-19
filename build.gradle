@@ -30,7 +30,7 @@ test {
 
         // includeTestsMatching 'ShooterCalculatorTest'
 
-        // includeTestsMatching 'HoodCalculatorTest'
+        //includeTestsMatching 'HoodCalculatorTest'
 
         includeTestsMatching 'GsonTest'
     }

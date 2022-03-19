@@ -114,7 +114,7 @@ public class ShooterSubsystem extends SubsystemBase {
       anglePID.setP(hoodP);
       anglePID.setI(hoodI);
       anglePID.setD(hoodD);
-      anglePID.setOutputRange(-0.75, 0.75); //TODO Set back to 0.5 after testing
+      anglePID.setOutputRange(-0.5, 0.5); //TODO Set back to 0.5 after testing
     }
 
     //Load "cargo.desireRPM" value in SmartDashboard
@@ -276,7 +276,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
   
   public static double calculateHoodRotations (double angle) {
-    return (212.32 - 2.5581 * angle);
+    return (53.08 - 0.639525 * angle);
   }
 
   Command lastCommand = null;

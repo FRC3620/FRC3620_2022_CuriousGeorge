@@ -122,8 +122,8 @@ public class TurretSubsystem extends SubsystemBase {
     if(angle < -45) {
       angle = -45;
     }
-    if(angle > 265) {
-      angle = 265;
+    if(angle > 260) {
+      angle = 260;
     }
     SmartDashboard.putNumber("turretRequestedAngle", angle);
     requestedTurretPosition = angle;

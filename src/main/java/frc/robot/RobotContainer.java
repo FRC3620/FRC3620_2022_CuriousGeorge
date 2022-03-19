@@ -456,7 +456,7 @@ public class RobotContainer {
     operatorDPad.up().whenPressed(new MoveTurretCommand(turretSubsystem, -5));
     operatorDPad.right().whenPressed(new MoveTurretCommand(turretSubsystem, 90));
     operatorDPad.down().whenPressed(new MoveTurretCommand(turretSubsystem, 175));
-    operatorDPad.left().whenPressed(new MoveTurretCommand(turretSubsystem, 270));
+    operatorDPad.left().whenPressed(new MoveTurretCommand(turretSubsystem, 260));
    
 
     JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);

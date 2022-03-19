@@ -96,6 +96,20 @@ public class RobotDataLogger {
 			dataLogger.addDataProvider("hood.power", () -> f2(RobotContainer.shooterSubsystemHoodMax.getAppliedOutput()));
 			dataLogger.addDataProvider("hood.current", () -> f2(RobotContainer.shooterSubsystemHoodMax.getOutputCurrent()));
 		}
+
+		if (RobotContainer.turretSubsystemturretSpinner != null){
+			dataLogger.addDataProvider("turret.power", () -> f2(RobotContainer.turretSubsystemturretSpinner.getAppliedOutput()));
+			dataLogger.addDataProvider("turret.current", () -> f2(RobotContainer.turretSubsystemturretSpinner.getOutputCurrent()));
+			dataLogger.addDataProvider("turret.requested_position", () -> f2(RobotContainer.turretSubsystem.getRequestedTurretPosition()));
+			dataLogger.addDataProvider("turret.current_position", () -> f2(RobotContainer.turretSubsystem.getCurrentTurretPosition()));
+		}
+
+		if (RobotContainer.intakeBelt != null && RobotContainer.intakeWheelbar != null){
+			dataLogger.addDataProvider("intake.belt.power", () -> f2(RobotContainer.intakeBelt.getAppliedOutput()));
+			dataLogger.addDataProvider("intake.belt.current", () -> f2(RobotContainer.intakeBelt.getOutputCurrent()));
+			dataLogger.addDataProvider("intake.wheelbar.power", () -> f2(RobotContainer.intakeWheelbar.getAppliedOutput()));
+			dataLogger.addDataProvider("intake.wheelbar.current", () -> f2(RobotContainer.intakeWheelbar.getOutputCurrent()));
+		}
 	}
 
 	private DecimalFormat f2formatter = new DecimalFormat("#.##");
