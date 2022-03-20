@@ -1,7 +1,7 @@
 package frc.robot;
 
 import frc.robot.miscellaneous.MotorStatus;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.miscellaneous.ShooterCalculator;
 import frc.robot.subsystems.PreShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -52,6 +52,10 @@ public class ShootingDataLogger {
 
         dataLogger.addDataProvider("vision.target.found", () -> visionSubsystem.isTargetFound() ? 1 : 0);
         dataLogger.addDataProvider("vision.target.centered", () -> visionSubsystem.isTargetCentered() ? 1 : 0);
+        dataLogger.addDataProvider("vision.target.xposition", () -> visionSubsystem.getTargetXLocation());
+        dataLogger.addDataProvider("vision.target.xdegrees", () -> visionSubsystem.getTargetXDegrees());
+        dataLogger.addDataProvider("vision.target.yposition", () -> visionSubsystem.getTargetYLocation());
+        dataLogger.addDataProvider("vision.target.range", () -> ShooterCalculator.calcDistanceFromHub(visionSubsystem.getTargetYLocation()));
 
         return dataLogger;
     }
