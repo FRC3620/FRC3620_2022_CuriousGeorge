@@ -288,10 +288,14 @@ public class RobotContainer {
       }
 
       ringLight = new Solenoid(pneumaticModuleType, 7);
-      redLight = new Solenoid(pneumaticModuleType, 15);
-      blueLight = new Solenoid(pneumaticModuleType, 14);
-      greenLight = new Solenoid(pneumaticModuleType, 13);
       ringLight.set(true);
+
+      if (pneumaticModuleType == PneumaticsModuleType.REVPH) {
+        redLight = new Solenoid(pneumaticModuleType, 15);
+        blueLight = new Solenoid(pneumaticModuleType, 14);
+        greenLight = new Solenoid(pneumaticModuleType, 13);
+      }
+
       if (robotParameters.hasClimber()){
         climberArmTilt = new DoubleSolenoid(pneumaticModuleType, 0, 1);
       }

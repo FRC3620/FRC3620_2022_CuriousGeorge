@@ -20,21 +20,29 @@ public class LightSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("remainingMatchTime", remainingMatchTime);
     if(DriverStation.isTeleopEnabled()){
       if (remainingMatchTime < 45){
-        RobotContainer.redLight.set(true);
-        RobotContainer.greenLight.set(false);
+        if (RobotContainer.redLight != null) {
+          RobotContainer.redLight.set(true);
+          RobotContainer.greenLight.set(false);
+        }
       }
       else if (remainingMatchTime < 60){
-        RobotContainer.greenLight.set(true);
-        RobotContainer.redLight.set(true);
+        if (RobotContainer.redLight != null) {
+          RobotContainer.greenLight.set(true);
+          RobotContainer.redLight.set(true);
+        }
       } 
       else{
-        RobotContainer.redLight.set(false);
-        RobotContainer.greenLight.set(true);
+        if (RobotContainer.redLight != null) {
+          RobotContainer.redLight.set(false);
+          RobotContainer.greenLight.set(true);
+        }
       }
     }
     else{
-      RobotContainer.greenLight.set(false);
-      RobotContainer.redLight.set(false);
+      if (RobotContainer.redLight != null) {
+        RobotContainer.greenLight.set(false);
+        RobotContainer.redLight.set(false);
+      }
     }
     
   }
