@@ -106,13 +106,13 @@ public class VisionSubsystem extends SubsystemBase {
     double targetDistance = ShooterCalculator.calcDistanceFromHub(getTargetYLocation());
     double targetRPM = ShooterCalculator.calcMainRPM(targetDistance);
     SmartDashboard.putNumber("vision.target.data_age", getTargetDataAge());
-    SmartDashboard.putBoolean("vision.target.data_is_fresh", ! isTargetDataStale());
+    SmartDashboard.putBoolean("vision.target.data_is_fresh", !isTargetDataStale());
     SmartDashboard.putNumber("vision.calculated.distance", targetDistance);
-    SmartDashboard.putNumber("vision.calculated.RPM",targetRPM);
+    SmartDashboard.putNumber("vision.calculated.RPM", targetRPM);
   }
 
   public boolean isTargetFound() {
-    return targetData.found && ! isTargetDataStale();
+    return targetData.found && !isTargetDataStale();
   }
 
   public double getTargetXLocation(){
@@ -150,7 +150,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public boolean isTargetCentered() {
-    if (! isTargetFound()) {
+    if (!isTargetFound()) {
       return false;
     }
     if (Math.abs(getTargetXDegrees()) < 5){

@@ -79,9 +79,11 @@ public class FiveBallAutoP extends SequentialCommandGroup {
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
           new AutoShootCommand(),
-          new PullTheTriggerCommand(),
-          new PullTheTriggerCommand(),
-          new PullTheTriggerCommand()
+          new PullTheTriggerForOneCommand(),
+          new AutoPushBallUpCommand(),
+          new PullTheTriggerForOneCommand(),
+          new AutoPushBallUpCommand(),
+          new PullTheTriggerForOneCommand()
         ),
         new IntakeOffCommand(intakeSubsystem)
       ),
