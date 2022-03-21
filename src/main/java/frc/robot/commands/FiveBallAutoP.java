@@ -5,6 +5,7 @@ import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
@@ -76,20 +77,24 @@ public class FiveBallAutoP extends SequentialCommandGroup {
         new IntakeOnCommand()
       ),
 
-      new ParallelDeadlineGroup(
-        new SequentialCommandGroup(
-          new AutoShootCommand(),
-          new PullTheTriggerForOneCommand(),
-          new AutoPushBallUpCommand(),
-          new PullTheTriggerForOneCommand(),
-          new AutoPushBallUpCommand(),
-          new PullTheTriggerForOneCommand()
-        ),
-        new IntakeOffCommand(intakeSubsystem)
+      new LogCommand("done with 180"),
+      new AutoShootCommand(),
+      new LogCommand("found target"),
+      new ParallelCommandGroup(
+          new IntakeOnCommand(),
+          new SequentialCommandGroup(
+              new PullTheTriggerForOneCommand(),
+              new LogCommand("shot once"),
+              new AutoPushBallUpCommand(),
+              new LogCommand("ball is ready to shoot"),
+              new PullTheTriggerForOneCommand(),
+              new AutoPushBallUpCommand(),
+              new PullTheTriggerCommand()
+          )
       ),
 
       new LogCommand("All done")
-    );  
+    );
   }
 
   class LogCommand extends InstantCommand {

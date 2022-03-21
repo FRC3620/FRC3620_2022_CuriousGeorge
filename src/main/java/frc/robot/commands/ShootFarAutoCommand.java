@@ -10,10 +10,10 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-public class ShootFarAuto extends SequentialCommandGroup {
+public class ShootFarAutoCommand extends SequentialCommandGroup {
     Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
-    public ShootFarAuto(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem){
+    public ShootFarAutoCommand(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem){
         addCommands(
             new StartShooterDataLoggingCommand(getClass().getSimpleName(), 20.0),
             new MoveTurretCommand(turretSubsystem, 180), 
