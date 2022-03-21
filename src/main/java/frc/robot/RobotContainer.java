@@ -522,6 +522,8 @@ public class RobotContainer {
     SmartDashboard.putData("Shoot", new PullTheTriggerCommand());
 
     SmartDashboard.putData("Send hood home", new HoodToHomeCommand());
+
+    SmartDashboard.putData("test for vision lag", new TestVisionLagCommand());
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
