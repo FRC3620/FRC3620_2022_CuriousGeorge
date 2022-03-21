@@ -153,7 +153,13 @@ public class VisionSubsystem extends SubsystemBase {
     if (!isTargetFound()) {
       return false;
     }
-    if (Math.abs(getTargetXDegrees()) < 5){
+    double ylocation = getTargetYLocation();
+    double distance = ShooterCalculator.calcDistanceFromHub(ylocation);
+    double limit = 1;
+    if (distance < 15) {
+      limit = 5;
+    }
+    if (Math.abs(getTargetXDegrees()) < limit){
       return true;
     }
     return false;

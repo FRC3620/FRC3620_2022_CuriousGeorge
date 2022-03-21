@@ -28,6 +28,7 @@ public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
   
   Timer turretTimer = new Timer();
   IFastDataLogger dataLogger;
+  boolean okToShoot;
 
   public GetVisionReadyToShootCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -60,13 +61,18 @@ public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
       setUpStuffToShoot();
       turretTimer.reset(); 
     }
-    boolean ready = everythingIsReady();
-    if (!visionSubsystem.isTargetCentered()) {
-      ready = false;
-    }
-    ShooterDecider.showReady(ready);
 
-    boolean shouldRumble = ready && driveSubsystem.areWeStopped();
+    okToShoot = everythingIsReady();
+    logger.info ("okToShoot 1 {}", okToShoot);
+    if (!visionSubsystem.isTargetCentered()) {
+      okToShoot = false;
+      logger.info ("okToShoot 2a {} {}", okToShoot, visionSubsystem.getTargetXDegrees());
+    } else {
+      logger.info ("okToShoot 2b {} {}", okToShoot, visionSubsystem.getTargetXDegrees());      
+    }
+    ShooterDecider.showReady(okToShoot);
+
+    boolean shouldRumble = okToShoot && driveSubsystem.areWeStopped();
     SmartDashboard.putBoolean("should rumble", shouldRumble);
     if(shouldRumble){
       driverRumbleSubsystem.setRumble(Hand.RIGHT, 0.2);
