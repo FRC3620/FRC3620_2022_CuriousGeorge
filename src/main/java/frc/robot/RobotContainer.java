@@ -540,6 +540,7 @@ public class RobotContainer {
     chooser.addOption("2 Ball P Auto", new TwoBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
     chooser.addOption("2 Ball Q Auto", new TwoBallAutoQ(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
     chooser.addOption("2 Ball R Auto", new TwoBallAutoR(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("shoot far command",new ShootFarAuto(driveSubsystem, visionSubsystem,turretSubsystem, intakeSubsystem));
   }
   
   
