@@ -18,6 +18,8 @@ public class LightSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     double remainingMatchTime = DriverStation.getMatchTime();
     SmartDashboard.putNumber("remainingMatchTime", remainingMatchTime);
+    SmartDashboard.putBoolean("goClimb", remainingMatchTime >
+     45);
     if(DriverStation.isTeleopEnabled()){
       if (remainingMatchTime < 45){
         if (RobotContainer.redLight != null) {

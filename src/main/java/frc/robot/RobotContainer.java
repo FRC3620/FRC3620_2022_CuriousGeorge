@@ -371,6 +371,7 @@ public class RobotContainer {
     if(climberExtentionMotor != null) {
       resetMaxToKnownState(climberExtentionMotor, true);
       climberExtentionMotor.setIdleMode(IdleMode.kBrake);
+      
     }
 
     if(intakeWheelbar != null) {
