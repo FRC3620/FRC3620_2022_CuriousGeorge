@@ -216,8 +216,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   Double requestedHoodPositionDuringCalibration = null;
   void setHoodPositionToRotations(double position) {
-    if(position >= 108){
-      requestedHoodPosition = 108;
+    if(position >= 27){
+      requestedHoodPosition = 27;
     } else if (position < 2) {
       requestedHoodPosition=2;
     } else {

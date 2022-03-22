@@ -122,9 +122,9 @@ public class DriveSubsystem extends SubsystemBase {
 	private boolean fieldRelative = true;
 
 	private PIDController spinPIDController;
-	private double kSpinP = 0.02; //0.013
-	private double kSpinI = 0.00000; //0.00001
-	private double kSpinD = 0.000; //0.003
+	private double kSpinP = 0.005; //0.005 works
+	private double kSpinI = 0.00000; //0.0000
+	private double kSpinD = 0.000; //0.000
 	private boolean autoSpinMode;
 	private boolean forceManualMode = false;
 	private double currentHeading;

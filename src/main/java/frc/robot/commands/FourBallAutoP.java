@@ -35,7 +35,7 @@ public class FourBallAutoP extends SequentialCommandGroup {
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new AutoDriveCommand(40, 90, .6, 90, driveSubsystem)
+          new AutoDriveCommand(38, 90, .6, 90, driveSubsystem)
         ), 
         new IntakeOnCommand()
       ),
@@ -73,7 +73,7 @@ public class FourBallAutoP extends SequentialCommandGroup {
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new AutoDriveCommand(159, 175, 0.6, 170, driveSubsystem)
+          new AutoDriveCommand(150, 168, 0.6, 170, driveSubsystem)
         ),
         new IntakeOnCommand()
       ),
