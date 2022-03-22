@@ -22,6 +22,8 @@ public class FiveBallAutoP extends SequentialCommandGroup {
   
   public FiveBallAutoP(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem){
     addCommands(
+      new StartShooterDataLoggingCommand(getClass().getSimpleName(), 20.0),
+
       new setInitialNavXOffsetCommand(driveSubsystem, 90),
 
       new MoveTurretCommand(turretSubsystem, 180),
@@ -34,7 +36,7 @@ public class FiveBallAutoP extends SequentialCommandGroup {
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new AutoDriveCommand(40, 90, .6, 90, driveSubsystem)
+          new AutoDriveCommand(34, 90, .6, 90, driveSubsystem)
         ), 
         new IntakeOnCommand()
       ),
@@ -72,7 +74,7 @@ public class FiveBallAutoP extends SequentialCommandGroup {
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new AutoDriveCommand(159, 175, 0.6, 170, driveSubsystem)
+          new AutoDriveCommand(145, 165 , 0.7, 145, driveSubsystem)
         ),
         new IntakeOnCommand()
       ),

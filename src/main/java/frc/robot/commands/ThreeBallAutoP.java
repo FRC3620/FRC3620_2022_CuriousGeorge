@@ -21,6 +21,8 @@ public class ThreeBallAutoP extends SequentialCommandGroup {
   
   public ThreeBallAutoP(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem){
     addCommands(
+      new StartShooterDataLoggingCommand(getClass().getSimpleName(), 20.0),
+
       new setInitialNavXOffsetCommand(driveSubsystem, 90),
   
       new MoveTurretCommand(turretSubsystem, 180), 

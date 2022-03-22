@@ -20,6 +20,8 @@ public class FourBallAutoQ extends SequentialCommandGroup {
   
   public FourBallAutoQ(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem){
     addCommands(
+      new StartShooterDataLoggingCommand(getClass().getSimpleName(), 20.0),
+
       new setInitialNavXOffsetCommand(driveSubsystem, 153),
   
       new MoveTurretCommand(turretSubsystem, 170), 

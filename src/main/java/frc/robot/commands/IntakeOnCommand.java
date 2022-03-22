@@ -40,7 +40,7 @@ public class IntakeOnCommand extends CommandBase {
   public void end(boolean interrupted) {
     intakeSubsystem.spinIntakeWheelBar(0.0);
     intakeSubsystem.spinIntakeBelt(0.0);
-    intakeArmSubsystem.retractIntakeArm();
+    // intakeArmSubsystem.retractIntakeArm();
   }
 
   // Returns true when the command should end.
