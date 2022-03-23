@@ -49,7 +49,7 @@ public class AutoPushBallUpCommand extends CommandBase {
   public void execute() {
     if(beltTimer.get() < 0.4) {
         intakeSubsystem.overrideIntakeBeltForShooting(0.4);
-        intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);
+        //intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);
     } else {
         weAreDone = true;
     }

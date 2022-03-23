@@ -50,11 +50,11 @@ public class FourBallAutoP extends SequentialCommandGroup {
 
       new LogCommand("Done with first shots"),
 
-      new MoveTurretCommand(turretSubsystem, 114),
+      new MoveTurretCommand(turretSubsystem, 160),
 
-      new SetHoodAngleForDistanceCommand(12),
+      new SetHoodAngleForDistanceCommand(23),
 
-      new SetRPMForDistanceCommand(12),
+      new SetRPMForDistanceCommand(23),
         
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
@@ -64,12 +64,6 @@ public class FourBallAutoP extends SequentialCommandGroup {
         ),
         new IntakeOnCommand()
       ),
-
-      new MoveTurretCommand(turretSubsystem, 180),
-
-      new SetHoodAngleForDistanceCommand(25),
-
-      new SetRPMForDistanceCommand(25),
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(

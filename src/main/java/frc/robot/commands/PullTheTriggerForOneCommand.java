@@ -50,7 +50,7 @@ public class PullTheTriggerForOneCommand extends CommandBase {
     if(preshooterTimer.get() < 0.6) {    // .7 to .5 to .4
         preShooterSubsystem.preshooterOn(1);
         intakeSubsystem.overrideIntakeBeltForShooting(0.0);
-        intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);
+        //intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);
     } else {
         weAreDone = true;
     }

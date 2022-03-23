@@ -51,11 +51,11 @@ public class FiveBallAutoP extends SequentialCommandGroup {
 
       new LogCommand("Done with first shots"),
 
-      new MoveTurretCommand(turretSubsystem, 114),
+      new MoveTurretCommand(turretSubsystem, 160),
 
-      new SetHoodAngleForDistanceCommand(12),
+      new SetHoodAngleForDistanceCommand(23),
 
-      new SetRPMForDistanceCommand(12),
+      new SetRPMForDistanceCommand(23),
         
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
@@ -66,20 +66,14 @@ public class FiveBallAutoP extends SequentialCommandGroup {
         new IntakeOnCommand()
       ),
 
-      new MoveTurretCommand(turretSubsystem, 180),
-
-      new SetHoodAngleForDistanceCommand(25),
-
-      new SetRPMForDistanceCommand(25),
-
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
           new AutoDriveCommand(145, 165 , 0.7, 145, driveSubsystem)
         ),
-        new IntakeOnCommand()
+        new IntakeOnCommand(),
+        new LogCommand("intake works")
       ),
 
-      new LogCommand("done with 180"),
       new AutoShootCommand(),
       new LogCommand("found target"),
       new ParallelCommandGroup(
