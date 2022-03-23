@@ -25,6 +25,8 @@ public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
   VisionSubsystem visionSubsystem;
   DriveSubsystem driveSubsystem;
   RumbleSubsystem driverRumbleSubsystem;
+
+  boolean logOkToShootMessages = false;
   
   Timer turretTimer = new Timer();
   IFastDataLogger dataLogger;
@@ -63,12 +65,18 @@ public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
     }
 
     okToShoot = everythingIsReady();
-    logger.info ("okToShoot 1 {}", okToShoot);
+    if (logOkToShootMessages) {
+      logger.info("okToShoot 1 {}", okToShoot);
+    }
     if (!visionSubsystem.isTargetCentered()) {
       okToShoot = false;
-      logger.info ("okToShoot 2a {} {}", okToShoot, visionSubsystem.getTargetXDegrees());
+      if (logOkToShootMessages) {
+        logger.info("okToShoot 2a {} {}", okToShoot, visionSubsystem.getTargetXDegrees());
+      }
     } else {
-      logger.info ("okToShoot 2b {} {}", okToShoot, visionSubsystem.getTargetXDegrees());      
+      if (logOkToShootMessages) {
+        logger.info("okToShoot 2b {} {}", okToShoot, visionSubsystem.getTargetXDegrees());
+      }
     }
     ShooterDecider.showReady(okToShoot);
 
