@@ -1,7 +1,7 @@
 # 2022 Controls
 
 ## Driver Controls
-* A - X Mode (not added yet)
+* A - X Mode
 * X - Reset NavX
 * Y - Center on Ball
 * LB - roller and belt (clockwise) [toggle]

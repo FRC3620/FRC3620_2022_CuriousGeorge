@@ -467,6 +467,11 @@ public class RobotContainer {
     //Shooter
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_STICK).whenPressed(new ShooterOffCommand());
 
+    //x mode
+    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A).whenPressed(new XModeCommand(driveSubsystem));
+
+    
+
     operatorDPad.up().whenPressed(new MoveTurretCommand(turretSubsystem, -5));
     operatorDPad.right().whenPressed(new MoveTurretCommand(turretSubsystem, 90));
     operatorDPad.down().whenPressed(new MoveTurretCommand(turretSubsystem, 175));
