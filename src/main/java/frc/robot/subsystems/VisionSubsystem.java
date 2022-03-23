@@ -86,7 +86,7 @@ public class VisionSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("vision.target.x", getTargetXLocation());
       SmartDashboard.putNumber("vision.target.y", getTargetYLocation());
       SmartDashboard.putNumber("vision.target.boxes", targetData.boxes);
-      SmartDashboard.putBoolean("vision.target.found", targetData.found);
+      SmartDashboard.putBoolean("vision.target.found", isTargetFound());
       SmartDashboard.putBoolean("vision.target.centered", isTargetCentered());
       rv = true;
     } catch (Exception ex) {
@@ -112,7 +112,17 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public boolean isTargetFound() {
-    return targetData.found && !isTargetDataStale();
+    double currentTurretPosition = RobotContainer.turretSubsystem.getCurrentTurretPosition();
+
+    boolean rv = targetData.found;
+    if (currentTurretPosition > 31 && currentTurretPosition < 82) {
+      // we are probably looking at our armpit
+      rv = false;
+    }
+    if (isTargetDataStale()) {
+      rv = false;
+    }
+    return rv;
   }
 
   public double getTargetXLocation(){
