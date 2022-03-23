@@ -627,20 +627,21 @@ public class DriveSubsystem extends SubsystemBase {
 		// these angles are angles for Vectors. Math class degress:
 		// 0 degrees is to the right, 90 degrees is front, -90 degrees is behind, +/-180 degrees is left
 
-		rightFrontAzimuth.set(250);
-		leftFrontAzimuth.set(-250);
-		rightBackAzimuth.set(-250);
-		leftBackAzimuth.set(250);
 
-		/*DriveVectors currentDirections = getCurrentVectors();
+		double leftFrontAngle = -45;
+		double rightFrontAngle = 45;
+		double leftBackAngle = 45;
+		double rightBackAngle = -45;
+
+		DriveVectors currentDirections = getCurrentVectors();
 		 
 		DriveVectors newVectors = new DriveVectors();
 
 		// need to have non-zero velocity so that fixVectors actually changes azimuth.
-		newVectors.leftFront = new Vector(leftFrontAngle, 0);
-		newVectors.rightFront = new Vector(rightFrontAngle, 0);
-		newVectors.leftBack = new Vector(leftBackAngle, 0);  // we will fix the velocity for rear below
-		newVectors.rightBack = new Vector(rightBackAngle, 0);
+		newVectors.leftFront = new Vector(leftFrontAngle, 20.1);
+		newVectors.rightFront = new Vector(rightFrontAngle, 20.1);
+		newVectors.leftBack = new Vector(leftBackAngle, 20.1);  // we will fix the velocity for rear below
+		newVectors.rightBack = new Vector(rightBackAngle, 20.1);
 
 		newVectors = SwerveCalculator.fixVectors(newVectors, currentDirections); //gets quickest wheel angle and direction configuration
 		
@@ -649,7 +650,12 @@ public class DriveSubsystem extends SubsystemBase {
 			leftFrontPositionPID.setReference(newVectors.leftFront.getDirection(), ControlType.kPosition);
 			leftBackPositionPID.setReference(newVectors.leftBack.getDirection(), ControlType.kPosition);
 			rightBackPositionPID.setReference(newVectors.rightBack.getDirection(), ControlType.kPosition);
-		} */
+		
+			rightFrontVelPID.setReference(0, ControlType.kVelocity);
+			leftFrontVelPID.setReference(0, ControlType.kVelocity);
+			leftBackVelPID.setReference(0, ControlType.kVelocity);
+			rightBackVelPID.setReference(0, ControlType.kVelocity);
+		} 
 	}
 
 	public void setPositionPID(SparkMaxPIDController pidController) {

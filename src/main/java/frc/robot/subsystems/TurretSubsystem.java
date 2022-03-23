@@ -139,6 +139,10 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public double getCurrentTurretPosition(){
-    return turretEncoder.getPosition();
+    if(turretEncoder != null){
+      return turretEncoder.getPosition();
+    } else {
+      return requestedTurretPosition;
+    }
   }
 }

@@ -14,11 +14,12 @@ DriveSubsystem driveSubsystem;
   public XModeCommand(DriveSubsystem driveSubsystem) {
     this.driveSubsystem = driveSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(driveSubsystem);
   }
 
   public XModeCommand() {
     this.driveSubsystem = driveSubsystem;
-    RelativeEncoder rightFrontAzimuthEncoder = DriveSubsystem.rightFrontAzimuthEncoder;
+    //RelativeEncoder rightFrontAzimuthEncoder = DriveSubsystem.rightFrontAzimuthEncoder;
 }
 
 // Called when the command is initially scheduled.
@@ -38,7 +39,7 @@ DriveSubsystem driveSubsystem;
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(rightFrontAzimuthEncoder.getPosition())
-    return true;
+    //if(rightFrontAzimuthEncoder.getPosition())
+    return false;
   }
 }

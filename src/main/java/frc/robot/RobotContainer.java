@@ -468,7 +468,7 @@ public class RobotContainer {
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_STICK).whenPressed(new ShooterOffCommand());
 
     //x mode
-    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A).whenPressed(new XModeCommand(driveSubsystem));
+    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A).whileHeld(new XModeCommand(driveSubsystem));
 
     
 
