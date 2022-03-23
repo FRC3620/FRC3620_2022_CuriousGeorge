@@ -39,7 +39,7 @@ public class DriveSubsystem extends SubsystemBase {
 	private boolean logSpinTransitions = false;
 	private boolean putDriveVectorsInNetworkTables = false;
 
-    public final CANSparkMaxSendable rightFrontDriveMaster = RobotContainer.driveSubsystemRightFrontDrive;
+	public final CANSparkMaxSendable rightFrontDriveMaster = RobotContainer.driveSubsystemRightFrontDrive;
 	public final CANSparkMaxSendable rightFrontAzimuth = RobotContainer.driveSubsystemRightFrontAzimuth;
 	public final RelativeEncoder rightFrontDriveEncoder = RobotContainer.driveSubsystemRightFrontDriveEncoder;
 	public final RelativeEncoder rightFrontAzimuthEncoder = RobotContainer.driveSubsystemRightFrontAzimuthEncoder;
@@ -94,7 +94,6 @@ public class DriveSubsystem extends SubsystemBase {
 	private final double MAX_TURN = 6; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
 
 	// readings of the absolute encoders when the wheels are pointed at true 0 degrees (gears to front of robot)
-	// PRACTICE BOT!!!!!!!!!
 	private double RIGHT_FRONT_ABSOLUTE_OFFSET;
 	private double LEFT_FRONT_ABSOLUTE_OFFSET;
 	private double LEFT_BACK_ABSOLUTE_OFFSET;
