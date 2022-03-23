@@ -41,7 +41,7 @@ public class TurretSubsystem extends SubsystemBase {
       turretPID = turretDrive.getPIDController();
 
       // set up PID for turretPID here
-      turretPID.setP(0.09);   //0.09
+      turretPID.setP(0.075);   //0.09
       turretPID.setI(0.0);     //0.0
       turretPID.setD(30);    //30
       turretPID.setFF(0.0);      //0.0
@@ -122,8 +122,8 @@ public class TurretSubsystem extends SubsystemBase {
     if(angle < -45) {
       angle = -45;
     }
-    if(angle > 265) {
-      angle = 265;
+    if(angle > 260) {
+      angle = 260;
     }
     SmartDashboard.putNumber("turretRequestedAngle", angle);
     requestedTurretPosition = angle;
@@ -139,6 +139,10 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public double getCurrentTurretPosition(){
-    return turretEncoder.getPosition();
+    if(turretEncoder != null){
+      return turretEncoder.getPosition();
+    } else {
+      return requestedTurretPosition;
+    }
   }
 }

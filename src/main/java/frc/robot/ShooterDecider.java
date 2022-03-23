@@ -7,9 +7,10 @@ import org.slf4j.Logger;
 import java.util.HashMap;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class ShooterDecider {
-    static Gson gson = new Gson();
+    static Gson gson = new GsonBuilder().serializeSpecialFloatingPointValues().create();
 
     public static class PewPewData extends HashMap<String, Object> {
         public void fillInVisionXDegress(double v) {

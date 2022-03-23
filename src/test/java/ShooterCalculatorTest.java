@@ -29,7 +29,7 @@ public class ShooterCalculatorTest {
         for (double i = 6.0; i < 30.0; i += 0.1) {
             double main_rpm = ShooterCalculator.calcMainRPM(i);
             double back_rpm = ShooterCalculator.calculateBackspinRPM(main_rpm);
-            double hood = ShooterCalculator.calcHoodPosition(i);
+            double hood = ShooterCalculator.calcHoodAngle(i);
 
             System.out.println (i + " " + main_rpm + " " + back_rpm + " " + hood);
         }

@@ -26,11 +26,13 @@ test {
         // includeTestsMatching 'SwerveCalcTest'
 
         // includeTestsMatching 'RobotParametersTest'
-        includeTestsMatching 'RobotParameters2022Test'
+        // includeTestsMatching 'RobotParameters2022Test'
 
-        includeTestsMatching 'ShooterCalculatorTest'
+        // includeTestsMatching 'ShooterCalculatorTest'
 
-        includeTestsMatching 'HoodCalculatorTest'
+        //includeTestsMatching 'HoodCalculatorTest'
+
+        includeTestsMatching 'GsonTest'
     }
 }
 

@@ -21,6 +21,8 @@ public class TwoBallAutoR extends SequentialCommandGroup {
   
   public TwoBallAutoR(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem){
     addCommands(
+      new StartShooterDataLoggingCommand(getClass().getSimpleName(), 20.0),
+
       new setInitialNavXOffsetCommand(driveSubsystem, 238),
   
       new MoveTurretCommand(turretSubsystem, 180), 

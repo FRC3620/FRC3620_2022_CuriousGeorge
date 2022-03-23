@@ -17,19 +17,20 @@ public class ShooterCalculator {
         return a-a;
     }
 
+    /**
+     * This method should take as input the current RPM of the main shooter
+     *  wheel as well as the CONSTANTS for shooter diameters and desired
+     *  cargo RPM. The method will return the _desired_ RPM of the backspin
+     *  motor. 
+     *
+     *  Please Note: This method assumes that RPM is the correct metric to use.
+     *  If we need something other than RPM (like motor power) we'll need to
+     *  update the calculation to tranlate this to another measure.
+     * 
+     * @param mainShooterRPM
+     * @return desired backspin shooter RPM
+     */
     public static double calculateBackspinRPM (double mainShooterRPM) {
-
-        /* This method should take as input the current RPM of the main shooter
-        *  wheel as well as the CONSTANTS for shooter diameters and desired
-        *  cargo RPM. The method will return the _desired_ RPM of the backspin
-        *  motor. 
-        *
-        *  Please Note: This method assumes that RPM is the correct metric to use.
-        *  If we need something other than RPM (like motor power) we'll need to
-        *  update the calculation to tranlate this to another measure.
-        * 
-        */
-
         double desiredBackspinRPM;
 
         // Check to see if there is a desiredCargoRPM value in SmartDashboard
@@ -45,21 +46,25 @@ public class ShooterCalculator {
 
     }
 
-    public static double calcHoodPosition(double distance) {
-        double calcHoodPosition;
+    public static double calcHoodAngle(double distance) {
+        double calcHoodAngle;
         if(distance < 12.5){
-            calcHoodPosition = 129 + -9.9*distance + 0.36*distance*distance;
+            calcHoodAngle = 129 + -9.9*distance + 0.36*distance*distance;
         } else if(distance < 17.5){
-            calcHoodPosition = 74 + -0.5*distance + -0.04*distance*distance;
+            calcHoodAngle = 59 + 1.7*distance + -0.12*distance*distance;
         } else {
-            calcHoodPosition = 109 + -4.6*distance + 0.08*distance*distance;
+            calcHoodAngle = 113.335 + -4.834*distance + 0.076*distance*distance;
         }
-        return calcHoodPosition;
+        return calcHoodAngle;
     }
 
     public static double calcMainRPM(double distance) {
-        double calcMainRPM = 1260 + (44*distance);
-        
+        double calcMainRPM;
+        if(distance < 15.0){
+            calcMainRPM = 1260 + (44*distance);
+        }else{
+            calcMainRPM = 1664 + -12.6*distance + 2*distance*distance;
+        }
         return calcMainRPM;
     }
     public static double calcDistanceFromHub(double targetY){

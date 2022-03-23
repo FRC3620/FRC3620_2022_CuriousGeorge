@@ -34,7 +34,9 @@ public class FastDataLoggerCollections extends FastDataLoggerBase {
             for (int c = 0; c < row.length; c++) {
                 w.print(",");
                 Object o = row[c];
-                if (o instanceof Number) {
+                if (o instanceof Integer) {
+                    w.format("%d", o);
+                } else if (o instanceof Number) {
                     w.format("%.6f", o);
                 } else {
                     w.print(o);

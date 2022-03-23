@@ -5,11 +5,13 @@ import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.miscellaneous.ShooterCalculator;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
@@ -20,15 +22,21 @@ public class FiveBallAutoP extends SequentialCommandGroup {
   
   public FiveBallAutoP(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem){
     addCommands(
+      new StartShooterDataLoggingCommand(getClass().getSimpleName(), 20.0),
+
       new setInitialNavXOffsetCommand(driveSubsystem, 90),
-  
-      new MoveTurretCommand(turretSubsystem, 180), 
+
+      new MoveTurretCommand(turretSubsystem, 180),
+
+      new SetHoodAngleForDistanceCommand(8),
+
+      new SetRPMForDistanceCommand(8),
   
       new IntakeArmDownCommand(), 
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new AutoDriveCommand(40, 90, .5, 90, driveSubsystem)
+          new AutoDriveCommand(34, 90, .6, 90, driveSubsystem)
         ), 
         new IntakeOnCommand()
       ),
@@ -36,66 +44,59 @@ public class FiveBallAutoP extends SequentialCommandGroup {
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
           new AutoShootCommand(),
-          new PullTheTriggerCommand(),
           new PullTheTriggerCommand()
         ),
         new IntakeOffCommand(intakeSubsystem)
       ),
 
       new LogCommand("Done with first shots"),
+
+      new MoveTurretCommand(turretSubsystem, 114),
+
+      new SetHoodAngleForDistanceCommand(12),
+
+      new SetRPMForDistanceCommand(12),
         
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
           new IntakeArmDownCommand(),
-          new AutoDriveCommand(12, 200, 0.5, 205, driveSubsystem),
-          new AutoDriveToCargoCommand(120, 200, 0.5, 225, driveSubsystem, visionSubsystem)
+          new AutoDriveCommand(130, 200, 0.8, 205, driveSubsystem)
+          //new AutoDriveToCargoCommand(120, 200, 0.5, 225, driveSubsystem, visionSubsystem)
         ),
         new IntakeOnCommand()
       ),
 
+      new MoveTurretCommand(turretSubsystem, 180),
+
+      new SetHoodAngleForDistanceCommand(25),
+
+      new SetRPMForDistanceCommand(25),
+
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new IntakeArmUpCommand(),
-          new AutoDriveCommand(130, 190, 0.5, 135, driveSubsystem)
+          new AutoDriveCommand(145, 165 , 0.7, 145, driveSubsystem)
         ),
-        new IntakeOffCommand(intakeSubsystem)
-      ),
-
-      new IntakeArmDownCommand(), 
-
-      new ParallelDeadlineGroup(
-        new SequentialCommandGroup(
-          new AutoDriveToCargoCommand(10, 135, .5, 135, driveSubsystem, visionSubsystem)
-        ), 
         new IntakeOnCommand()
       ),
 
-      new ParallelDeadlineGroup(
-        new SequentialCommandGroup(
-          new AutoShootCommand(),
-          new PullTheTriggerCommand(),
-          new PullTheTriggerCommand()
-        ),
-        new IntakeOffCommand(intakeSubsystem)
-      ),
-
-      new ParallelDeadlineGroup(
-        new SequentialCommandGroup(
-          new AutoDriveCommand(5, 315, 0.5, 135, driveSubsystem)
-        ), 
-        new IntakeOnCommand()
-      ),
-
-      new ParallelDeadlineGroup(
-        new SequentialCommandGroup(
-          new AutoShootCommand(),
-          new PullTheTriggerCommand()
-        ),
-        new IntakeOffCommand(intakeSubsystem)
+      new LogCommand("done with 180"),
+      new AutoShootCommand(),
+      new LogCommand("found target"),
+      new ParallelCommandGroup(
+          new IntakeOnCommand(),
+          new SequentialCommandGroup(
+              new PullTheTriggerForOneCommand(),
+              new LogCommand("shot once"),
+              new AutoPushBallUpCommand(),
+              new LogCommand("ball is ready to shoot"),
+              new PullTheTriggerForOneCommand(),
+              new AutoPushBallUpCommand(),
+              new PullTheTriggerCommand()
+          )
       ),
 
       new LogCommand("All done")
-    );  
+    );
   }
 
   class LogCommand extends InstantCommand {

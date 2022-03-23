@@ -19,6 +19,7 @@ import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -88,9 +89,9 @@ public class DriveSubsystem extends SubsystemBase {
 	private final double WHEEL_CIRCUMFERENCE = 2*Math.PI*WHEEL_RADIUS;
 	private final double DRIVE_ENCODER_CONVERSION_FACTOR = WHEEL_CIRCUMFERENCE*WHEEL_TO_ENCODER_RATIO_VELOCITY;
  
-	private final double MAX_VELOCITY_RPM = 750; //maximum velocity that the robot will travel when joystick is at full throtle, measured in RPM orignally 750
+	private final double MAX_VELOCITY_RPM = 1200; //maximum velocity that the robot will travel when joystick is at full throtle, measured in RPM orignally 750
 	public final double MAX_VELOCITY_IN_PER_SEC = MAX_VELOCITY_RPM*WHEEL_CIRCUMFERENCE/60; //max velocity in inches per second origanlly 60
-	private final double MAX_TURN = 4; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
+	private final double MAX_TURN = 6; //maximum angular velocity at which the robot will turn when joystick is at full throtle, measured in rad/s
 
 	// readings of the absolute encoders when the wheels are pointed at true 0 degrees (gears to front of robot)
 	// PRACTICE BOT!!!!!!!!!
@@ -121,9 +122,9 @@ public class DriveSubsystem extends SubsystemBase {
 	private boolean fieldRelative = true;
 
 	private PIDController spinPIDController;
-	private double kSpinP = 0.02; //0.013
-	private double kSpinI = 0.00000; //0.00001
-	private double kSpinD = 0.000; //0.003
+	private double kSpinP = 0.005; //0.005 works
+	private double kSpinI = 0.00000; //0.0000
+	private double kSpinD = 0.000; //0.000
 	private boolean autoSpinMode;
 	private boolean forceManualMode = false;
 	private double currentHeading;
@@ -289,6 +290,8 @@ public class DriveSubsystem extends SubsystemBase {
 			SmartDashboard.putNumber("Right Back Drive Current Draw", rightBackDriveMaster.getOutputCurrent());
 			SmartDashboard.putNumber("Right Back Drive Voltage", rightBackDriveMaster.getAppliedOutput());
 		}
+
+		SmartDashboard.putBoolean("Are We Stopped", areWeStopped());
 
 		if (rightFrontDriveMaster  != null) {
 			updateVelocityPIDs(rightFrontVelPID, leftFrontVelPID, leftBackVelPID, rightBackVelPID);
@@ -620,6 +623,41 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 	}
 
+	public void xMode(){ 
+		// these angles are angles for Vectors. Math class degress:
+		// 0 degrees is to the right, 90 degrees is front, -90 degrees is behind, +/-180 degrees is left
+
+
+		double leftFrontAngle = -45;
+		double rightFrontAngle = 45;
+		double leftBackAngle = 45;
+		double rightBackAngle = -45;
+
+		DriveVectors currentDirections = getCurrentVectors();
+		 
+		DriveVectors newVectors = new DriveVectors();
+
+		// need to have non-zero velocity so that fixVectors actually changes azimuth.
+		newVectors.leftFront = new Vector(leftFrontAngle, 20.1);
+		newVectors.rightFront = new Vector(rightFrontAngle, 20.1);
+		newVectors.leftBack = new Vector(leftBackAngle, 20.1);  // we will fix the velocity for rear below
+		newVectors.rightBack = new Vector(rightBackAngle, 20.1);
+
+		newVectors = SwerveCalculator.fixVectors(newVectors, currentDirections); //gets quickest wheel angle and direction configuration
+		
+		if (rightFrontDriveMaster != null) {
+			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
+			leftFrontPositionPID.setReference(newVectors.leftFront.getDirection(), ControlType.kPosition);
+			leftBackPositionPID.setReference(newVectors.leftBack.getDirection(), ControlType.kPosition);
+			rightBackPositionPID.setReference(newVectors.rightBack.getDirection(), ControlType.kPosition);
+		
+			rightFrontVelPID.setReference(0, ControlType.kVelocity);
+			leftFrontVelPID.setReference(0, ControlType.kVelocity);
+			leftBackVelPID.setReference(0, ControlType.kVelocity);
+			rightBackVelPID.setReference(0, ControlType.kVelocity);
+		} 
+	}
+
 	public void setPositionPID(SparkMaxPIDController pidController) {
 		if (pidController != null) {
 			pidController.setP(kPositionP);	
@@ -885,6 +923,30 @@ public class DriveSubsystem extends SubsystemBase {
 
 	public double getMaxVelocity(){
 		return MAX_VELOCITY_IN_PER_SEC;
+	}
+
+
+
+	public boolean areWeStopped(){
+		double totalVelocity = 0;
+		if(rightFrontDriveEncoder != null){
+			totalVelocity = totalVelocity + Math.abs(rightFrontDriveEncoder.getVelocity());
+		}
+		if(rightBackDriveEncoder != null){
+			totalVelocity = totalVelocity + Math.abs(rightBackDriveEncoder.getVelocity());
+		}
+		if(leftFrontDriveEncoder != null){
+			totalVelocity = totalVelocity + Math.abs(leftFrontDriveEncoder.getVelocity());
+		}
+		if(leftBackDriveEncoder != null){
+			totalVelocity = totalVelocity + Math.abs(leftBackDriveEncoder.getVelocity());
+		}
+		
+		if(totalVelocity <= 2.0){
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public double getWheelCircumference(){
