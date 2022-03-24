@@ -36,7 +36,7 @@ public class FiveBallAutoP extends SequentialCommandGroup {
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new AutoDriveCommand(34, 90, .6, 90, driveSubsystem)
+          new AutoDriveCommand(40, 90, .6, 90, driveSubsystem)
         ), 
         new IntakeOnCommand()
       ),
