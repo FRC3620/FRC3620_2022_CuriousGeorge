@@ -43,8 +43,8 @@ public class TurretSubsystem extends SubsystemBase {
       // set up PID for turretPID here
       turretPID.setP(0.075);   //0.09
       turretPID.setI(0.0);     //0.0
-      turretPID.setD(30);    //30
-      turretPID.setFF(0.0);      //0.0
+      turretPID.setD(30);      //30
+      turretPID.setFF(0.0);    //0.0
 
       turretPID.setOutputRange(-0.95, 0.95);
     }
@@ -88,7 +88,7 @@ public class TurretSubsystem extends SubsystemBase {
               calibrationTimer.start();
             } else {
               if (calibrationTimer.get() > 0.5){
-                if (Math.abs(turretSpeed) < 20) {
+                if (Math.abs(turretSpeed) < 300) {
                   encoderIsValid = true;
                   turnTurret(0.0);
                   turretEncoder.setPosition(270.0);
@@ -107,6 +107,10 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     SmartDashboard.putBoolean("turretEncoderValid", encoderIsValid);
+  }
+
+  public boolean turretEncoderIsValid() {
+    return encoderIsValid;
   }
 
   /**

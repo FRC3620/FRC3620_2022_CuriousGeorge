@@ -42,13 +42,24 @@ public class ShootingDataLogger {
 
         dataLogger.addDataProvider("hood.requested", () -> shooterSubsystem.getRequestedHoodPosition());
         dataLogger.addDataProvider("hood.position", () -> shooterSubsystem.getHoodPosition());
+        dataLogger.addDataProvider("hood.encoder_is_valid", () -> shooterSubsystem.hoodEncoderIsValid() ? 1 : 0);
+        if (RobotContainer.shooterSubsystemHoodMax != null) {
+            dataLogger.addDataProvider("hood.velocity", () -> RobotContainer.shooterSubsystemHoodMax.getEncoder().getVelocity());
+        }
 
+
+        dataLogger.addDataProvider("navx.heading", () -> RobotContainer.driveSubsystem.getNavXFixedAngle());
+        dataLogger.addDataProvider("turret.requested", () -> turretSubsystem.getRequestedTurretPosition());
+        dataLogger.addDataProvider("turret.position", () -> turretSubsystem.getCurrentTurretPosition());
+        if (RobotContainer.turretSubsystemturretEncoder != null) {
+            dataLogger.addDataProvider("turret.velocity", () -> RobotContainer.turretSubsystemturretEncoder.getVelocity());
+        }
         if (RobotContainer.turretSubsystemturretSpinner != null) {
             dataLogger.addDataProvider("turret.power", () -> RobotContainer.turretSubsystemturretSpinner.getAppliedOutput());
             dataLogger.addDataProvider("turret.current", () -> RobotContainer.turretSubsystemturretSpinner.getOutputCurrent());
         }
-        dataLogger.addDataProvider("turret.requested", () -> turretSubsystem.getRequestedTurretPosition());
-        dataLogger.addDataProvider("turret.position", () -> turretSubsystem.getCurrentTurretPosition());
+
+        dataLogger.addDataProvider("turret.encoder_is_valid", () -> turretSubsystem.turretEncoderIsValid() ? 1 : 0);
 
         dataLogger.addDataProvider("vision.target.found", () -> visionSubsystem.isTargetFound() ? 1 : 0);
         dataLogger.addDataProvider("vision.target.centered", () -> visionSubsystem.isTargetCentered() ? 1 : 0);

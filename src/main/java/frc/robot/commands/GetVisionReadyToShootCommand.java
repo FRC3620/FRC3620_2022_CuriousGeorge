@@ -104,14 +104,11 @@ public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
       shooterSubsystem.setMainRPM(targetRPM);
       shooterSubsystem.setBackRPM(ShooterCalculator.calculateBackspinRPM(targetRPM));
       shooterSubsystem.setHoodPositionToDegrees(targetHood);
-
-      pewPewData.fillInVisionXDegress(targetXDegrees);
-      pewPewData.fillInVisionYLocation(targetYLocation);
-      pewPewData.fillInVisionDistance(targetDistance);
     }
   }
 
   public void end(boolean interrupted) {
+    pewPewData.fillInVisionData();
     super.end(interrupted);
     if (dataLogger != null) {
       dataLogger.done();
