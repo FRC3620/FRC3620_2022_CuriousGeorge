@@ -86,7 +86,7 @@ public class VisionSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("vision.target.x", getTargetXLocation());
       SmartDashboard.putNumber("vision.target.y", getTargetYLocation());
       SmartDashboard.putNumber("vision.target.boxes", targetData.boxes);
-      SmartDashboard.putBoolean("vision.target.found", targetData.found);
+      SmartDashboard.putBoolean("vision.target.found", isTargetFound());
       SmartDashboard.putBoolean("vision.target.centered", isTargetCentered());
       rv = true;
     } catch (Exception ex) {
@@ -106,13 +106,23 @@ public class VisionSubsystem extends SubsystemBase {
     double targetDistance = ShooterCalculator.calcDistanceFromHub(getTargetYLocation());
     double targetRPM = ShooterCalculator.calcMainRPM(targetDistance);
     SmartDashboard.putNumber("vision.target.data_age", getTargetDataAge());
-    SmartDashboard.putBoolean("vision.target.data_is_fresh", ! isTargetDataStale());
+    SmartDashboard.putBoolean("vision.target.data_is_fresh", !isTargetDataStale());
     SmartDashboard.putNumber("vision.calculated.distance", targetDistance);
-    SmartDashboard.putNumber("vision.calculated.RPM",targetRPM);
+    SmartDashboard.putNumber("vision.calculated.RPM", targetRPM);
   }
 
   public boolean isTargetFound() {
-    return targetData.found && ! isTargetDataStale();
+    double currentTurretPosition = RobotContainer.turretSubsystem.getCurrentTurretPosition();
+
+    boolean rv = targetData.found;
+    if (currentTurretPosition > 31 && currentTurretPosition < 82) {
+      // we are probably looking at our armpit
+      rv = false;
+    }
+    if (isTargetDataStale()) {
+      rv = false;
+    }
+    return rv;
   }
 
   public double getTargetXLocation(){
@@ -150,10 +160,16 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public boolean isTargetCentered() {
-    if (! isTargetFound()) {
+    if (!isTargetFound()) {
       return false;
     }
-    if (Math.abs(getTargetXDegrees()) < 5){
+    double ylocation = getTargetYLocation();
+    double distance = ShooterCalculator.calcDistanceFromHub(ylocation);
+    double limit = 1;
+    if (distance < 15) {
+      limit = 5;
+    }
+    if (Math.abs(getTargetXDegrees()) < limit){
       return true;
     }
     return false;

@@ -18,6 +18,8 @@ import frc.robot.miscellaneous.CANSparkMaxSendable;
 
 public class IntakeSubsystem extends SubsystemBase {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+
+  boolean logCallers = false;
   
   CANSparkMaxSendable intakeWheelbar = RobotContainer.intakeWheelbar;
   CANSparkMaxSendable intakeBelt = RobotContainer.intakeBelt;
@@ -64,6 +66,10 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void overrideIntakeBeltForShooting(double speed) {
+    if (logCallers) {
+      String where = EventLogging.myAndCallersNames();
+      logger.info ("{} with {}", where, speed);
+    }
     intakeBeltSpeedShootingOverride = speed;
     if (intakeBelt != null) {
         intakeBelt.set(speed);
@@ -71,6 +77,10 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void overrideIntakeWheelBarForShooting(double speed) {
+    if (logCallers) {
+      String where = EventLogging.myAndCallersNames();
+      logger.info ("{} with {}", where, speed);
+    }
     intakeBeltSpeedShootingOverride = speed;
     if (intakeBelt != null) {
         intakeWheelbar.set(speed);
@@ -78,6 +88,10 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void clearIntakeShootingOverrides() {
+    if (logCallers) {
+      String where = EventLogging.myAndCallersNames();
+      logger.info ("{} with {}", where);
+    }
     intakeBeltSpeedShootingOverride = null;
     intakeWheelBarSpeedShootingOverride = null;
   }

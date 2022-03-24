@@ -5,15 +5,24 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.ShooterDecider;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PreShooterSubsystem;
-public class FastPullTheTriggerCommand extends CommandBase {
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
+
+public class PullTheTriggerForOneCommand extends CommandBase {
+  Logger logger = EventLogging.getLogger(getClass(), EventLogging.Level.INFO);
+
   PreShooterSubsystem preShooterSubsystem = RobotContainer.preShooterSubsystem;
   IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
 
   Timer preshooterTimer = new Timer();
   boolean weAreDone = false;
-  public FastPullTheTriggerCommand() {
+
+  ShooterDecider.PewPewData pewPewData = new ShooterDecider.PewPewData();
+
+  public PullTheTriggerForOneCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
 
     // do not require the intake!!!!!!!!
@@ -26,19 +35,22 @@ public class FastPullTheTriggerCommand extends CommandBase {
     preshooterTimer.reset();
     preshooterTimer.start();
     weAreDone = false;
+
+    pewPewData.clear();
+    ShooterDecider.isShooterUpToSpeed(pewPewData);
+    ShooterDecider.isHoodInPosition(pewPewData);
+    ShooterDecider.isTurretInPosition(pewPewData);
+    pewPewData.fillInVisionData();
+    ShooterDecider.logPewPewData(logger, "doing", pewPewData);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(preshooterTimer.get() < 0.7) {
-        preShooterSubsystem.preshooterOn(1.0);
+    if(preshooterTimer.get() < 0.6) {    // .7 to .5 to .4
+        preShooterSubsystem.preshooterOn(1);
         intakeSubsystem.overrideIntakeBeltForShooting(0.0);
-        intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);
-    } else if (preshooterTimer.get() < 2.0) {
-        preShooterSubsystem.preshooterOn(1.0);
-        intakeSubsystem.overrideIntakeBeltForShooting(0.4);
-        intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);
+        //intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);
     } else {
         weAreDone = true;
     }

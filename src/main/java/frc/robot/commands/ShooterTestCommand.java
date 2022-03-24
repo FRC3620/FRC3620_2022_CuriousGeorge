@@ -50,7 +50,7 @@ public class ShooterTestCommand extends CommandBase {
     boolean shouldDoDataLogging = SmartDashboard.getBoolean("shooter.datalogging.enabled", false);
     if (shouldDoDataLogging) {
       double length = SmartDashboard.getNumber("shooter.datalogging.length", 15);
-      dataLogger = ShootingDataLogger.getShootingDataLogger("shooter_m", m_subsystem, length);
+      dataLogger = ShootingDataLogger.getShootingDataLogger("shooter_m", length);
       dataLogger.start();
     }
   }

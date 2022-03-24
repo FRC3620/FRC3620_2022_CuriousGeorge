@@ -41,12 +41,12 @@ public class TurretSubsystem extends SubsystemBase {
       turretPID = turretDrive.getPIDController();
 
       // set up PID for turretPID here
-      turretPID.setP(0.09);   //0.09
+      turretPID.setP(0.075);   //0.09
       turretPID.setI(0.0);     //0.0
-      turretPID.setD(30);    //30
-      turretPID.setFF(0.0);      //0.0
+      turretPID.setD(30);      //30
+      turretPID.setFF(0.0);    //0.0
 
-      turretPID.setOutputRange(-0.60, 0.60);
+      turretPID.setOutputRange(-0.95, 0.95);
     }
 
     if (turretEncoder != null) {
@@ -88,7 +88,7 @@ public class TurretSubsystem extends SubsystemBase {
               calibrationTimer.start();
             } else {
               if (calibrationTimer.get() > 0.5){
-                if (Math.abs(turretSpeed) < 20) {
+                if (Math.abs(turretSpeed) < 300) {
                   encoderIsValid = true;
                   turnTurret(0.0);
                   turretEncoder.setPosition(270.0);
@@ -109,6 +109,10 @@ public class TurretSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("turretEncoderValid", encoderIsValid);
   }
 
+  public boolean turretEncoderIsValid() {
+    return encoderIsValid;
+  }
+
   /**
    * 
    * @param speed speed to turn it. positive is clockwise
@@ -122,8 +126,8 @@ public class TurretSubsystem extends SubsystemBase {
     if(angle < -45) {
       angle = -45;
     }
-    if(angle > 265) {
-      angle = 265;
+    if(angle > 260) {
+      angle = 260;
     }
     SmartDashboard.putNumber("turretRequestedAngle", angle);
     requestedTurretPosition = angle;
@@ -139,6 +143,10 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public double getCurrentTurretPosition(){
-    return turretEncoder.getPosition();
+    if(turretEncoder != null){
+      return turretEncoder.getPosition();
+    } else {
+      return requestedTurretPosition;
+    }
   }
 }

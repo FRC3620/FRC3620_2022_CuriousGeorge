@@ -41,6 +41,10 @@ public class AutoShootCommand extends GetVisionReadyToShootCommand {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return super.isFinished();
+    // logOkToShootMessages is defined and set in superclass
+    if (logOkToShootMessages) {
+      logger.info("okToShoot 3 {}", okToShoot);
+    }
+    return okToShoot;
   }
 }

@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.miscellaneous.ShooterCalculator;
 
 public class GetTarmacReadyToShootCommand extends GetReadyToShootCommand {
   /** Creates a new GetTarmacReadyToShootCommand. */
@@ -16,9 +17,13 @@ public class GetTarmacReadyToShootCommand extends GetReadyToShootCommand {
   @Override
   public void initialize() {
     super.initialize();
-    shooterSubsystem.setMainRPM(1700);
-    shooterSubsystem.setBackRPM(1466);
-    shooterSubsystem.setHoodPositionToDegrees(65);
+
+    double distance = 10;
+    double main_rpm = ShooterCalculator.calcMainRPM(distance);
+    shooterSubsystem.setMainRPM(main_rpm);
+    shooterSubsystem.setBackRPM(ShooterCalculator.calculateBackspinRPM(main_rpm));
+    shooterSubsystem.setHoodPositionToDegrees(ShooterCalculator.calcHoodAngle(distance));
+
     turretSubsystem.setTurretPosition(180);
   }
 }
