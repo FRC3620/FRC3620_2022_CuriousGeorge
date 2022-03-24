@@ -88,7 +88,7 @@ public class EventLogging {
   	  logger.info("command {} with {}", stackTraceElement[1].getMethodName(), o);
     }
 
-    public static String callerName() {
+    public static String callerAndCallersCallerNames() {
       StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
       StackTraceElement callersCaller = stackTraceElements[3];
       StackTraceElement callersCallerCaller = stackTraceElements[4];
@@ -96,7 +96,15 @@ public class EventLogging {
         + " from " + callersCallerCaller.getClassName() + "." + callersCallerCaller.getMethodName();
     }
     
-    /**
+    public static String myAndCallersNames() {
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        StackTraceElement caller = stackTraceElements[2];
+        StackTraceElement callersCaller = stackTraceElements[3];
+        return caller.getClassName() + "." + caller.getMethodName()
+          + " from " + callersCaller.getClassName() + "." + callersCaller.getMethodName();
+      }
+      
+      /**
      * Write a warning message to the DriverStation.
      * 
      * @param message
