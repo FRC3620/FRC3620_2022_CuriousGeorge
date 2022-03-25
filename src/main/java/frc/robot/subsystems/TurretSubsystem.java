@@ -22,7 +22,7 @@ import frc.robot.miscellaneous.CANSparkMaxSendable;
 public class TurretSubsystem extends SubsystemBase {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
-  boolean encoderIsValid = true;
+  boolean encoderIsValid = false;
   CANSparkMaxSendable turretDrive = RobotContainer.turretSubsystemturretSpinner;
   RelativeEncoder turretEncoder = RobotContainer.turretSubsystemturretEncoder;
   SparkMaxPIDController turretPID = null;
