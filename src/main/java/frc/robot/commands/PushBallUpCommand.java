@@ -12,7 +12,7 @@ import frc.robot.subsystems.PreShooterSubsystem;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 
-public class AutoPushBallUpCommand extends CommandBase {
+public class PushBallUpCommand extends CommandBase {
   Logger logger = EventLogging.getLogger(getClass(), EventLogging.Level.INFO);
 
   PreShooterSubsystem preShooterSubsystem = RobotContainer.preShooterSubsystem;
@@ -23,7 +23,7 @@ public class AutoPushBallUpCommand extends CommandBase {
 
   ShooterDecider.PewPewData pewPewData = new ShooterDecider.PewPewData();
 
-  public AutoPushBallUpCommand() {
+  public PushBallUpCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
 
     addRequirements(preShooterSubsystem);

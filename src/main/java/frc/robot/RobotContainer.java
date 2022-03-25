@@ -488,6 +488,8 @@ public class RobotContainer {
 
     JoystickButton ejectButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
     ejectButton.whileHeld(new EjectBallCommand());
+
+    new TriggerButton(operatorJoystick, false).whenPressed(new PushBallUpCommand());
   }
 
   public static double getOperatorJoystickRightY() {

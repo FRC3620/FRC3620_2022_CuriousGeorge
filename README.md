@@ -21,7 +21,7 @@
 * Right Stick - Climber up + down
 * LB - GetReadyToClimb
 * RB - eject ball
-
+* RT - just intake belt
 # Hardware Assignments
 * SparkMAX 17 - climber
 <br></br>
