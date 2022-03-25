@@ -554,6 +554,7 @@ public class RobotContainer {
     chooser.addOption("4 Ball R Auto", new FourBallAutoR(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
     chooser.addOption("3 Ball P Auto", new ThreeBallAutoP(driveSubsystem, visionSubsystem,turretSubsystem, intakeSubsystem));
     chooser.addOption("3 Ball Q Auto", new ThreeBallAutoQ(driveSubsystem, visionSubsystem,turretSubsystem, intakeSubsystem));
+    chooser.addOption("1 Ball Auto", new OneBallAuto(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
     chooser.addOption("2 Ball P Auto", new TwoBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
     chooser.addOption("2 Ball Q Auto", new TwoBallAutoQ(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
     chooser.addOption("2 Ball R Auto", new TwoBallAutoR(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
