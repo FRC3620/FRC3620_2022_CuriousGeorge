@@ -505,7 +505,8 @@ public class RobotContainer {
   
     SmartDashboard.putData("TestAuto", new TestAuto(driveSubsystem));
     SmartDashboard.putData("AutoDriveToCargo Test", new DriveToCargoTestAuto(driveSubsystem, visionSubsystem));
-    SmartDashboard.putData("5 Ball Auto P", new FiveBallAutoPBaby(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    SmartDashboard.putData("Blue 5 Ball Auto P", new BlueFiveBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    SmartDashboard.putData("5 Ball Auto P baby", new FiveBallAutoPBaby(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
     SmartDashboard.putData("4 Ball Auto P", new FourBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
     SmartDashboard.putData("4 Ball Auto Q", new FourBallAutoQ(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
     SmartDashboard.putData("4 Ball Auto R", new FourBallAutoR(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
@@ -548,7 +549,8 @@ public class RobotContainer {
     //chooser.addOption("Doug Otto", new DougOtto(driveSubsystem, visionSubsystem, turretSubsystem));
     //chooser.addOption("TestAuto", new TestAuto(driveSubsystem));
     chooser.addOption("AutoDriveToCargo Test", new DriveToCargoTestAuto(driveSubsystem, visionSubsystem));
-    chooser.addOption("5 Ball P Auto", new FiveBallAutoPBaby(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("Blue 5 Ball P Auto", new BlueFiveBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("5 Ball P Auto Baby", new FiveBallAutoPBaby(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
     chooser.addOption("4 Ball P Auto", new FourBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
     chooser.addOption("4 Ball Q Auto", new FourBallAutoQ(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
     chooser.addOption("4 Ball R Auto", new FourBallAutoR(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
