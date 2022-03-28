@@ -16,19 +16,20 @@ public class ShootFarAutoCommand extends SequentialCommandGroup {
     public ShootFarAutoCommand(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem){
         addCommands(
             new StartShooterDataLoggingCommand(getClass().getSimpleName(), 20.0),
-            new MoveTurretCommand(turretSubsystem, 180), 
-            new LogCommand("done with 180"),
+            new MoveTurretCommand(turretSubsystem, 190), 
+            new LogCommand("done with 190"),
             new AutoShootCommand(),
             new LogCommand("found target"),
             new ParallelCommandGroup(
                 new IntakeOnCommand(),
+                new GetVisionReadyToShootCommand(),
                 new SequentialCommandGroup(
                     new PullTheTriggerForOneCommand(),
                     new LogCommand("shot once"),
-                    new AutoPushBallUpCommand(),
+                    new PushBallUpCommand(),
                     new LogCommand("ball is ready to shoot"),
                     new PullTheTriggerForOneCommand(),
-                    new AutoPushBallUpCommand(),
+                    new PushBallUpCommand(),
                     new PullTheTriggerCommand()
                 )
             )

@@ -61,9 +61,9 @@ public class ShooterCalculator {
     public static double calcMainRPM(double distance) {
         double calcMainRPM;
         if(distance < 15.0){
-            calcMainRPM = 1260 + (44*distance);
+            calcMainRPM = (1260 + (44*distance)) * 1.03;
         }else{
-            calcMainRPM = 1664 + -12.6*distance + 2*distance*distance;
+            calcMainRPM = (1664 + -12.6*distance + 2*distance*distance) * 1.03;
         }
         return calcMainRPM;
     }

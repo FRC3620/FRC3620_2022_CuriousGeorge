@@ -59,7 +59,7 @@ public class ClimberSubsystem extends SubsystemBase {
         } else {
           if(RobotContainer.getOperatorJoystickRightY()<0 && getClimberExtensionInInches()<=0.25) {
             spinClimberExtentionMotor(0.0);
-          } else if(RobotContainer.getOperatorJoystickRightY()>0 && getClimberExtensionInInches()>17) {
+          } else if(RobotContainer.getOperatorJoystickRightY()>0 && getClimberExtensionInInches()>18.5) {
             spinClimberExtentionMotor(0.0);
           } else {
             spinClimberExtentionMotor(RobotContainer.getOperatorJoystickRightY());
