@@ -37,6 +37,7 @@ public class VisionSubsystem extends SubsystemBase {
   private NetworkTable targetNetworkTable = inst.getTable("V/Target");
   private NetworkTableEntry nt_target_json = targetNetworkTable.getEntry("json");
   private Solenoid visionLight = RobotContainer.ringLight;
+<<<<<<< Updated upstream
   Gson targetGson = new Gson();
   TargetData targetData = new TargetData();
   double targetDataLastUpdated = 0;
@@ -53,6 +54,12 @@ public class VisionSubsystem extends SubsystemBase {
     @SerializedName("f")
     boolean found;
   }
+=======
+ 
+ 
+ 
+//end of drew playing with limelight 
+>>>>>>> Stashed changes
 
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
@@ -184,6 +191,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public void turnVisionLightOn() {
+<<<<<<< Updated upstream
     if (visionLight != null) {
       visionLight.set(true);
     }
@@ -193,5 +201,33 @@ public class VisionSubsystem extends SubsystemBase {
     if (visionLight != null) {
       visionLight.set(false);
     }
+=======
+    visionLight.set(true);
+
+    //Drew playing with limelight 
+    
+  
+    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+  NetworkTableEntry ty = table.getEntry("ty");
+  double targetOffsetAngle_Vertical = ty.getDouble(0.0);
+  
+  // how many degrees back is your limelight rotated from perfectly vertical?
+  double limelightMountAngleDegrees = 20.0;
+  
+  // distance from the center of the Limelight lens to the floor
+  double limelightLensHeightInches = 34.0;
+  
+  // distance from the target to the floor
+  double goalHeightInches = 105;
+  
+  double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
+  double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+  
+  
+  //calculate distance
+  double distanceFromGoalInches = (goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians);
+  
+  SmartDashboard.putNumber("wow.It.Actually.Works", distanceFromGoalInches);
+>>>>>>> Stashed changes
   }
 }

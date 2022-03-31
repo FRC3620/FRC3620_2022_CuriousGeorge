@@ -563,8 +563,8 @@ public class RobotContainer {
     chooser.addOption("shoot far command",new ShootFarAutoCommand(driveSubsystem, visionSubsystem,turretSubsystem, intakeSubsystem));
   }
   
-  
   static double driverStrafeDeadzone = 0.1;
+
   public static double getDriveVerticalJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y);
     SmartDashboard.putNumber("driver.raw.y", axisValue);
