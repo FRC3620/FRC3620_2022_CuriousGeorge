@@ -70,17 +70,15 @@ public class ShooterCalculator {
     public static double calcDistanceFromHub(double targetY){
         double distance;
 
-
         if (targetY > 0.461){
             distance = 20.05629 - 19.60707*(targetY) + 6.976088*(targetY*targetY);
             
-        } else if(targetY>0.239) {
+        } else if(targetY > 0.239) {
             distance = 26.38900 - 44.79796*(targetY) + 31.82205*(targetY*targetY);
         } else {
             distance = 27.98076 -63.49953 *(targetY) +82.20488 *(targetY*targetY);
 
         }
-
 
         return distance;
     }
