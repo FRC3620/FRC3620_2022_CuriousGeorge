@@ -2,7 +2,7 @@
 
 ## Driver Controls
 * A - X Mode
-* X - Reset NavX
+* X - Reset NavX                                                               does not work?
 * Y - Center on Ball
 * LB - roller and belt (clockwise) [toggle]
 * RB - turn off drive [toggle]
