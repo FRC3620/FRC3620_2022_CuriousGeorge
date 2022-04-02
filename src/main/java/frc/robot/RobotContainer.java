@@ -9,13 +9,8 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.WPI_CANCoder;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -28,11 +23,9 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.simulation.JoystickSim;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
@@ -45,6 +38,8 @@ import frc.robot.subsystems.*;
 import frc.robot.subsystems.RumbleSubsystem.Hand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
+import java.util.Set;
 
 /**
  * 
@@ -102,6 +97,10 @@ public class RobotContainer {
 
   // vision
   public static Solenoid ringLight;
+ 
+  //lights
+  public static Solenoid redLight, blueLight, greenLight;
+  
 
   // shooter hardware variables are currently unknown so we need to change them
   public static WPI_TalonFX shooterSubsystemMainShooter1;
@@ -122,6 +121,7 @@ public class RobotContainer {
 
   // subsystems here...
   public static DriveSubsystem driveSubsystem;
+  public static LightSubsystem lightSubsystem;
   public static VisionSubsystem visionSubsystem;
   public static ClimberSubsystem climberSubsystem; 
   public static IntakeSubsystem intakeSubsystem;
@@ -170,29 +170,36 @@ public class RobotContainer {
       
     // we don't *need* to use the canDeviceFinder for CAN Talons because
     // they do not put up unreasonable amounts of SPAM
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1, "Swerve") || shouldMakeAllCANDevices){
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 1, "Swerve RF Drive") || shouldMakeAllCANDevices){
 
       driveSubsystemRightFrontDrive = new CANSparkMaxSendable(1, MotorType.kBrushless);
       driveSubsystemRightFrontDriveEncoder = driveSubsystemRightFrontDrive.getEncoder();
-      
+
+      canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 2, "Swerve RF Azimuth");
       driveSubsystemRightFrontAzimuth = new CANSparkMaxSendable(2, MotorType.kBrushless);
       driveSubsystemRightFrontAzimuthEncoder = driveSubsystemRightFrontAzimuth.getEncoder();
 
+      canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 3, "Swerve LF Drive");
       driveSubsystemLeftFrontDrive = new CANSparkMaxSendable(3, MotorType.kBrushless);
       driveSubsystemLeftFrontDriveEncoder = driveSubsystemLeftFrontDrive.getEncoder();
-              
+
+      canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 4, "Swerve LF Azimuth");
       driveSubsystemLeftFrontAzimuth = new CANSparkMaxSendable(4, MotorType.kBrushless);
       driveSubsystemLeftFrontAzimuthEncoder = driveSubsystemLeftFrontAzimuth.getEncoder();
 
+      canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 5, "Swerve LB Drive");
       driveSubsystemLeftBackDrive = new CANSparkMaxSendable(5, MotorType.kBrushless);
       driveSubsystemLeftBackDriveEncoder = driveSubsystemLeftBackDrive.getEncoder();
-              
+
+      canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 6, "Swerve LB Azimuth");
       driveSubsystemLeftBackAzimuth = new CANSparkMaxSendable(6, MotorType.kBrushless);
       driveSubsystemLeftBackAzimuthEncoder = driveSubsystemLeftBackAzimuth.getEncoder();
 
+      canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 7, "Swerve RB Drive");
       driveSubsystemRightBackDrive = new CANSparkMaxSendable(7, MotorType.kBrushless);
       driveSubsystemRightBackDriveEncoder = driveSubsystemRightBackDrive.getEncoder();
-      
+
+      canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 8, "Swerve RB Azimuth");
       driveSubsystemRightBackAzimuth = new CANSparkMaxSendable(8, MotorType.kBrushless);
       driveSubsystemRightBackAzimuthEncoder = driveSubsystemRightBackAzimuth.getEncoder();
     }
@@ -275,12 +282,27 @@ public class RobotContainer {
 
       ringLight = new Solenoid(pneumaticModuleType, 7);
       ringLight.set(true);
+
+      if (pneumaticModuleType == PneumaticsModuleType.REVPH) {
+        redLight = new Solenoid(pneumaticModuleType, 15);
+        blueLight = new Solenoid(pneumaticModuleType, 14);
+        greenLight = new Solenoid(pneumaticModuleType, 13);
+      }
+
       if (robotParameters.hasClimber()){
         climberArmTilt = new DoubleSolenoid(pneumaticModuleType, 0, 1);
       }
       if (robotParameters.hasIntake()){
         intakeArm = new DoubleSolenoid(pneumaticModuleType, 2, 3);
       }
+    }
+
+    Set<CANDeviceFinder.NamedCANDevice> missingDevices = canDeviceFinder.getMissingDeviceSet();
+    if (missingDevices.size() > 0) {
+      SmartDashboard.putBoolean("can.ok", false);
+      SmartDashboard.putString("can.missing", missingDevices.toString());
+    } else {
+      SmartDashboard.putBoolean("can.ok", true);
     }
   }
   
@@ -317,6 +339,7 @@ public class RobotContainer {
       resetTalonFXToKnownState(shooterSubsystemMainShooter1, InvertType.InvertMotorOutput);
     }
 
+
     if (shooterSubsystemMainShooter2 != null) {
       resetTalonFXToKnownState(shooterSubsystemMainShooter2, InvertType.OpposeMaster);
       shooterSubsystemMainShooter2.follow(shooterSubsystemMainShooter1);
@@ -341,6 +364,7 @@ public class RobotContainer {
     if(climberExtentionMotor != null) {
       resetMaxToKnownState(climberExtentionMotor, true);
       climberExtentionMotor.setIdleMode(IdleMode.kBrake);
+      
     }
 
     if(intakeWheelbar != null) {
@@ -389,6 +413,7 @@ public class RobotContainer {
 
   void makeSubsystems() {
     driveSubsystem = new DriveSubsystem();
+    lightSubsystem = new LightSubsystem();
     visionSubsystem = new VisionSubsystem();
     climberSubsystem = new ClimberSubsystem();
     intakeSubsystem = new IntakeSubsystem();
@@ -426,6 +451,7 @@ public class RobotContainer {
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_Y).whenPressed(new GetSafeZoneReadyToShootCommnd());
 
     //Climber buttons
+    new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_BUMPER).whenPressed(new GetReadyToClimbCommand());
     //left interior
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_BACK).whenPressed(new ClimberTiltTestCommandOut());
     //right interior
@@ -434,11 +460,14 @@ public class RobotContainer {
     //Shooter
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_STICK).whenPressed(new ShooterOffCommand());
 
+
     operatorDPad.up().whenPressed(new MoveTurretCommand(turretSubsystem, 0));
     operatorDPad.right().whenPressed(new MoveTurretCommand(turretSubsystem, 90));
     operatorDPad.down().whenPressed(new MoveTurretCommand(turretSubsystem, 180));
     operatorDPad.left().whenPressed(new MoveTurretCommand(turretSubsystem, 270));
-   
+
+    //x mode
+    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A).whileHeld(new XModeCommand(driveSubsystem));
 
     JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);
     centerOnBallButton.whileHeld(new InstantCenterOnBallCommand(driveSubsystem, visionSubsystem));
@@ -453,10 +482,12 @@ public class RobotContainer {
     intakeArmButton.toggleWhenPressed(new IntakeArmCommand());
 
     // driver right trigger fires
-    new TriggerButton(driverJoystick, false).whenPressed(new ShootCommand());
+    new TriggerButton(driverJoystick, false).whenPressed(new PullTheTriggerCommand());
 
     JoystickButton ejectButton = new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
     ejectButton.whileHeld(new EjectBallCommand());
+
+    new TriggerButton(operatorJoystick, false).whenPressed(new PushBallUpCommand());
   }
 
   public static double getOperatorJoystickRightY() {
@@ -472,21 +503,20 @@ public class RobotContainer {
   
     SmartDashboard.putData("TestAuto", new TestAuto(driveSubsystem));
     SmartDashboard.putData("AutoDriveToCargo Test", new DriveToCargoTestAuto(driveSubsystem, visionSubsystem));
-    SmartDashboard.putData("5 Ball Auto P", new FiveBallAuto(driveSubsystem, visionSubsystem));
-    SmartDashboard.putData("4 Ball Auto P", new FourBallAutoP(driveSubsystem, visionSubsystem));
-    SmartDashboard.putData("4 Ball Auto Q", new FourBallAutoQ(driveSubsystem, visionSubsystem));
-    SmartDashboard.putData("3 Ball Auto Q", new ThreeBallAutoQ(driveSubsystem,  visionSubsystem));
+    SmartDashboard.putData("Blue 5 Ball Auto P", new BlueFiveBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    SmartDashboard.putData("5 Ball Auto P baby", new FiveBallAutoPBaby(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    SmartDashboard.putData("4 Ball Auto P", new FourBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    SmartDashboard.putData("4 Ball Auto Q", new FourBallAutoQ(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    SmartDashboard.putData("4 Ball Auto R", new FourBallAutoR(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    SmartDashboard.putData("3 Ball Auto Q", new ThreeBallAutoQ(driveSubsystem,  visionSubsystem, turretSubsystem, intakeSubsystem));
 
     SmartDashboard.putData("Reset NavX", new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));
-    SmartDashboard.putData("Find target",new FindTargetCommand(turretSubsystem, visionSubsystem));
-
 
     SmartDashboard.putData("Shooter Test Command", new ShooterTestCommand(shooterSubsystem));
 
     SmartDashboard.putData("Eject Ball", new EjectBallCommand());
     SmartDashboard.putData("Intake Ball", new IntakeOnCommand());
-    SmartDashboard.putData("preshooter with intake", new ShootCommand());
 
     SmartDashboard.putData("Climber Tilt Out", new ClimberTiltTestCommandOut());
     SmartDashboard.putData("Climber Tilt In", new ClimberTiltTestCommandIn());
@@ -502,20 +532,35 @@ public class RobotContainer {
 
     SmartDashboard.putData("Get ready to climb", new GetReadyToClimbCommand());
 
-    SmartDashboard.putData("Shoot", new ShootCommand());
+    SmartDashboard.putData("Shoot", new PullTheTriggerCommand());
+
+    SmartDashboard.putData("Send hood home", new HoodToHomeCommand());
+
+    SmartDashboard.putData("test for vision lag", new TestVisionLagCommand());
+    SmartDashboard.putData("bump turret position", new BumpTurretPositionCommand(turretSubsystem));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
   public void setupAutonomousCommands() {
     SmartDashboard.putData("Auto mode", chooser);
 
-    chooser.addOption("TestAuto", new TestAuto(driveSubsystem));
+    //chooser.addOption("Doug Otto", new DougOtto(driveSubsystem, visionSubsystem, turretSubsystem));
+    //chooser.addOption("TestAuto", new TestAuto(driveSubsystem));
     chooser.addOption("AutoDriveToCargo Test", new DriveToCargoTestAuto(driveSubsystem, visionSubsystem));
-    chooser.addOption("5 Ball P Auto", new FiveBallAuto(driveSubsystem, visionSubsystem));
-    chooser.addOption("4 Ball P Auto", new FourBallAutoP(driveSubsystem, visionSubsystem));
-    chooser.addOption("4 Ball Q Auto", new FourBallAutoQ(driveSubsystem, visionSubsystem));
-    chooser.addOption("3 Ball Q Auto", new ThreeBallAutoQ(driveSubsystem, visionSubsystem));
+    chooser.addOption("Blue 5 Ball P Auto", new BlueFiveBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("5 Ball P Auto Baby", new FiveBallAutoPBaby(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("4 Ball P Auto", new FourBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("4 Ball Q Auto", new FourBallAutoQ(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("4 Ball R Auto", new FourBallAutoR(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("3 Ball P Auto", new ThreeBallAutoP(driveSubsystem, visionSubsystem,turretSubsystem, intakeSubsystem));
+    chooser.addOption("3 Ball Q Auto", new ThreeBallAutoQ(driveSubsystem, visionSubsystem,turretSubsystem, intakeSubsystem));
+    chooser.addOption("1 Ball Auto", new OneBallAuto(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("2 Ball P Auto", new TwoBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("2 Ball Q Auto", new TwoBallAutoQ(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("2 Ball R Auto", new TwoBallAutoR(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("shoot far command",new ShootFarAutoCommand(driveSubsystem, visionSubsystem,turretSubsystem, intakeSubsystem));
   }
+  
   
   static double driverStrafeDeadzone = 0.1;
   public static double getDriveVerticalJoystick() {

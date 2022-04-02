@@ -1,10 +1,11 @@
 # 2022 Controls
 
 ## Driver Controls
-* A - X Mode (not added yet)
-* X - Reset NavX
+* A - X Mode
+* X - Reset NavX                                                               does not work?
 * Y - Center on Ball
-* LB -  roller and belt (clockwise) [toggle]
+* LB - roller and belt (clockwise) [toggle]
+* RB - turn off drive [toggle]
 * RT - Fire
 * B - up and down arm [toggle]
 
@@ -18,8 +19,9 @@
 * Right Interior - Climber in
 * Left Stick Button - Shooter off
 * Right Stick - Climber up + down
+* LB - GetReadyToClimb
 * RB - eject ball
-
+* RT - just intake belt
 # Hardware Assignments
 * SparkMAX 17 - climber
 <br></br>
