@@ -6,8 +6,11 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.ShooterDecider;
+import frc.robot.miscellaneous.ShooterCalculator;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PreShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
+
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 
@@ -16,6 +19,7 @@ public class PullTheTriggerCommand extends CommandBase {
 
   PreShooterSubsystem preShooterSubsystem = RobotContainer.preShooterSubsystem;
   IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
+  VisionSubsystem visionSubsystem = RobotContainer.visionSubsystem;
 
   Timer preshooterTimer = new Timer();
   boolean weAreDone = false;
@@ -47,7 +51,17 @@ public class PullTheTriggerCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(preshooterTimer.get() < 0.7) {
+    double targetYLocation = visionSubsystem.getTargetYLocation();
+    double rpm = ShooterCalculator.calcMainRPM(targetYLocation);
+    double timeBetweenShots = 0.0;
+
+    if(rpm <= 1968){
+      timeBetweenShots = 0.0;
+    } else{
+      timeBetweenShots = 0.4;
+    }
+
+    if(preshooterTimer.get() < timeBetweenShots) {
         preShooterSubsystem.preshooterOn(1.0);
         intakeSubsystem.overrideIntakeBeltForShooting(0.0);
         intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);

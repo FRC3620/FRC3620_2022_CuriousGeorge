@@ -63,14 +63,14 @@ public class ShooterCalculator {
         if(distance < 15.0){
             calcMainRPM = (1260 + (44*distance)) * 1.0;
         }else{
-            calcMainRPM = (1664 + -12.6*distance + 2*distance*distance) * 1.0;
+            calcMainRPM = (1421.6 + 21.36*distance + 0.8*distance*distance) * 1.0;
         }
         return calcMainRPM;
     }
-    public static double calcDistanceFromHub(double targetY){
+    public static double calcDistanceFromHub(double ty){
         double distance;
 
-        if (targetY > 0.461){
+        /*if (targetY > 0.461){
             distance = 20.05629 - 19.60707*(targetY) + 6.976088*(targetY*targetY);
             
         } else if(targetY > 0.239) {
@@ -78,7 +78,21 @@ public class ShooterCalculator {
         } else {
             distance = 27.98076 -63.49953 *(targetY) +82.20488 *(targetY*targetY);
 
-        }
+        }*/
+    
+        // how many degrees back is your limelight rotated from perfectly vertical?
+        double limelightMountAngleDegrees = 24.0; //24.7
+        
+        // distance from the center of the Limelight lens to the floor
+        double limelightLensHeightInches = 37.125;
+        
+        // distance from the target to the floor
+        double goalHeightInches = 105;
+        
+        double angleToGoalDegrees = limelightMountAngleDegrees + ty;
+        double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+
+        distance = (((goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians) + 24)/12) + 0.7;
 
         return distance;
     }
