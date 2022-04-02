@@ -120,7 +120,7 @@ public class VisionSubsystem extends SubsystemBase {
     double targetOffsetAngle_Vertical = ty.getDouble(0.0);
     
     // how many degrees back is your limelight rotated from perfectly vertical?
-    double limelightMountAngleDegrees = 24.7;
+    double limelightMountAngleDegrees = 27.0; //24.7
     
     // distance from the center of the Limelight lens to the floor
     double limelightLensHeightInches = 36.0;
