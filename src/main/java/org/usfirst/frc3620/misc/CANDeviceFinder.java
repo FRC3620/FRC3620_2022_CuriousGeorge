@@ -25,11 +25,35 @@ public class CANDeviceFinder {
      * the device numbers for all the present devices of that type.
      */
     Map<CANDeviceType, Set<Integer>> byDeviceType = new TreeMap<>();
+    Set<NamedCANDevice> missingDeviceSet = new TreeSet<>();
 
     public CANDeviceFinder() {
         super();
         find();
         // research();
+    }
+
+    public class NamedCANDevice implements Comparable<NamedCANDevice>{
+        CANDeviceId id;
+        String name;
+        NamedCANDevice (CANDeviceType deviceType, int i, String name) {
+            this.id = new CANDeviceId(deviceType, i);
+            this.name = name;
+        }
+
+        @Override
+        public int compareTo(NamedCANDevice namedCANDevice) {
+            return id.compareTo(namedCANDevice.id);
+        }
+
+        @Override
+        public String toString() {
+            if (name == null) {
+                return id.toString();
+            } else {
+                return id.toString() + " (" + name + ")";
+            }
+        }
     }
 
     public boolean isDevicePresent(CANDeviceType deviceType, int id) {
@@ -43,11 +67,9 @@ public class CANDeviceFinder {
             rv = deviceTypeSet.contains(id);
         }
         if (!rv) {
-            if (whatItIs == null) {
-                logger.warn("{} {} is missing from the CAN bus!!!", deviceType, id);
-            } else {
-                logger.warn("{} {} ({}) is missing from the CAN bus!!!", deviceType, id, whatItIs);
-            }
+            NamedCANDevice namedCANDevice = new NamedCANDevice(deviceType, id, whatItIs);
+            logger.warn("{} is missing from the CAN bus!!!", namedCANDevice);
+            missingDeviceSet.add(namedCANDevice);
         }
         return rv;
     }
@@ -65,6 +87,8 @@ public class CANDeviceFinder {
     public Set<CANDeviceId> getDeviceSet() {
         return deviceSet;
     }
+
+    public Set<NamedCANDevice> getMissingDeviceSet() { return missingDeviceSet; }
 
     abstract class CanFinder {
         // constructor should fill this with the IDs of the messages to look for.
@@ -153,6 +177,7 @@ public class CANDeviceFinder {
     public void find() {
         deviceSet.clear();
         byDeviceType.clear();
+        missingDeviceSet.clear();
 
         logger.debug ("calling find()");
         List<CanFinder> finders = new ArrayList<>();

@@ -21,7 +21,6 @@ public class EjectBallCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intakeSubsystem.rememberPreviousCommand(null);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -31,8 +30,8 @@ public class EjectBallCommand extends CommandBase {
   }
 
   public void ejectBall() {
-    intakeSubsystem.spinIntakeWheelBar(-0.1);
-    intakeSubsystem.spinIntakeBelt(-0.1);
+    intakeSubsystem.spinIntakeWheelBar(-0.6);
+    intakeSubsystem.spinIntakeBelt(-0.6);
   }
 
   // Called once the command ends or is interrupted.

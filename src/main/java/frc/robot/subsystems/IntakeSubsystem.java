@@ -5,31 +5,25 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.revrobotics.ColorSensorV3;
 
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
-import com.revrobotics.ColorMatchResult;
-import com.revrobotics.ColorMatch;
 import frc.robot.RobotContainer;
 import frc.robot.commands.IntakeOffCommand;
 import frc.robot.miscellaneous.CANSparkMaxSendable;
 
 public class IntakeSubsystem extends SubsystemBase {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+
+  boolean logCallers = false;
   
   CANSparkMaxSendable intakeWheelbar = RobotContainer.intakeWheelbar;
   CANSparkMaxSendable intakeBelt = RobotContainer.intakeBelt;
 
-  Command currentCommand = null;
   Command previousCommand = null;
 
   /** Creates a new IntakeSubsystem. */
@@ -48,41 +42,58 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
   }
 
-  public void rememberPreviousCommand(Command c) {
-    previousCommand = c;
-    logger.info("remembering {} as previous command", c);
-  }
+  Double intakeBeltSpeedShootingOverride = null;
+  Double intakeWheelBarSpeedShootingOverride = null;
 
-  int recusion_level = 0;
-  public void startPreviousCommand(Command c) {
-    if (previousCommand != null) {
-      recusion_level++;
-      if (recusion_level > 1) {
-        logger.warn ("recursing! previous: {}, caller: {}, current: {}", previousCommand, c, getCurrentCommand());
-      } else {
-        if (c.getClass() != previousCommand.getClass()) {
-          logger.info ("scheduling previous command {}", previousCommand);
-          previousCommand.schedule();
-        }
-      }
-      recusion_level--;
-    }
-  }
-
-   /**
+  /**
    * Spin the intake wheel and intake belt.
    * @param speed how fast to spin. positive is inward, negative is outward.
    */
   public void spinIntakeWheelBar(double speed) {
     if (intakeWheelbar != null) {
-      intakeWheelbar.set(speed);
-     }  
-    }
+      if (intakeWheelBarSpeedShootingOverride == null) {
+        intakeWheelbar.set(speed);
+      }
+    }  
+  }
 
   public void spinIntakeBelt(double speed) {
     if (intakeBelt != null) {
-      intakeBelt.set(speed);
+      if (intakeBeltSpeedShootingOverride == null) {
+        intakeBelt.set(speed);
+      }
     }
+  }
+
+  public void overrideIntakeBeltForShooting(double speed) {
+    if (logCallers) {
+      String where = EventLogging.myAndCallersNames();
+      logger.info ("{} with {}", where, speed);
+    }
+    intakeBeltSpeedShootingOverride = speed;
+    if (intakeBelt != null) {
+        intakeBelt.set(speed);
+    }
+  }
+
+  public void overrideIntakeWheelBarForShooting(double speed) {
+    if (logCallers) {
+      String where = EventLogging.myAndCallersNames();
+      logger.info ("{} with {}", where, speed);
+    }
+    intakeBeltSpeedShootingOverride = speed;
+    if (intakeBelt != null) {
+        intakeWheelbar.set(speed);
+    }
+  }
+
+  public void clearIntakeShootingOverrides() {
+    if (logCallers) {
+      String where = EventLogging.myAndCallersNames();
+      logger.info ("{} with {}", where);
+    }
+    intakeBeltSpeedShootingOverride = null;
+    intakeWheelBarSpeedShootingOverride = null;
   }
 
   public double getIntakeBeltSpeed() {

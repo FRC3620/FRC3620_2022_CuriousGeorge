@@ -71,6 +71,8 @@ public class EventLogging {
     /**
      * Log command starts and stops
      * 
+     * TODO: update using Thread.currentThread().getStackTrace()
+     * 
      * @param logger
      * 			  logger to log to.
      */
@@ -80,8 +82,29 @@ public class EventLogging {
   	  logger.info("command {}", stackTraceElement[1].getMethodName());
     }
 
+    public static void commandMessage (org.slf4j.Logger logger, Object o) {
+  	  Throwable t = new Throwable();
+  	  StackTraceElement[] stackTraceElement = t.getStackTrace();
+  	  logger.info("command {} with {}", stackTraceElement[1].getMethodName(), o);
+    }
+
+    public static String callerAndCallersCallerNames() {
+      StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+      StackTraceElement callersCaller = stackTraceElements[3];
+      StackTraceElement callersCallerCaller = stackTraceElements[4];
+      return callersCaller.getClassName() + "." + callersCaller.getMethodName()
+        + " from " + callersCallerCaller.getClassName() + "." + callersCallerCaller.getMethodName();
+    }
     
-    /**
+    public static String myAndCallersNames() {
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        StackTraceElement caller = stackTraceElements[2];
+        StackTraceElement callersCaller = stackTraceElements[3];
+        return caller.getClassName() + "." + caller.getMethodName()
+          + " from " + callersCaller.getClassName() + "." + callersCaller.getMethodName();
+      }
+      
+      /**
      * Write a warning message to the DriverStation.
      * 
      * @param message

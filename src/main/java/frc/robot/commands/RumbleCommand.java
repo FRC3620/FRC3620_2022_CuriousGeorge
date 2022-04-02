@@ -18,9 +18,9 @@ import frc.robot.subsystems.RumbleSubsystem.Hand;
  */
 public class RumbleCommand extends CommandBase {
 
-    private final boolean logRumbleDetails = true;
+    private final boolean logRumbleDetails = false;
 
-    Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+    Logger logger = EventLogging.getLogger(getClass(), Level.WARN);
     private RumbleSubsystem subsystem;
     private Double intensity; // 0.1 to 1.0
     private Hand hand;

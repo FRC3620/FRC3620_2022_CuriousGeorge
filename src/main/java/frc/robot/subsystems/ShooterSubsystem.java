@@ -25,6 +25,7 @@ import org.usfirst.frc3620.misc.XBoxConstants;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
@@ -43,7 +44,6 @@ public class ShooterSubsystem extends SubsystemBase {
   RelativeEncoder hoodEncoder;
   boolean hoodEncoderIsValid = false;
   Timer hoodTimer;
-  
 
   double mainShooterRPM = 2000;
   
@@ -57,7 +57,6 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double mainPVelocity = 0.45; //0.60
   private final double mainIVelocity = 0.0; //0.000003
   private final double mainDVelocity = 7.75; //7.75
-
 
   //hood
   private final double hoodP = 0.1;
@@ -73,8 +72,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final double back_IVelocity = 0.00;//0.0000001
   private final double back_DVelocity = 0;//7.5
 
-  private double requestedMainVelocity;
-
+  private double requestedMainVelocity, requestedBackSpinShooterVelocity;
 
   public ShooterSubsystem() {
     if (m_main1 != null) {
@@ -116,7 +114,7 @@ public class ShooterSubsystem extends SubsystemBase {
       anglePID.setP(hoodP);
       anglePID.setI(hoodI);
       anglePID.setD(hoodD);
-      anglePID.setOutputRange(-0.25, 0.25); //TODO Set back to 0.5 after testing
+      anglePID.setOutputRange(-0.5, 0.5); //TODO Set back to 0.5 after testing
     }
 
     //Load "cargo.desireRPM" value in SmartDashboard
@@ -165,8 +163,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setMainRPM(double r) {
     requestedMainVelocity = setRpm(m_main1, r, s_main);
-
-   // setBackRPM(ShooterCalculator.calculateBackspinRPM(r));
   }
 
   public double getRequestedMainShooterVelocity(){
@@ -174,14 +170,28 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double getActualMainShooterVelocity(){
-    return m_main1.getSelectedSensorVelocity();
+    if (m_main1 != null) {
+      return m_main1.getSelectedSensorVelocity();
+    }
+    return -1;
   }
 
   public void setBackRPM(double r) {
     if (r < 0){
       r = 0;
     }
-    setRpm(m_back, r, s_back);
+    requestedBackSpinShooterVelocity = setRpm(m_back, r, s_back);
+  }
+
+  public double getRequestedBackSpinShooterVelocity() {
+    return requestedBackSpinShooterVelocity;
+  }
+
+  public double getActualBackSpinShooterVelocity() {
+    if (m_back != null) {
+      return m_back.getSelectedSensorVelocity();
+    }
+    return -1;
   }
   
   MotorStatus s_main = new MotorStatus("main");
@@ -200,16 +210,25 @@ public class ShooterSubsystem extends SubsystemBase {
     setHoodPositionToRotations(calcuated);
   }
 
+  public void setHoodPositionToHome() {
+    setHoodPositionToRotations(0);
+  }
+
+  Double requestedHoodPositionDuringCalibration = null;
   void setHoodPositionToRotations(double position) {
+    if(position >= 27){
+      requestedHoodPosition = 27;
+    } else if (position < 2) {
+      requestedHoodPosition=2;
+    } else {
+      requestedHoodPosition=position;
+    }
     if (hoodEncoderIsValid) {
-      if(position >= 108){
-        requestedHoodPosition = 108;
-      } else if (position < 2) {
-        requestedHoodPosition=2;
-      } else {
-        requestedHoodPosition=position;
+      if (hoodMotor != null) {
+        hoodMotor.getPIDController().setReference(requestedHoodPosition,CANSparkMax.ControlType.kPosition );
       }
-      hoodMotor.getPIDController().setReference(requestedHoodPosition,CANSparkMax.ControlType.kPosition );
+    } else {
+      requestedHoodPositionDuringCalibration = requestedHoodPosition;
     }
   }
 
@@ -231,7 +250,7 @@ public class ShooterSubsystem extends SubsystemBase {
     if (hoodMotor != null) {
       return hoodMotor.getEncoder().getPosition();
     } else {
-      return 0.0;
+      return requestedHoodPosition;
     }
   }
 
@@ -256,14 +275,20 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
   
-
   public static double calculateHoodRotations (double angle) {
-    return (212.32 - 2.5581 * angle);
+    return (53.08 - 0.639525 * angle);
   }
 
-
+  Command lastCommand = null;
+  
   @Override
   public void periodic() {
+    Command currentCommand = getCurrentCommand();
+    if (currentCommand != lastCommand) {
+      logger.info("new command: {} -> {}", lastCommand, currentCommand);
+      lastCommand = currentCommand;
+    }
+
     // This method will be called once per scheduler run
     s_main.gatherActuals(m_main1, "main");
     s_back.gatherActuals(m_back, "back");
@@ -287,6 +312,10 @@ public class ShooterSubsystem extends SubsystemBase {
                 hoodEncoderIsValid = true;
                 setHoodPower(0.0);
                 resetHoodEncoder();
+                if (requestedHoodPositionDuringCalibration != null) {
+                  hoodMotor.getPIDController().setReference(requestedHoodPositionDuringCalibration,CANSparkMax.ControlType.kPosition );
+                  requestedHoodPositionDuringCalibration = null;
+                }
               }
             }
           } 
@@ -296,7 +325,14 @@ public class ShooterSubsystem extends SubsystemBase {
       }
       SmartDashboard.putNumber("hood.applied.power", hoodMotor.getAppliedOutput());
       SmartDashboard.putNumber("hood.output.current", hoodMotor.getOutputCurrent());
+    } else {
+      // no hoodmotor,so fake it
+      hoodEncoderIsValid = true;
     }
+  }
+
+  public boolean hoodEncoderIsValid() {
+    return hoodEncoderIsValid;
   }
 
   @Override

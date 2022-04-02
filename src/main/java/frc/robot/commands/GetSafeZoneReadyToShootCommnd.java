@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.miscellaneous.ShooterCalculator;
 
 public class GetSafeZoneReadyToShootCommnd extends GetReadyToShootCommand {
   /** Creates a new GetSafeZoneReadyToShootCommnd. */
@@ -16,9 +17,13 @@ public class GetSafeZoneReadyToShootCommnd extends GetReadyToShootCommand {
   @Override
   public void initialize() {
     super.initialize();
-    shooterSubsystem.setMainRPM(1920);
-    shooterSubsystem.setBackRPM(120);
-    shooterSubsystem.setHoodPositionToDegrees(57.5);
+
+    double distance = 15;
+    double main_rpm = ShooterCalculator.calcMainRPM(distance);
+    shooterSubsystem.setMainRPM(main_rpm);
+    shooterSubsystem.setBackRPM(ShooterCalculator.calculateBackspinRPM(main_rpm));
+    shooterSubsystem.setHoodPositionToDegrees(ShooterCalculator.calcHoodAngle(distance));
+
     turretSubsystem.setTurretPosition(180);
   }
 }

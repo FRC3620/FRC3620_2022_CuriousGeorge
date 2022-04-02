@@ -17,9 +17,11 @@ public class GetBloopReadyToShootCommand extends GetReadyToShootCommand {
   @Override
   public void initialize() {
     super.initialize();
+
     shooterSubsystem.setMainRPM(875);
-    shooterSubsystem.setBackRPM(75);
+    shooterSubsystem.setBackRPM(366);
     shooterSubsystem.setHoodPositionToDegrees(60);
+
     turretSubsystem.setTurretPosition(180);
   }
 }

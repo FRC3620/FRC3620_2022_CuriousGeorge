@@ -4,17 +4,23 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.ShooterDecider;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
+import org.slf4j.Logger;
+import org.usfirst.frc3620.logger.EventLogging;
 
 public abstract class GetReadyToShootCommand extends CommandBase {
-  /** Creates a new GetReadyToShootCommand. */
+  Logger logger = EventLogging.getLogger(getClass(), EventLogging.Level.INFO);
+
   ShooterSubsystem shooterSubsystem;
   TurretSubsystem turretSubsystem;
   RumbleCommand rumbleCommandOperator, rumbleCommandDriver;
+
+  ShooterDecider.PewPewData pewPewData = new ShooterDecider.PewPewData();
+
   public GetReadyToShootCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
     shooterSubsystem = RobotContainer.shooterSubsystem;
@@ -27,79 +33,26 @@ public abstract class GetReadyToShootCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    SmartDashboard.putBoolean("shooter.ready.shooter", false);
-    SmartDashboard.putBoolean("shooter.ready.hood", false);
-    SmartDashboard.putBoolean("shooter.ready.turret", false);
-    SmartDashboard.putBoolean("shooter.ready", false);
+    ShooterDecider.showNotReady();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {}
 
-  public boolean isShooterUpToSpeed(){
-    double ta = shooterSubsystem.getActualMainShooterVelocity();
-    double ts = shooterSubsystem.getRequestedMainShooterVelocity();
-    double terror = Double.NaN;
-    if (ts != 0.0) {
-      terror = ta / ts;
-    }
-    SmartDashboard.putNumber("shooter.error.shooter", terror);
-    boolean answer;
-    if (terror >= 0.98 && terror <= 1.02) {
-      answer = true;
-    }else {
-      answer = false;
-    }
-    SmartDashboard.putBoolean("shooter.ready.shooter", answer);
-    return answer;
-  }
-
-  public boolean isHoodInPosition(){
-    double ha = shooterSubsystem.getHoodPosition();
-    double hs = shooterSubsystem.getRequestedHoodPosition();
-    double herror = Double.NaN;
-    if (hs != 0.0) {
-      herror = ha / hs;
-    }
-    SmartDashboard.putNumber("shooter.error.hood", herror);
-    boolean answer;
-    if (herror >= 0.98 && herror <= 1.02) {
-      answer = true;
-    }else {
-      answer = false;
-    }
-    SmartDashboard.putBoolean("shooter.ready.hood", answer);
-    return answer;
-  }
-
-  public boolean isTurretInPosition(){
-    double tra = turretSubsystem.getCurrentTurretPosition();
-    double trs = turretSubsystem.getRequestedTurretPosition();
-    double trerror = Math.abs(trs - tra);
-    SmartDashboard.putNumber("shooter.error.turret", trerror);
-    boolean answer;
-    if (trerror < 2) {
-      answer = true;
-    } else {
-      answer = false;
-    }
-    SmartDashboard.putBoolean("shooter.ready.turret", answer);
-    return answer;
-  }
-
   public boolean everythingIsReady(){
+    pewPewData.clear();
+
     boolean answer = true;
-    if (!isShooterUpToSpeed()){
+    if (!ShooterDecider.isShooterUpToSpeed(pewPewData)){
       answer = false;
     }
-    if (!isHoodInPosition()){
+    if (!ShooterDecider.isHoodInPosition(pewPewData)){
       answer = false;
     }
-    if (!isTurretInPosition()){
+    if (!ShooterDecider.isTurretInPosition(pewPewData)){
       answer = false;
     }
-    SmartDashboard.putBoolean("shooter.ready", answer);
     return answer;
   }
 
@@ -107,6 +60,7 @@ public abstract class GetReadyToShootCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     if (!interrupted){
+      logPewPewData();
       rumbleCommandOperator.schedule();
       rumbleCommandDriver.schedule();
     }
@@ -115,9 +69,12 @@ public abstract class GetReadyToShootCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (everythingIsReady()){
-      return true;
-    }
-    return false;
+    boolean ready = everythingIsReady();
+    ShooterDecider.showReady(ready);
+    return ready;
+  }
+
+  void logPewPewData() {
+    ShooterDecider.logPewPewData(logger, "ready to", pewPewData);
   }
 }

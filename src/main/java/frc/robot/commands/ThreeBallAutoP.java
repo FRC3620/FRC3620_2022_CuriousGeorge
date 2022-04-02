@@ -10,59 +10,58 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.miscellaneous.ShooterCalculator;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-public class ThreeBallAutoQ extends SequentialCommandGroup {
+public class ThreeBallAutoP extends SequentialCommandGroup {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
   
-  public ThreeBallAutoQ(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem){
+  public ThreeBallAutoP(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem){
     addCommands(
       new StartShooterDataLoggingCommand(getClass().getSimpleName(), 20.0),
 
-      new setInitialNavXOffsetCommand(driveSubsystem, 153),
+      new setInitialNavXOffsetCommand(driveSubsystem, 90),
   
-      new MoveTurretCommand(turretSubsystem, 170), 
+      new MoveTurretCommand(turretSubsystem, 180), 
+
+      new SetHoodAngleForDistanceCommand(8),
+
+      new SetRPMForDistanceCommand(8),
   
       new IntakeArmDownCommand(), 
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new LogCommand("Starting AutoDrive"),
-          new AutoDriveCommand(55, 153, .5, 153, driveSubsystem)
+          new AutoDriveCommand(40, 90, .6, 90, driveSubsystem)
         ), 
         new IntakeOnCommand()
       ),
 
-      new LogCommand("Done with AutoDrive"),
-
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
           new AutoShootCommand(),
-          new PullTheTriggerCommand(),
           new PullTheTriggerCommand()
         ),
         new IntakeOffCommand(intakeSubsystem)
       ),
 
       new LogCommand("Done with first shots"),
+
+      new MoveTurretCommand(turretSubsystem, 114),
+
+      new SetHoodAngleForDistanceCommand(12),
+
+      new SetRPMForDistanceCommand(12),
         
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new IntakeArmUpCommand(),
-          new AutoDriveCommand(130, 185, 0.5, 133, driveSubsystem)
+          new IntakeArmDownCommand(),
+          new AutoDriveCommand(130, 200, 0.6, 205, driveSubsystem)
+          //new AutoDriveToCargoCommand(120, 200, 0.5, 225, driveSubsystem, visionSubsystem)
         ),
-        new IntakeOffCommand(intakeSubsystem)
-      ),
-
-      new IntakeArmDownCommand(), 
-
-      new ParallelDeadlineGroup(
-        new SequentialCommandGroup(
-          new AutoDriveToCargoCommand(100, 135, .5, 135, driveSubsystem, visionSubsystem)
-        ), 
         new IntakeOnCommand()
       ),
 
@@ -74,11 +73,13 @@ public class ThreeBallAutoQ extends SequentialCommandGroup {
         new IntakeOffCommand(intakeSubsystem)
       ),
 
+      new MoveTurretCommand(turretSubsystem, 180),
+
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new IntakeArmUpCommand()
+          new AutoDriveCommand(108, 205, .5, 135, driveSubsystem),
+          new AutoDriveCommand(45, 135, .5, 135, driveSubsystem)
         ),
-        new IntakeOffCommand(intakeSubsystem),
         new ShooterOffCommand()
       ),
 

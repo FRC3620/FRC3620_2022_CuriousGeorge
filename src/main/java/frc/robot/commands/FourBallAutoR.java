@@ -15,28 +15,25 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-public class ThreeBallAutoQ extends SequentialCommandGroup {
+public class FourBallAutoR extends SequentialCommandGroup {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
   
-  public ThreeBallAutoQ(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem){
+  public FourBallAutoR(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem, TurretSubsystem turretSubsystem, IntakeSubsystem intakeSubsystem){
     addCommands(
       new StartShooterDataLoggingCommand(getClass().getSimpleName(), 20.0),
 
-      new setInitialNavXOffsetCommand(driveSubsystem, 153),
+      new setInitialNavXOffsetCommand(driveSubsystem, 238),
   
-      new MoveTurretCommand(turretSubsystem, 170), 
+      new MoveTurretCommand(turretSubsystem, 180), 
   
       new IntakeArmDownCommand(), 
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new LogCommand("Starting AutoDrive"),
-          new AutoDriveCommand(55, 153, .5, 153, driveSubsystem)
+          new AutoDriveCommand(55, 238, .5, 238, driveSubsystem)
         ), 
         new IntakeOnCommand()
       ),
-
-      new LogCommand("Done with AutoDrive"),
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
@@ -52,7 +49,7 @@ public class ThreeBallAutoQ extends SequentialCommandGroup {
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
           new IntakeArmUpCommand(),
-          new AutoDriveCommand(130, 185, 0.5, 133, driveSubsystem)
+          new AutoDriveCommand(144, 135, 0.5, 135, driveSubsystem)
         ),
         new IntakeOffCommand(intakeSubsystem)
       ),
@@ -61,7 +58,8 @@ public class ThreeBallAutoQ extends SequentialCommandGroup {
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new AutoDriveToCargoCommand(100, 135, .5, 135, driveSubsystem, visionSubsystem)
+          new AutoDriveToCargoCommand(144, 135, .5, 135, driveSubsystem, visionSubsystem),
+          new WaitCommand(1)
         ), 
         new IntakeOnCommand()
       ),
@@ -69,17 +67,10 @@ public class ThreeBallAutoQ extends SequentialCommandGroup {
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
           new AutoShootCommand(),
+          new PullTheTriggerCommand(),
           new PullTheTriggerCommand()
         ),
         new IntakeOffCommand(intakeSubsystem)
-      ),
-
-      new ParallelDeadlineGroup(
-        new SequentialCommandGroup(
-          new IntakeArmUpCommand()
-        ),
-        new IntakeOffCommand(intakeSubsystem),
-        new ShooterOffCommand()
       ),
 
       new LogCommand("All done")
