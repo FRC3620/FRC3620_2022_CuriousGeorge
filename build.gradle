@@ -21,7 +21,7 @@ test {
         setFailOnNoMatchingTests(false)
 
         // run this if nothing else so only this runs
-        // includeTestsMatching 'DummyTest'
+        includeTestsMatching 'DummyTest'
 
         // includeTestsMatching 'SwerveCalcTest'
 
