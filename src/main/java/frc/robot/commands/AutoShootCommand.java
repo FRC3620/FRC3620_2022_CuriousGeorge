@@ -34,6 +34,7 @@ public class AutoShootCommand extends GetVisionReadyToShootCommand {
   public void end(boolean interrupted) {
     EventLogging.commandMessage(logger, interrupted);
     if (!interrupted) {
+      pewPewData.fillInVisionData();
       logPewPewData();
     }
   }
