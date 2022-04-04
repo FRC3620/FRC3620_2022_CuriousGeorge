@@ -62,4 +62,9 @@ public class TestVisionLagCommand extends CommandBase {
   public void end(boolean interrupted) {
     RobotContainer.visionSubsystem.turnVisionLightOn();
   }
+
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
+  }
 }
