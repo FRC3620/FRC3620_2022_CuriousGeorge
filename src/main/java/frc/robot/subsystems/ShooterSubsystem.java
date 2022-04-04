@@ -206,6 +206,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setHoodPositionToDegrees(double degrees) {
+    SmartDashboard.putNumber("hood.degrees.requested", degrees);
     double calcuated = ShooterSubsystem.calculateHoodRotations(degrees);
     setHoodPositionToRotations(calcuated);
   }
@@ -276,7 +277,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
   
   public static double calculateHoodRotations (double angle) {
-    return (53.08 - 0.639525 * angle);
+    return (58.816 - (0.709 * angle));
   }
 
   Command lastCommand = null;

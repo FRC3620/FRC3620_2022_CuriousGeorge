@@ -24,7 +24,7 @@ public class TestVisionLagCommand extends CommandBase {
       done = true;
     } else {
       t_lightOff = Timer.getFPGATimestamp();
-      RobotContainer.visionSubsystem.turnVisionLightOff();
+      //RobotContainer.visionSubsystem.turnVisionLightOff();
       waiting_to_disappear = true;
       done = false;
     }
@@ -37,7 +37,7 @@ public class TestVisionLagCommand extends CommandBase {
     if (waiting_to_disappear) {
       if (!seen) {
         t_disappeared = t;
-        RobotContainer.visionSubsystem.turnVisionLightOn();
+        //RobotContainer.visionSubsystem.turnVisionLightOn();
         waiting_to_disappear = false;
       }
     } else {
@@ -60,7 +60,7 @@ public class TestVisionLagCommand extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.visionSubsystem.turnVisionLightOn();
+    //RobotContainer.visionSubsystem.turnVisionLightOn();
   }
 
   @Override

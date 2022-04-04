@@ -41,16 +41,16 @@ public class TurretSubsystem extends SubsystemBase {
       turretPID = turretDrive.getPIDController();
 
       // set up PID for turretPID here
-      turretPID.setP(0.07);   //0.09
+      turretPID.setP(0.045);   //0.09
       turretPID.setI(0.0);     //0.0
       turretPID.setD(30);      //30
       turretPID.setFF(0.0);    //0.0
 
-      turretPID.setOutputRange(-0.6, 0.6);
+      turretPID.setOutputRange(-0.8, 0.8);
     }
 
     if (turretEncoder != null) {
-      turretEncoder.setPositionConversionFactor(90.0/20.146);  //90.0/115.0     1823.56401
+      turretEncoder.setPositionConversionFactor(90.0/26.861);  //90.0/115.0
       turretEncoder.setVelocityConversionFactor(1);
     }
   }

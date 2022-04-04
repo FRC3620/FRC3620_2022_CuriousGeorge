@@ -280,8 +280,8 @@ public class RobotContainer {
         compressor.enableDigital();
       }
 
-      ringLight = new Solenoid(pneumaticModuleType, 7);
-      ringLight.set(true);
+      //ringLight = new Solenoid(pneumaticModuleType, 7);
+      //ringLight.set(true);
 
       if (pneumaticModuleType == PneumaticsModuleType.REVPH) {
         redLight = new Solenoid(pneumaticModuleType, 15);
@@ -462,9 +462,9 @@ public class RobotContainer {
 
 
     operatorDPad.up().whenPressed(new MoveTurretCommand(turretSubsystem, 0));
-    operatorDPad.right().whenPressed(new MoveTurretCommand(turretSubsystem, 90));
+    operatorDPad.right().whenPressed(new MoveTurretCommand(turretSubsystem, 120));
     operatorDPad.down().whenPressed(new MoveTurretCommand(turretSubsystem, 180));
-    operatorDPad.left().whenPressed(new MoveTurretCommand(turretSubsystem, 270));
+    operatorDPad.left().whenPressed(new MoveTurretCommand(turretSubsystem, 240));
 
     //x mode
     new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A).whileHeld(new XModeCommand(driveSubsystem));
@@ -561,8 +561,8 @@ public class RobotContainer {
     chooser.addOption("shoot far command",new ShootFarAutoCommand(driveSubsystem, visionSubsystem,turretSubsystem, intakeSubsystem));
   }
   
-  
   static double driverStrafeDeadzone = 0.1;
+
   public static double getDriveVerticalJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y);
     SmartDashboard.putNumber("driver.raw.y", axisValue);

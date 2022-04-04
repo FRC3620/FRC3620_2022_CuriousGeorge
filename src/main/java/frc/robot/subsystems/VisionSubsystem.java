@@ -36,13 +36,19 @@ public class VisionSubsystem extends SubsystemBase {
 
   private NetworkTable targetNetworkTable = inst.getTable("V/Target");
   private NetworkTableEntry nt_target_json = targetNetworkTable.getEntry("json");
-  private Solenoid visionLight = RobotContainer.ringLight;
+  //private Solenoid visionLight = RobotContainer.ringLight;
+
+  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+  NetworkTableEntry ty = table.getEntry("ty");
+  NetworkTableEntry tx = table.getEntry("tx");
+  NetworkTableEntry tv = table.getEntry("tv");
+
   Gson targetGson = new Gson();
   TargetData targetData = new TargetData();
   double targetDataLastUpdated = 0;
 
   class TargetData {
-    Double x, y;
+    Double tx, ty;
 
     @SerializedName("b")
     int boxes;
@@ -56,14 +62,14 @@ public class VisionSubsystem extends SubsystemBase {
 
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
-    SendableRegistry.addLW(RobotContainer.ringLight, getName(), "ringlight");
+    //SendableRegistry.addLW(RobotContainer.ringLight, getName(), "ringlight");
 
     String json = nt_target_json.getString(null);
     if (json != null) {
       updateTargetInfoFromTargetJson(json);
     }
 
-    turnVisionLightOn();
+    //turnVisionLightOn();
 
     nt_target_json.addListener(new TargetJsonListener(), EntryListenerFlags.kUpdate | EntryListenerFlags.kImmediate | EntryListenerFlags.kNew);
   }
@@ -83,7 +89,7 @@ public class VisionSubsystem extends SubsystemBase {
     try {
       targetData = targetGson.fromJson(json, TargetData.class);
       SmartDashboard.putNumber("vision.target.xdegrees", getTargetXDegrees());
-      SmartDashboard.putNumber("vision.target.x", getTargetXLocation());
+      //SmartDashboard.putNumber("vision.target.x", getTargetXLocation());
       SmartDashboard.putNumber("vision.target.y", getTargetYLocation());
       SmartDashboard.putNumber("vision.target.boxes", targetData.boxes);
       SmartDashboard.putBoolean("vision.target.found", isTargetFound());
@@ -103,44 +109,51 @@ public class VisionSubsystem extends SubsystemBase {
     } else {
       allianceColor.setString("blue");
     }
-    double targetDistance = ShooterCalculator.calcDistanceFromHub(getTargetYLocation());
+
+    double targetYLocation = getTargetYLocation();
+    double targetDistance = ShooterCalculator.calcDistanceFromHub(targetYLocation);
     double targetRPM = ShooterCalculator.calcMainRPM(targetDistance);
+    double targetHood = ShooterCalculator.calcHoodAngle(targetDistance);
     SmartDashboard.putNumber("vision.target.data_age", getTargetDataAge());
     SmartDashboard.putBoolean("vision.target.data_is_fresh", !isTargetDataStale());
+    SmartDashboard.putNumber("vision.target.y", targetYLocation);
     SmartDashboard.putNumber("vision.calculated.distance", targetDistance);
     SmartDashboard.putNumber("vision.calculated.RPM", targetRPM);
+    SmartDashboard.putNumber("vision.calculated.hood", targetHood);
   }
 
   public boolean isTargetFound() {
     double currentTurretPosition = RobotContainer.turretSubsystem.getCurrentTurretPosition();
 
-    boolean rv = targetData.found;
+    boolean rv = true;
     if (currentTurretPosition > 31 && currentTurretPosition < 82) {
       // we are probably looking at our armpit
       rv = false;
     }
-    if (isTargetDataStale()) {
+    if (tv.getDouble(0.0) == 0) {
       rv = false;
     }
     return rv;
   }
 
-  public double getTargetXLocation(){
+  /*public double getTargetXLocation(){
     if (!isTargetFound()) return Double.NaN;
     return targetData.x;
-  }
+  }*/
 
   public double getTargetYLocation(){
     if (!isTargetFound()) return Double.NaN;
-    return targetData.y;
+    //return targetData.y;
+    return ty.getDouble(0.0);
   }
 
   public double getTargetXDegrees() {
     if (!isTargetFound()) return Double.NaN;
     // 5.0 / 0.08.25 was the original
     // 20.0 / 27.0 was an empirical correction
-    double k = (5.0 / 0.0825) * (20.0 / 27.0);
-    return (targetData.x - 0.5) * k;
+    //double k = (5.0 / 0.0825) * (20.0 / 27.0);
+    //return (targetData.x - 0.5) * k;
+    return tx.getDouble(0.0);
   }
 
   /**
@@ -183,7 +196,7 @@ public class VisionSubsystem extends SubsystemBase {
     return ballY.getDouble(-1);
   }
 
-  public void turnVisionLightOn() {
+  /*public void turnVisionLightOn() {
     if (visionLight != null) {
       visionLight.set(true);
     }
@@ -193,5 +206,5 @@ public class VisionSubsystem extends SubsystemBase {
     if (visionLight != null) {
       visionLight.set(false);
     }
-  }
+  }*/
 }
