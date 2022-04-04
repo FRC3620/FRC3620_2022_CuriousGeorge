@@ -12,6 +12,10 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.util.function.Consumer;
 
 import com.google.gson.Gson;
@@ -41,6 +45,8 @@ public class VisionSubsystem extends SubsystemBase {
   TargetData targetData = new TargetData();
   double targetDataLastUpdated = 0;
 
+  final boolean useUDPForTarget = false;
+
   class TargetData {
     Double x, y;
 
@@ -57,15 +63,23 @@ public class VisionSubsystem extends SubsystemBase {
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
     SendableRegistry.addLW(RobotContainer.ringLight, getName(), "ringlight");
-
-    String json = nt_target_json.getString(null);
-    if (json != null) {
-      updateTargetInfoFromTargetJson(json);
-    }
-
     turnVisionLightOn();
 
-    nt_target_json.addListener(new TargetJsonListener(), EntryListenerFlags.kUpdate | EntryListenerFlags.kImmediate | EntryListenerFlags.kNew);
+    if (useUDPForTarget) {
+      try {
+        Thread t = new UDPReceiver(3620);
+        t.start();
+      } catch (IOException e) {
+        logger.error ("Unable to start UDPReceiver: {}", e);
+      }
+    } else {
+      String json = nt_target_json.getString(null);
+      if (json != null) {
+        updateTargetInfoFromTargetJson(json);
+      }
+
+      nt_target_json.addListener(new TargetJsonListener(), EntryListenerFlags.kUpdate | EntryListenerFlags.kImmediate | EntryListenerFlags.kNew);
+    }
   }
 
   class TargetJsonListener implements Consumer<EntryNotification> {
@@ -192,6 +206,46 @@ public class VisionSubsystem extends SubsystemBase {
   public void turnVisionLightOff() {
     if (visionLight != null) {
       visionLight.set(false);
+    }
+  }
+
+  public class UDPReceiver extends Thread {
+    Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
+
+    protected DatagramSocket socket = null;
+    protected BufferedReader in = null;
+    protected boolean receiving = true;
+    public UDPReceiver(int port) throws IOException {
+      this(port, "udpReceiver");
+    }
+
+    public UDPReceiver(int port, String name) throws IOException {
+      super(name);
+      socket = new DatagramSocket(port);
+    }
+
+    public void run() {
+      logger.info("thread start");
+      byte[] buf = new byte[512];
+      DatagramPacket packet = new DatagramPacket(buf, buf.length);
+      while (receiving) {
+        try {
+          // receive request
+          packet.setLength(buf.length);
+          socket.receive(packet);
+          byte[] data = packet.getData();
+          String lastDataReceived = new String(data, 0, packet.getLength());
+          // logger.info ("data! {}", lastDataReceived);
+
+          if (updateTargetInfoFromTargetJson(lastDataReceived)) {
+            targetDataLastUpdated = Timer.getFPGATimestamp();
+          }
+        } catch (IOException e) {
+          logger.error ("threw exception: {}", e);
+          receiving = false;
+        }
+      }
+      socket.close();
     }
   }
 }
