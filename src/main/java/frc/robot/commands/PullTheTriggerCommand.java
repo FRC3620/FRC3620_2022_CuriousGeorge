@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this projec
 package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.ShooterDecider;
@@ -23,6 +24,7 @@ public class PullTheTriggerCommand extends CommandBase {
 
   Timer preshooterTimer = new Timer();
   boolean weAreDone = false;
+  double timeBetweenShots = 0.0;
 
   ShooterDecider.PewPewData pewPewData = new ShooterDecider.PewPewData();
 
@@ -46,26 +48,28 @@ public class PullTheTriggerCommand extends CommandBase {
     ShooterDecider.isTurretInPosition(pewPewData);
     pewPewData.fillInVisionData();
     ShooterDecider.logPewPewData(logger, "doing", pewPewData);
+
+    double targetYLocation = visionSubsystem.getTargetYLocation();
+    double distance = ShooterCalculator.calcDistanceFromHub(targetYLocation);
+    //double rpm = ShooterCalculator.calcMainRPM(distance);
+    //SmartDashboard.putString("doug.bar", "" + targetYLocation + " " + rpm);
+
+    if(distance <= 16){
+      timeBetweenShots = 0.0;
+    } else {
+      timeBetweenShots = 0.7;
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double targetYLocation = visionSubsystem.getTargetYLocation();
-    double rpm = ShooterCalculator.calcMainRPM(targetYLocation);
-    double timeBetweenShots = 0.0;
-
-    if(rpm <= 1968){
-      timeBetweenShots = 0.0;
-    } else{
-      timeBetweenShots = 0.4;
-    }
-
-    if(preshooterTimer.get() < timeBetweenShots) {
+    double t = preshooterTimer.get();
+    if (t < timeBetweenShots) {
         preShooterSubsystem.preshooterOn(1.0);
         intakeSubsystem.overrideIntakeBeltForShooting(0.0);
         intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);
-    } else if (preshooterTimer.get() < 2.0) {
+    } else if (t < 2.0) {
         preShooterSubsystem.preshooterOn(1.0);
         intakeSubsystem.overrideIntakeBeltForShooting(0.4);
         intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);
@@ -83,6 +87,7 @@ public class PullTheTriggerCommand extends CommandBase {
     }
     intakeSubsystem.clearIntakeShootingOverrides();
     preShooterSubsystem.preshooterOff();
+    preshooterTimer.stop();
   }
   
   // Returns true when the command should end.
