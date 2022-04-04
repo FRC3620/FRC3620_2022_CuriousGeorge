@@ -109,37 +109,17 @@ public class VisionSubsystem extends SubsystemBase {
     } else {
       allianceColor.setString("blue");
     }
-    double targetDistance = ShooterCalculator.calcDistanceFromHub(getTargetYLocation());
+
+    double targetYLocation = getTargetYLocation();
+    double targetDistance = ShooterCalculator.calcDistanceFromHub(targetYLocation);
     double targetRPM = ShooterCalculator.calcMainRPM(targetDistance);
+    double targetHood = ShooterCalculator.calcHoodAngle(targetDistance);
     SmartDashboard.putNumber("vision.target.data_age", getTargetDataAge());
     SmartDashboard.putBoolean("vision.target.data_is_fresh", !isTargetDataStale());
+    SmartDashboard.putNumber("vision.target.y", targetYLocation);
     SmartDashboard.putNumber("vision.calculated.distance", targetDistance);
     SmartDashboard.putNumber("vision.calculated.RPM", targetRPM);
-
-    //Drew playing with limelight 
-    
-    double targetOffsetAngle_Vertical = ty.getDouble(0.0);
-    
-    // how many degrees back is your limelight rotated from perfectly vertical?
-    double limelightMountAngleDegrees = 27.0; //24.7
-    
-    // distance from the center of the Limelight lens to the floor
-    double limelightLensHeightInches = 36.0;
-    
-    // distance from the target to the floor
-    double goalHeightInches = 105;
-    
-    double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
-    double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
-    
-    
-    //calculate distance
-    double distanceFromGoalInches = (goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians) + 24;
-    SmartDashboard.putNumber("wow.It.Actually.Works.them", (distanceFromGoalInches / 12.0) + 0.7);
-
-    double distanceFromGoalFeet = 15.63801 + -0.62701*targetOffsetAngle_Vertical + 0.013668*(targetOffsetAngle_Vertical*targetOffsetAngle_Vertical);
-    //Camera distance from table is 2.25 inches.
-    SmartDashboard.putNumber("wow.It.Actually.Works.us", distanceFromGoalFeet);
+    SmartDashboard.putNumber("vision.calculated.hood", targetHood);
   }
 
   public boolean isTargetFound() {

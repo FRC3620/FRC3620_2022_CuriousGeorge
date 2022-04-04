@@ -63,7 +63,7 @@ public class ShooterCalculator {
         if(distance < 15.0){
             calcMainRPM = (1260 + (44*distance)) * 1.0;
         }else{
-            calcMainRPM = (1421.6 + 21.36*distance + 0.8*distance*distance) * 1.0;
+            calcMainRPM = (1340.8 + 32.68*distance + 0.4*distance*distance) * 1.0;
         }
         return calcMainRPM;
     }
@@ -81,10 +81,10 @@ public class ShooterCalculator {
         }*/
     
         // how many degrees back is your limelight rotated from perfectly vertical?
-        double limelightMountAngleDegrees = 24.0; //24.7
+        double limelightMountAngleDegrees = 27.0; //24.7
         
         // distance from the center of the Limelight lens to the floor
-        double limelightLensHeightInches = 37.125;
+        double limelightLensHeightInches = 36.0;
         
         // distance from the target to the floor
         double goalHeightInches = 105;
