@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -80,7 +81,7 @@ public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
     }
     ShooterDecider.showReady(okToShoot);
 
-    boolean shouldRumble = okToShoot && driveSubsystem.areWeStopped();
+    boolean shouldRumble = okToShoot && driveSubsystem.areWeStopped() && DriverStation.isTeleopEnabled();
     SmartDashboard.putBoolean("should rumble", shouldRumble);
     if(shouldRumble){
       driverRumbleSubsystem.setRumble(Hand.RIGHT, 0.2);
