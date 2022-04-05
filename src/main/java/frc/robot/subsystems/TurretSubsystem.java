@@ -1,8 +1,10 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxLimitSwitch;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.SparkMaxLimitSwitch.Type;
 
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
@@ -25,6 +27,7 @@ public class TurretSubsystem extends SubsystemBase {
   boolean encoderIsValid = false;
   CANSparkMaxSendable turretDrive = RobotContainer.turretSubsystemturretSpinner;
   RelativeEncoder turretEncoder = RobotContainer.turretSubsystemturretEncoder;
+  SparkMaxLimitSwitch turretForwardLimitSwitch;
   SparkMaxPIDController turretPID = null;
   Timer calibrationTimer;
 
@@ -47,11 +50,21 @@ public class TurretSubsystem extends SubsystemBase {
       turretPID.setFF(0.0);    //0.0
 
       turretPID.setOutputRange(-0.8, 0.8);
+
+      turretForwardLimitSwitch = turretDrive.getForwardLimitSwitch(Type.kNormallyOpen);
     }
 
     if (turretEncoder != null) {
       turretEncoder.setPositionConversionFactor(90.0/26.861);  //90.0/115.0
       turretEncoder.setVelocityConversionFactor(1);
+    }
+  }
+
+  boolean isForwardLimitSwitchPressed() {
+    if (turretForwardLimitSwitch != null) {
+      return turretForwardLimitSwitch.isPressed();
+    } else {
+      return true;
     }
   }
 
@@ -68,8 +81,11 @@ public class TurretSubsystem extends SubsystemBase {
     if (turretDrive != null) {
       double turretCurrent = turretDrive.getOutputCurrent();
       double turretPower = turretDrive.getAppliedOutput();
+      boolean turretForwardLimitSwitch = isForwardLimitSwitchPressed();
+
       SmartDashboard.putNumber("turretCurrent", turretCurrent);
       SmartDashboard.putNumber("turretPower", turretPower);
+      SmartDashboard.putBoolean("turret forward limit", turretForwardLimitSwitch);
 
       if (turretEncoder != null) {
         double turretSpeed = turretEncoder.getVelocity();
@@ -80,22 +96,27 @@ public class TurretSubsystem extends SubsystemBase {
   
         if(Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS){
           if (!encoderIsValid) {
-            turnTurret(0.02); //turns turret clockwise
+            turnTurret(0.05); //turns turret clockwise
 
             if (calibrationTimer == null) {
               calibrationTimer = new Timer();
               calibrationTimer.reset();
               calibrationTimer.start();
             } else {
-              if (calibrationTimer.get() > 0.5){
-                if (Math.abs(turretSpeed) < 300) {
-                  encoderIsValid = true;
-                  turnTurret(0.0);
-                  turretEncoder.setPosition(270.0);
-                  if (requestedTurretPositionWhileCalibrating != null) {
-                    setTurretPosition(requestedTurretPositionWhileCalibrating);
-                    requestedTurretPositionWhileCalibrating = null;
-                  }
+              boolean atTheLimit = false;
+              if(isForwardLimitSwitchPressed()) {
+                atTheLimit = true;
+              }
+              if (calibrationTimer.get() > 0.5 && Math.abs(turretSpeed) < 150 ){
+                atTheLimit = true;
+              }
+              if (atTheLimit) {
+                encoderIsValid = true;
+                turnTurret(0.0);
+                turretEncoder.setPosition(270.0);
+                if (requestedTurretPositionWhileCalibrating != null) {
+                  setTurretPosition(requestedTurretPositionWhileCalibrating);
+                  requestedTurretPositionWhileCalibrating = null;
                 }
               }
             }
