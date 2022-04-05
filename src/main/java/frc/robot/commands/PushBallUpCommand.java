@@ -47,23 +47,14 @@ public class PushBallUpCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(beltTimer.get() < 0.4) {
-        intakeSubsystem.overrideIntakeBeltForShooting(0.4);
-        //intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);
-    } else {
-        weAreDone = true;
-    }
+    intakeSubsystem.overrideIntakeBeltForShooting(0.4);
   }
 
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    if (!interrupted) {
-      //intakeSubsystem.startPreviousCommand(this);
-    }
     intakeSubsystem.clearIntakeShootingOverrides();
-    preShooterSubsystem.preshooterOff();
   }
   
   // Returns true when the command should end.

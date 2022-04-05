@@ -17,6 +17,8 @@ public class ShooterCalculator {
         return a-a;
     }
 
+    static boolean use_trig = false;
+
     /**
      * This method should take as input the current RPM of the main shooter
      *  wheel as well as the CONSTANTS for shooter diameters and desired
@@ -65,7 +67,7 @@ public class ShooterCalculator {
         } else if(distance < 20.0) {
             calcMainRPM = (20 + 176.7*distance + -3.3*distance*distance) * 1.0;
         } else {
-            calcMainRPM = (1780 + 6.0*distance + 0.8*distance*distance) * 1.03;
+            calcMainRPM = (1780 + 6.0*distance + 0.8*distance*distance) * 1.06;
         }
         return calcMainRPM;
     }
@@ -81,20 +83,28 @@ public class ShooterCalculator {
             distance = 27.98076 -63.49953 *(targetY) +82.20488 *(targetY*targetY);
 
         }*/
-    
-        // how many degrees back is your limelight rotated from perfectly vertical?
-        double limelightMountAngleDegrees = 27.0; //24.7
-        
-        // distance from the center of the Limelight lens to the floor
-        double limelightLensHeightInches = 36.0;
-        
-        // distance from the target to the floor
-        double goalHeightInches = 105;
-        
-        double angleToGoalDegrees = limelightMountAngleDegrees + ty;
-        double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
 
-        distance = (((goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians) + 24)/12) + 0.7;
+        if (use_trig) {
+        
+            // how many degrees back is your limelight rotated from perfectly vertical?
+            double limelightMountAngleDegrees = 27.0; //24.7
+            
+            // distance from the center of the Limelight lens to the floor
+            double limelightLensHeightInches = 36.0;
+            
+            // distance from the target to the floor
+            double goalHeightInches = 105;
+            
+            double angleToGoalDegrees = limelightMountAngleDegrees + ty;
+            double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+
+            distance = (((goalHeightInches - limelightLensHeightInches)/Math.tan(angleToGoalRadians) + 24)/12) + 0.7;
+                
+        } else {
+
+            // this is for running the Limelight in a high resolution mode
+            distance = 14.133645 + -0.53658372 * ty + 0.02704952 * ty * ty + -0.0007223267 * ty * ty * ty;
+        }
 
         return distance;
     }
