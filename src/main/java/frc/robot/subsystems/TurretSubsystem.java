@@ -52,6 +52,7 @@ public class TurretSubsystem extends SubsystemBase {
       turretPID.setOutputRange(-0.8, 0.8);
 
       turretForwardLimitSwitch = turretDrive.getForwardLimitSwitch(Type.kNormallyOpen);
+      turretForwardLimitSwitch.enableLimitSwitch(true);
     }
 
     if (turretEncoder != null) {
