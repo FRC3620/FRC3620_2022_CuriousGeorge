@@ -51,7 +51,7 @@ public class ShooterCalculator {
         if(distance < 15){
             calcHoodAngle = 89 + -2.7*distance + 0.04*distance*distance;
         } else if(distance < 20){
-            calcHoodAngle = 116 + -5.7*distance + 0.12*distance*distance;
+            calcHoodAngle = 105 + -4.4*distance + 0.08*distance*distance;
         } else {
             calcHoodAngle = 106 + -4.4*distance + 0.08*distance*distance;
         }
@@ -63,9 +63,9 @@ public class ShooterCalculator {
         if(distance < 15.0){
             calcMainRPM = (1260 + (44*distance)) * 1.0;
         } else if(distance < 20.0) {
-            calcMainRPM = (1640.4 + -4.88*distance + 1.568*distance*distance) * 1.0;
+            calcMainRPM = (20 + 176.7*distance + -3.3*distance*distance) * 1.0;
         } else {
-            calcMainRPM = (-470.0 + 196.0*distance + -3.2*distance*distance) * 1.0;
+            calcMainRPM = (1780 + 6.0*distance + 0.8*distance*distance) * 1.03;
         }
         return calcMainRPM;
     }
