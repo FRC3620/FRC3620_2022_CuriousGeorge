@@ -14,6 +14,8 @@ import org.usfirst.frc3620.misc.FileSaver;
 import org.usfirst.frc3620.misc.GitNess;
 import org.usfirst.frc3620.misc.RobotMode;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -44,8 +46,19 @@ public class Robot extends TimedRobot {
     logger = EventLogging.getLogger(Robot.class, Level.INFO);
     logger.info ("I'm alive! {}", GitNess.gitDescription());
 
-    PortForwarder.add (10080, "wpilibpi.local", 80);
-    PortForwarder.add (10022, "wpilibpi.local", 22);
+    PortForwarder.add(10080, "wpilibpi.local", 80);
+    PortForwarder.add(10022, "wpilibpi.local", 22);
+    
+    PortForwarder.add(5800, "limelight.local", 5800);
+    PortForwarder.add(5801, "limelight.local", 5801);
+    PortForwarder.add(5802, "limelight.local", 5802);
+    PortForwarder.add(5803, "limelight.local", 5803);
+    PortForwarder.add(5804, "limelight.local", 5804);
+    PortForwarder.add(5805, "limelight.local", 5805);
+
+    UsbCamera camera = CameraServer.startAutomaticCapture();
+    camera.setResolution(320, 240);
+    camera.setFPS(15);
 
     CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {//whenever a command initializes, the function declared bellow will run.
       public void accept(Command command) {
