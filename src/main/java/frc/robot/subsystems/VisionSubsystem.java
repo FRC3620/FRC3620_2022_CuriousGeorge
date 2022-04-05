@@ -34,71 +34,24 @@ public class VisionSubsystem extends SubsystemBase {
   private NetworkTableEntry ballY = cargoNetworkTable.getEntry("ball.y");
   private NetworkTableEntry allianceColor = cargoNetworkTable.getEntry("color");
 
-  private NetworkTable targetNetworkTable = inst.getTable("V/Target");
-  private NetworkTableEntry nt_target_json = targetNetworkTable.getEntry("json");
-  //private Solenoid visionLight = RobotContainer.ringLight;
-
   NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
   NetworkTableEntry ty = table.getEntry("ty");
   NetworkTableEntry tx = table.getEntry("tx");
   NetworkTableEntry tv = table.getEntry("tv");
+  NetworkTableEntry tl = table.getEntry("tl");
 
-  Gson targetGson = new Gson();
-  TargetData targetData = new TargetData();
   double targetDataLastUpdated = 0;
-
-  class TargetData {
-    Double tx, ty;
-
-    @SerializedName("b")
-    int boxes;
-
-    @SerializedName("c")
-    Integer frame_check_count;
-
-    @SerializedName("f")
-    boolean found;
-  }
 
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
-    //SendableRegistry.addLW(RobotContainer.ringLight, getName(), "ringlight");
-
-    String json = nt_target_json.getString(null);
-    if (json != null) {
-      updateTargetInfoFromTargetJson(json);
-    }
-
-    //turnVisionLightOn();
-
-    nt_target_json.addListener(new TargetJsonListener(), EntryListenerFlags.kUpdate | EntryListenerFlags.kImmediate | EntryListenerFlags.kNew);
+    tl.addListener(new LimelightListener(), EntryListenerFlags.kUpdate | EntryListenerFlags.kImmediate | EntryListenerFlags.kNew);
   }
 
-  class TargetJsonListener implements Consumer<EntryNotification> {
+  class LimelightListener implements Consumer<EntryNotification> {
     @Override
     public void accept(EntryNotification t) {
-      String json = t.value.getString();
-      if (updateTargetInfoFromTargetJson(json)) {
-        targetDataLastUpdated = Timer.getFPGATimestamp();
-      }
+      targetDataLastUpdated = Timer.getFPGATimestamp();
     }
-  }
-
-  boolean updateTargetInfoFromTargetJson(String json) {
-    boolean rv = false;
-    try {
-      targetData = targetGson.fromJson(json, TargetData.class);
-      SmartDashboard.putNumber("vision.target.xdegrees", getTargetXDegrees());
-      //SmartDashboard.putNumber("vision.target.x", getTargetXLocation());
-      SmartDashboard.putNumber("vision.target.y", getTargetYLocation());
-      SmartDashboard.putNumber("vision.target.boxes", targetData.boxes);
-      SmartDashboard.putBoolean("vision.target.found", isTargetFound());
-      SmartDashboard.putBoolean("vision.target.centered", isTargetCentered());
-      rv = true;
-    } catch (Exception ex) {
-      logger.error ("trouble with parsing JSON?", ex);
-    }
-    return rv;
   }
 
   @Override
@@ -133,26 +86,19 @@ public class VisionSubsystem extends SubsystemBase {
     if (tv.getDouble(0.0) == 0) {
       rv = false;
     }
+    if (isTargetDataStale()) {
+      rv = false;
+    }
     return rv;
   }
 
-  /*public double getTargetXLocation(){
-    if (!isTargetFound()) return Double.NaN;
-    return targetData.x;
-  }*/
-
   public double getTargetYLocation(){
     if (!isTargetFound()) return Double.NaN;
-    //return targetData.y;
     return ty.getDouble(0.0);
   }
 
   public double getTargetXDegrees() {
     if (!isTargetFound()) return Double.NaN;
-    // 5.0 / 0.08.25 was the original
-    // 20.0 / 27.0 was an empirical correction
-    //double k = (5.0 / 0.0825) * (20.0 / 27.0);
-    //return (targetData.x - 0.5) * k;
     return tx.getDouble(0.0);
   }
 
@@ -195,16 +141,4 @@ public class VisionSubsystem extends SubsystemBase {
   public double getBallYLocation(){
     return ballY.getDouble(-1);
   }
-
-  /*public void turnVisionLightOn() {
-    if (visionLight != null) {
-      visionLight.set(true);
-    }
-  }
-
-  public void turnVisionLightOff() {
-    if (visionLight != null) {
-      visionLight.set(false);
-    }
-  }*/
 }
