@@ -73,14 +73,20 @@ public class VisionSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("vision.calculated.distance", targetDistance);
     SmartDashboard.putNumber("vision.calculated.RPM", targetRPM);
     SmartDashboard.putNumber("vision.calculated.hood", targetHood);
+    SmartDashboard.putBoolean("target found?", isTargetFound());
   }
 
   public boolean isTargetFound() {
     double currentTurretPosition = RobotContainer.turretSubsystem.getCurrentTurretPosition();
+    double angleOfTarget = currentTurretPosition + tx.getDouble(0.0);
 
     boolean rv = true;
-    if (currentTurretPosition > 31 && currentTurretPosition < 82) {
+    if (angleOfTarget > 37 && angleOfTarget < 86 && tv.getDouble(0.0) == 1) {
       // we are probably looking at our armpit
+      rv = false;
+    }
+    if (angleOfTarget < -34 && tv.getDouble(0.0) == 1){
+      // we're lookin' at our other armpit
       rv = false;
     }
     if (tv.getDouble(0.0) == 0) {
