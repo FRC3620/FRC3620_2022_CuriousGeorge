@@ -500,6 +500,8 @@ public class RobotContainer {
 
   void setupSmartDashboardCommands() {
     SmartDashboard.putData(new ZeroDriveEncodersCommand(driveSubsystem));
+
+    SmartDashboard.putData("Start Data Logging", new StartShooterDataLoggingCommand("shooter", 30));
   
     SmartDashboard.putData("TestAuto", new TestAuto(driveSubsystem));
     SmartDashboard.putData("AutoDriveToCargo Test", new DriveToCargoTestAuto(driveSubsystem, visionSubsystem));

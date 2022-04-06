@@ -70,6 +70,10 @@ public class ShootingDataLogger {
         dataLogger.addDataProvider("vision.target.yposition.unfrozen", () -> visionSubsystem.getUnfrozenTy());
         dataLogger.addDataProvider("vision.target.range", () -> ShooterCalculator.calcDistanceFromHub(visionSubsystem.getTargetYLocation()));
 
+        if (RobotContainer.intakeBelt != null) {
+            dataLogger.addDataProvider("intake.belt.power", () -> RobotContainer.intakeBelt.getAppliedOutput());
+        }
+
         return dataLogger;
     }
 
