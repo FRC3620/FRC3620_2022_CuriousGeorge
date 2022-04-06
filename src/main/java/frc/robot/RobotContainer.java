@@ -280,8 +280,8 @@ public class RobotContainer {
         compressor.enableDigital();
       }
 
-      //ringLight = new Solenoid(pneumaticModuleType, 7);
-      //ringLight.set(true);
+      ringLight = new Solenoid(pneumaticModuleType, 7);
+      ringLight.set(true);
 
       if (pneumaticModuleType == PneumaticsModuleType.REVPH) {
         redLight = new Solenoid(pneumaticModuleType, 15);
