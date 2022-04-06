@@ -90,6 +90,8 @@ public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
     }
   }
 
+  boolean loggedNan = false;
+
   public void setUpStuffToShoot(){
     double currentTurretPosition = turretSubsystem.getCurrentTurretPosition();
     if (visionSubsystem.isTargetFound()){
@@ -98,18 +100,23 @@ public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
       turretSubsystem.setTurretPosition(newTurretPosition);
 
       double targetYLocation = visionSubsystem.getTargetYLocation();
-      double targetDistance = ShooterCalculator.calcDistanceFromHub(targetYLocation);
-      double targetRPM = ShooterCalculator.calcMainRPM(targetDistance);
-      double targetHood = ShooterCalculator.calcHoodAngle(targetDistance);
 
-      SmartDashboard.putNumber("doug.y", targetYLocation);
-      SmartDashboard.putNumber("doug.distance", targetDistance);
-      SmartDashboard.putNumber("doug.main.rpm", targetRPM);
-      SmartDashboard.putNumber("doug.hood", targetHood);
+      if (! Double.isNaN(targetYLocation)) {
+        double targetDistance = ShooterCalculator.calcDistanceFromHub(targetYLocation);
+        double targetRPM = ShooterCalculator.calcMainRPM(targetDistance);
+        double targetHood = ShooterCalculator.calcHoodAngle(targetDistance);
 
-      shooterSubsystem.setMainRPM(targetRPM);
-      shooterSubsystem.setBackRPM(ShooterCalculator.calculateBackspinRPM(targetRPM));
-      shooterSubsystem.setHoodPositionToDegrees(targetHood);
+        shooterSubsystem.setMainRPM(targetRPM);
+        shooterSubsystem.setBackRPM(ShooterCalculator.calculateBackspinRPM(targetRPM));
+        shooterSubsystem.setHoodPositionToDegrees(targetHood);
+
+        loggedNan = false;
+      } else {
+        if (!loggedNan) {
+          logger.info ("got targetY == NaN and isTargetFound() true");
+          loggedNan = true;
+        }
+      }
     }
   }
 

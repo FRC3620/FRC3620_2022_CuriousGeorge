@@ -136,7 +136,10 @@ public class ShooterSubsystem extends SubsystemBase {
         m.set(ControlMode.PercentOutput, 0);
       } else {
         targetVelocity = r * 2048.0 / 600.0;
-        m.set(ControlMode.Velocity, targetVelocity);
+        if (!Double.isNaN(targetVelocity)) {
+          // do not do anything; leave the setpoint where it is!
+          m.set(ControlMode.Velocity, targetVelocity);
+        }
       }
     }
     //logger.info ("setRpm {} {}", s.name, r);
@@ -152,7 +155,10 @@ public class ShooterSubsystem extends SubsystemBase {
         m.set(0);
       } else {
         targetVelocity = r;
-        m.getPIDController().setReference(r, CANSparkMax.ControlType.kVelocity);
+        if (!Double.isNaN(targetVelocity)) {
+          // do not do anything; leave the setpoint where it is!
+          m.getPIDController().setReference(r, CANSparkMax.ControlType.kVelocity);
+        }
       }
     }
     //logger.info ("setRpm {} {}", s.name, r);
@@ -217,7 +223,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   Double requestedHoodPositionDuringCalibration = null;
   void setHoodPositionToRotations(double position) {
-    if(position >= 27){
+    if (Double.isNaN(position)) {
+      // do not do anything; leave the position where it is!
+    } else if (position >= 27){
       requestedHoodPosition = 27;
     } else if (position < 2) {
       requestedHoodPosition=2;

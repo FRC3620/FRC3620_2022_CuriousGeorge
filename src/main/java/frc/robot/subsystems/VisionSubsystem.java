@@ -149,6 +149,9 @@ public class VisionSubsystem extends SubsystemBase {
       return false;
     }
     double ylocation = getTargetYLocation();
+    if (Double.isNaN(ylocation)) {
+      return false;
+    }
     double distance = ShooterCalculator.calcDistanceFromHub(ylocation);
     double limit = 1;
     if (distance < 15) {

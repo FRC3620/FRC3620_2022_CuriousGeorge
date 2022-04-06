@@ -7,6 +7,12 @@ public class DummyTest {
     }
 
     @Test
+    public void nanTest() {
+        double x = 2.0 * Double.NaN;
+        System.out.println(x);
+    }
+
+    //@Test
     public void llCalc() {
         double targetOffsetAngle_Vertical = -3.79;
 
