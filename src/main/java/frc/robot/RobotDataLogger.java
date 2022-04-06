@@ -6,6 +6,8 @@ import org.usfirst.frc3620.misc.CANDeviceFinder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.miscellaneous.ShooterCalculator;
+import frc.robot.subsystems.VisionSubsystem;
 
 import java.text.DecimalFormat;
 
@@ -34,6 +36,7 @@ public class RobotDataLogger {
 		dataLogger.addDataProvider("vision.target.centered", () -> RobotContainer.visionSubsystem.isTargetCentered() ? 1 : 0);
 		//dataLogger.addDataProvider("vision.target.x", () -> RobotContainer.visionSubsystem.getTargetXLocation());
 		dataLogger.addDataProvider("vision.target.y", () -> RobotContainer.visionSubsystem.getTargetYLocation());
+		dataLogger.addDataProvider("vision.range", () -> f2(calculateRange()));
 		dataLogger.addDataProvider("vision.cargo.x", () -> RobotContainer.visionSubsystem.getBallXLocation());
 		dataLogger.addDataProvider("vision.cargo.y", () -> RobotContainer.visionSubsystem.getBallYLocation());
 
@@ -110,6 +113,12 @@ public class RobotDataLogger {
 			dataLogger.addDataProvider("intake.wheelbar.power", () -> f2(RobotContainer.intakeWheelbar.getAppliedOutput()));
 			dataLogger.addDataProvider("intake.wheelbar.current", () -> f2(RobotContainer.intakeWheelbar.getOutputCurrent()));
 		}
+	}
+
+	double calculateRange() {
+		double ty = RobotContainer.visionSubsystem.getTargetYLocation();
+		double d = ShooterCalculator.calcDistanceFromHub(ty);
+		return d;
 	}
 
 	private DecimalFormat f2formatter = new DecimalFormat("#.##");

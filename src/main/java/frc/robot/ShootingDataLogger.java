@@ -73,6 +73,7 @@ public class ShootingDataLogger {
         if (RobotContainer.intakeBelt != null) {
             dataLogger.addDataProvider("intake.belt.power", () -> RobotContainer.intakeBelt.getAppliedOutput());
         }
+        dataLogger.addDataProvider("intake.belt.power.commanded", () -> RobotContainer.intakeSubsystem.getCommandedIntakeBeltPower());
 
         return dataLogger;
     }

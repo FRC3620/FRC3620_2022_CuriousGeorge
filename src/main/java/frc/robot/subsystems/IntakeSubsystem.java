@@ -45,6 +45,8 @@ public class IntakeSubsystem extends SubsystemBase {
   Double intakeBeltSpeedShootingOverride = null;
   Double intakeWheelBarSpeedShootingOverride = null;
 
+  double intakeBeltCommandedPower = 0.0;
+
   /**
    * Spin the intake wheel and intake belt.
    * @param speed how fast to spin. positive is inward, negative is outward.
@@ -63,6 +65,7 @@ public class IntakeSubsystem extends SubsystemBase {
         intakeBelt.set(speed);
       }
     }
+    intakeBeltCommandedPower = speed;
   }
 
   public void overrideIntakeBeltForShooting(double speed) {
@@ -74,6 +77,7 @@ public class IntakeSubsystem extends SubsystemBase {
     if (intakeBelt != null) {
         intakeBelt.set(speed);
     }
+    intakeBeltCommandedPower = speed;
   }
 
   public void overrideIntakeWheelBarForShooting(double speed) {
@@ -96,17 +100,21 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeWheelBarSpeedShootingOverride = null;
   }
 
-  public double getIntakeBeltSpeed() {
+  public double getIntakeBeltPower() {
     if (intakeBelt != null) {
       return intakeBelt.get();
     }
     return 0;
   }
 
-  public double getIntakeWheelbarSpeed() {
+  public double getIntakeWheelbarPower() {
     if (intakeWheelbar != null) {
       return intakeWheelbar.get();
     }
     return 0;
+  }
+
+  public double getCommandedIntakeBeltPower() {
+    return intakeBeltCommandedPower;
   }
 }

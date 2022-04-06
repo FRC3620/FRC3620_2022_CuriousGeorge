@@ -45,8 +45,12 @@ public class VisionSubsystem extends SubsystemBase {
   boolean visionIsFrozen = false;
   double frozenTy = 0.0;
 
+  private Solenoid ringLight = RobotContainer.ringLight;
+
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
+    SendableRegistry.addLW(RobotContainer.ringLight, getName(), "ringlight");
+
     tl.addListener(new LimelightListener(), EntryListenerFlags.kUpdate | EntryListenerFlags.kImmediate | EntryListenerFlags.kNew);
   }
 
@@ -76,7 +80,8 @@ public class VisionSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("vision.calculated.distance", targetDistance);
     SmartDashboard.putNumber("vision.calculated.RPM", targetRPM);
     SmartDashboard.putNumber("vision.calculated.hood", targetHood);
-    SmartDashboard.putBoolean("target found?", isTargetFound());
+    SmartDashboard.putBoolean("vision.target.found", isTargetFound());
+    SmartDashboard.putBoolean("vision.target.centered", isTargetCentered());
   }
 
   public boolean isTargetFound() {
@@ -169,5 +174,17 @@ public class VisionSubsystem extends SubsystemBase {
 
   public void unfreezeDistance(){
     visionIsFrozen = false;
+  }
+
+  public void turnRingLightOn() {
+    if (ringLight != null) {
+      ringLight.set(true);
+    }
+  }
+
+  public void turnRingLightOff() {
+    if (ringLight != null) {
+      ringLight.set(false);
+    }
   }
 }
