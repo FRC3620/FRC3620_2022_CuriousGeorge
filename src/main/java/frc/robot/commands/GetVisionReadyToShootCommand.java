@@ -119,6 +119,7 @@ public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
     if (dataLogger != null) {
       dataLogger.done();
       dataLogger = null;
+      driverRumbleSubsystem.clearRumble();
     }
   }
 
