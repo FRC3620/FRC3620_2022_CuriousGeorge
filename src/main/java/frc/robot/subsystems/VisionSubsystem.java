@@ -41,6 +41,9 @@ public class VisionSubsystem extends SubsystemBase {
   NetworkTableEntry tl = table.getEntry("tl");
 
   double targetDataLastUpdated = 0;
+  
+  boolean visionIsFrozen = false;
+  double frozenTy = 0.0;
 
   /** Creates a new VisionSubsystem. */
   public VisionSubsystem() {
@@ -99,7 +102,19 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public double getTargetYLocation(){
-    if (!isTargetFound()) return Double.NaN;
+    if (!isTargetFound()) {
+      return Double.NaN;
+    }
+
+    if (visionIsFrozen == true){
+      return frozenTy;
+    } else {
+      frozenTy = ty.getDouble(0.0);
+      return frozenTy;
+    }
+  }
+
+  public double getUnfrozenTy(){
     return ty.getDouble(0.0);
   }
 
@@ -146,5 +161,13 @@ public class VisionSubsystem extends SubsystemBase {
   
   public double getBallYLocation(){
     return ballY.getDouble(-1);
+  }
+
+  public void freezeDistance(){
+    visionIsFrozen = true;
+  }
+
+  public void unfreezeDistance(){
+    visionIsFrozen = false;
   }
 }

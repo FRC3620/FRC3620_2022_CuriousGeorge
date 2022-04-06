@@ -8,6 +8,8 @@ import frc.robot.RobotContainer;
 import frc.robot.ShooterDecider;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PreShooterSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
+
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 
@@ -16,6 +18,7 @@ public class PullTheTriggerForOneCommand extends CommandBase {
 
   PreShooterSubsystem preShooterSubsystem = RobotContainer.preShooterSubsystem;
   IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
+  VisionSubsystem visionSubsystem = RobotContainer.visionSubsystem;
 
   Timer preshooterTimer = new Timer();
   boolean weAreDone = false;
@@ -35,6 +38,8 @@ public class PullTheTriggerForOneCommand extends CommandBase {
     preshooterTimer.reset();
     preshooterTimer.start();
     weAreDone = false;
+
+    visionSubsystem.freezeDistance();
 
     pewPewData.clear();
     ShooterDecider.isShooterUpToSpeed(pewPewData);
@@ -65,6 +70,7 @@ public class PullTheTriggerForOneCommand extends CommandBase {
     }
     intakeSubsystem.clearIntakeShootingOverrides();
     preShooterSubsystem.preshooterOff();
+    visionSubsystem.unfreezeDistance();
   }
   
   // Returns true when the command should end.

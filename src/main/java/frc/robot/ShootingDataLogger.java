@@ -67,6 +67,7 @@ public class ShootingDataLogger {
         //dataLogger.addDataProvider("vision.target.xposition", () -> visionSubsystem.getTargetXLocation());
         dataLogger.addDataProvider("vision.target.xdegrees", () -> visionSubsystem.getTargetXDegrees());
         dataLogger.addDataProvider("vision.target.yposition", () -> visionSubsystem.getTargetYLocation());
+        dataLogger.addDataProvider("vision.target.yposition.unfrozen", () -> visionSubsystem.getUnfrozenTy());
         dataLogger.addDataProvider("vision.target.range", () -> ShooterCalculator.calcDistanceFromHub(visionSubsystem.getTargetYLocation()));
 
         return dataLogger;

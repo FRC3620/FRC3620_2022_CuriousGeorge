@@ -42,6 +42,8 @@ public class PullTheTriggerCommand extends CommandBase {
     preshooterTimer.start();
     weAreDone = false;
 
+    visionSubsystem.freezeDistance();
+
     pewPewData.clear();
     ShooterDecider.isShooterUpToSpeed(pewPewData);
     ShooterDecider.isHoodInPosition(pewPewData);
@@ -88,6 +90,7 @@ public class PullTheTriggerCommand extends CommandBase {
     intakeSubsystem.clearIntakeShootingOverrides();
     preShooterSubsystem.preshooterOff();
     preshooterTimer.stop();
+    visionSubsystem.unfreezeDistance();
   }
   
   // Returns true when the command should end.
