@@ -350,7 +350,8 @@ public class RobotContainer {
     }
 
     if(preShooterSubsystemPreShooter != null) {
-      resetMaxToKnownState(preShooterSubsystemPreShooter, true); 
+      resetMaxToKnownState(preShooterSubsystemPreShooter, true);
+      preShooterSubsystemPreShooter.setOpenLoopRampRate(0);
     }
 
     if(shooterSubsystemHoodMax != null) {
