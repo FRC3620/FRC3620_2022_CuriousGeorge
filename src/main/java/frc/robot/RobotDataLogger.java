@@ -34,7 +34,7 @@ public class RobotDataLogger {
 		dataLogger.addDataProvider("vision.target.data_is_fresh", () -> RobotContainer.visionSubsystem.isTargetDataStale() ? 0 : 1);
 		dataLogger.addDataProvider("vision.target.found", () -> RobotContainer.visionSubsystem.isTargetFound() ? 1 : 0);
 		dataLogger.addDataProvider("vision.target.centered", () -> RobotContainer.visionSubsystem.isTargetCentered() ? 1 : 0);
-		//dataLogger.addDataProvider("vision.target.x", () -> RobotContainer.visionSubsystem.getTargetXLocation());
+		dataLogger.addDataProvider("vision.target.x", () -> RobotContainer.visionSubsystem.getTargetXDegrees());
 		dataLogger.addDataProvider("vision.target.y", () -> RobotContainer.visionSubsystem.getTargetYLocation());
 		dataLogger.addDataProvider("vision.range", () -> f2(calculateRange()));
 		dataLogger.addDataProvider("vision.cargo.x", () -> RobotContainer.visionSubsystem.getBallXLocation());
