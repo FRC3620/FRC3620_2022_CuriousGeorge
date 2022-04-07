@@ -147,7 +147,7 @@ public class RumbleCommand extends CommandBase {
             subsystem.clearRumble();
 
             //Sets the rumble and starts the timer
-            subsystem.setRumble(hand, intensity);
+            subsystem.setRumble(hand, intensity, duration);
             if (!continuous) {
                 timer.start();
             }

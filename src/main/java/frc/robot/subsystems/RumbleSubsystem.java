@@ -62,7 +62,7 @@ public class RumbleSubsystem extends SubsystemBase {
     public void setDisabled(Boolean disabled) {this.disabled = disabled;}
 
     //Called from RumbleSubsystem. Directly sets controller rumble
-    public void setRumble (Hand hand, Double intensity) {
+    public void setRumble (Hand hand, Double intensity, Double duration) {
         if (!disabled) {
             //Switch/case for rumbling different sides of the controller
             switch (hand) {
@@ -83,7 +83,7 @@ public class RumbleSubsystem extends SubsystemBase {
     public void clearRumble () {
         if (!disabled) {
             //clears the rumble
-            setRumble(Hand.BOTH, 0.0);
+            setRumble(Hand.BOTH, 0.0, 1.0);
         }
     }
 

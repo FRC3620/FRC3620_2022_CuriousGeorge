@@ -84,7 +84,7 @@ public class GetVisionReadyToShootCommand extends GetReadyToShootCommand {
     boolean shouldRumble = okToShoot && driveSubsystem.areWeStopped() && DriverStation.isTeleopEnabled();
     SmartDashboard.putBoolean("should rumble", shouldRumble);
     if(shouldRumble){
-      driverRumbleSubsystem.setRumble(Hand.RIGHT, 0.2);
+      driverRumbleSubsystem.setRumble(Hand.RIGHT, 0.2, 2.0);
     } else {
       driverRumbleSubsystem.clearRumble();
     }

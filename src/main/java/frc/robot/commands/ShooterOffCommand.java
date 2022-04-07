@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.RumbleSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -13,10 +14,12 @@ import frc.robot.subsystems.ShooterSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ShooterOffCommand extends CommandBase {
   ShooterSubsystem shooterSubsystem;
+  RumbleSubsystem driverRumbleSubsystem;
   public ShooterOffCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
     shooterSubsystem = RobotContainer.shooterSubsystem;
-    addRequirements(shooterSubsystem);
+    driverRumbleSubsystem = RobotContainer.driverRumbleSubsystem;
+    addRequirements(shooterSubsystem, driverRumbleSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -28,6 +31,7 @@ public class ShooterOffCommand extends CommandBase {
   public void execute() {
     shooterSubsystem.setTopPower(0.0);
     shooterSubsystem.setBackRPM(0.0);
+    driverRumbleSubsystem.clearRumble();
   }
 
   @Override
