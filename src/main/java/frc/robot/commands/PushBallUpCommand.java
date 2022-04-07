@@ -47,7 +47,7 @@ public class PushBallUpCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-   intakeSubsystem.overrideIntakeBeltForShooting(0.4);
+    intakeSubsystem.overrideIntakeBeltForShooting(0.4);
   }
 
 
@@ -55,7 +55,6 @@ public class PushBallUpCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     intakeSubsystem.clearIntakeShootingOverrides();
-    preShooterSubsystem.preshooterOff();
   }
   
   // Returns true when the command should end.

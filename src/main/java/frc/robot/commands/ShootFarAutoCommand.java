@@ -26,10 +26,10 @@ public class ShootFarAutoCommand extends SequentialCommandGroup {
                 new SequentialCommandGroup(
                     new PullTheTriggerForOneCommand(),
                     new LogCommand("shot once"),
-                    new PushBallUpCommand(),
+                    new AutoPushBallUpCommand(),
                     new LogCommand("ball is ready to shoot"),
                     new PullTheTriggerForOneCommand(),
-                    new PushBallUpCommand(),
+                    new AutoPushBallUpCommand(),
                     new PullTheTriggerCommand()
                 )
             )
