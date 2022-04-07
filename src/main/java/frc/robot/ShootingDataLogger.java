@@ -42,6 +42,8 @@ public class ShootingDataLogger {
 
         dataLogger.addDataProvider("hood.requested", () -> shooterSubsystem.getRequestedHoodPosition());
         dataLogger.addDataProvider("hood.position", () -> shooterSubsystem.getHoodPosition());
+        dataLogger.addDataProvider("hood.requested.degrees", () -> ShooterSubsystem.calculateHoodAngle(shooterSubsystem.getRequestedHoodPosition()));
+        dataLogger.addDataProvider("hood.position.degrees", () -> ShooterSubsystem.calculateHoodAngle(shooterSubsystem.getHoodPosition()));
         dataLogger.addDataProvider("hood.encoder_is_valid", () -> shooterSubsystem.hoodEncoderIsValid() ? 1 : 0);
         if (RobotContainer.shooterSubsystemHoodMax != null) {
             dataLogger.addDataProvider("hood.velocity", () -> RobotContainer.shooterSubsystemHoodMax.getEncoder().getVelocity());
