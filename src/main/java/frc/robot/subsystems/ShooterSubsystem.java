@@ -283,9 +283,17 @@ public class ShooterSubsystem extends SubsystemBase {
       setMainRPM(targetVelocity);
     }
   }
+
+  // rotations = a*angle + b
+  static double hood_coeff_a = -0.709;
+  static double hood_coeff_b = 58.816;
   
   public static double calculateHoodRotations (double angle) {
-    return (58.816 - (0.709 * angle));
+    return (hood_coeff_b + (hood_coeff_a * angle));
+  }
+
+  public static double calculateHoodAngle (double rotations) {
+    return (rotations - hood_coeff_b) / hood_coeff_a;
   }
 
   Command lastCommand = null;
