@@ -154,7 +154,9 @@ public class TurretSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("turretRequestedAngle", angle);
     requestedTurretPosition = angle;
     if (encoderIsValid) {
-      turretPID.setReference(angle, ControlType.kPosition);
+      if (! Double.isNaN(requestedTurretPosition)) {
+        turretPID.setReference(angle, ControlType.kPosition);
+      }
     } else {
       requestedTurretPositionWhileCalibrating = angle;
     }
