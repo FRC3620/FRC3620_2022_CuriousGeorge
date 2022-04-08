@@ -42,6 +42,8 @@ public class ShootingDataLogger {
 
         dataLogger.addDataProvider("hood.requested", () -> shooterSubsystem.getRequestedHoodPosition());
         dataLogger.addDataProvider("hood.position", () -> shooterSubsystem.getHoodPosition());
+        dataLogger.addDataProvider("hood.requested.degrees", () -> ShooterSubsystem.calculateHoodAngle(shooterSubsystem.getRequestedHoodPosition()));
+        dataLogger.addDataProvider("hood.position.degrees", () -> ShooterSubsystem.calculateHoodAngle(shooterSubsystem.getHoodPosition()));
         dataLogger.addDataProvider("hood.encoder_is_valid", () -> shooterSubsystem.hoodEncoderIsValid() ? 1 : 0);
         if (RobotContainer.shooterSubsystemHoodMax != null) {
             dataLogger.addDataProvider("hood.velocity", () -> RobotContainer.shooterSubsystemHoodMax.getEncoder().getVelocity());
@@ -64,7 +66,6 @@ public class ShootingDataLogger {
 
         dataLogger.addDataProvider("vision.target.found", () -> visionSubsystem.isTargetFound() ? 1 : 0);
         dataLogger.addDataProvider("vision.target.centered", () -> visionSubsystem.isTargetCentered() ? 1 : 0);
-        //dataLogger.addDataProvider("vision.target.xposition", () -> visionSubsystem.getTargetXLocation());
         dataLogger.addDataProvider("vision.target.xdegrees", () -> visionSubsystem.getTargetXDegrees());
         dataLogger.addDataProvider("vision.target.yposition", () -> visionSubsystem.getTargetYLocation());
         dataLogger.addDataProvider("vision.target.yposition.unfrozen", () -> visionSubsystem.getUnfrozenTy());
@@ -72,6 +73,7 @@ public class ShootingDataLogger {
 
         if (RobotContainer.intakeBelt != null) {
             dataLogger.addDataProvider("intake.belt.power", () -> RobotContainer.intakeBelt.getAppliedOutput());
+            // dataLogger.addDataProvider("intake.belt.power.r", () -> RobotContainer.intakeBelt.get());
         }
         dataLogger.addDataProvider("intake.belt.power.commanded", () -> RobotContainer.intakeSubsystem.getCommandedIntakeBeltPower());
 

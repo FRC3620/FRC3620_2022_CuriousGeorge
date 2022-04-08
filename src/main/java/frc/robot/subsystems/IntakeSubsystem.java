@@ -19,8 +19,6 @@ import frc.robot.miscellaneous.CANSparkMaxSendable;
 public class IntakeSubsystem extends SubsystemBase {
   Logger logger = EventLogging.getLogger(getClass(), Level.INFO);
 
-  boolean logCallers = false;
-  
   CANSparkMaxSendable intakeWheelbar = RobotContainer.intakeWheelbar;
   CANSparkMaxSendable intakeBelt = RobotContainer.intakeBelt;
 
@@ -45,8 +43,6 @@ public class IntakeSubsystem extends SubsystemBase {
   Double intakeBeltSpeedShootingOverride = null;
   Double intakeWheelBarSpeedShootingOverride = null;
 
-  double intakeBeltCommandedPower = 0.0;
-
   /**
    * Spin the intake wheel and intake belt.
    * @param speed how fast to spin. positive is inward, negative is outward.
@@ -59,30 +55,53 @@ public class IntakeSubsystem extends SubsystemBase {
     }  
   }
 
-  public void spinIntakeBelt(double speed) {
-    if (intakeBelt != null) {
-      if (intakeBeltSpeedShootingOverride == null) {
-        intakeBelt.set(speed);
+  double intakeBeltCommandedPower = 0.0;
+
+  boolean logIntakeBeltCallers = false;
+  boolean logIntakeBeltPowerUnpected = false;
+  boolean powerWasMismatched = false;
+
+  void setIntakeBeltPowerInAParanoidManner(double power) {
+    if (logIntakeBeltCallers && (power != intakeBeltCommandedPower)) {
+      String where = EventLogging.callChain(0, 3);
+      logger.info ("intake belt power changed to {} by {}", power, where);
+    }
+    if (logIntakeBeltPowerUnpected && intakeBelt != null) {
+      double currentPower = intakeBelt.get();
+      if (currentPower != intakeBeltCommandedPower) {
+        if (!powerWasMismatched) {
+          String where = EventLogging.callChain(0, 3);
+          logger.info("intake belt power was {}, s/b {}", currentPower, intakeBeltCommandedPower);
+        }
+        powerWasMismatched = true;
+      } else {
+        if (powerWasMismatched) {
+          logger.info ("intake belt power matches again");
+        }
+        powerWasMismatched = false;
       }
     }
-    intakeBeltCommandedPower = speed;
-  }
-
-  public void overrideIntakeBeltForShooting(double speed) {
-    if (logCallers) {
-      String where = EventLogging.myAndCallersNames();
-      logger.info ("{} with {}", where, speed);
-    }
-    intakeBeltSpeedShootingOverride = speed;
     if (intakeBelt != null) {
-        intakeBelt.set(speed);
+      intakeBelt.set(power);
     }
-    intakeBeltCommandedPower = speed;
+    intakeBeltCommandedPower = power;
   }
 
+  public void spinIntakeBelt(double power) {
+    if (intakeBeltSpeedShootingOverride == null) {
+      setIntakeBeltPowerInAParanoidManner(power);
+    }
+  }
+
+  public void overrideIntakeBeltForShooting(double power) {
+    intakeBeltSpeedShootingOverride = power;
+    setIntakeBeltPowerInAParanoidManner(power);
+  }
+
+  boolean logWheelBarCallers = false;
   public void overrideIntakeWheelBarForShooting(double speed) {
-    if (logCallers) {
-      String where = EventLogging.myAndCallersNames();
+    if (logWheelBarCallers) {
+      String where = EventLogging.callChain(0, 2);
       logger.info ("{} with {}", where, speed);
     }
     intakeBeltSpeedShootingOverride = speed;
@@ -92,9 +111,9 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void clearIntakeShootingOverrides() {
-    if (logCallers) {
-      String where = EventLogging.myAndCallersNames();
-      logger.info ("{} with {}", where);
+    if (logIntakeBeltCallers) {
+      String where = EventLogging.callChain(0, 2);
+      logger.info ("shooting overrides cleared by {}", where);
     }
     intakeBeltSpeedShootingOverride = null;
     intakeWheelBarSpeedShootingOverride = null;

@@ -61,7 +61,7 @@ public class PullTheTriggerCommand extends CommandBase {
     } else {
       timeBetweenShots = 0.4;
     }
-    logger.info ("time between shots: {}", timeBetweenShots);
+    // logger.info ("time between shots: {}", timeBetweenShots);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
