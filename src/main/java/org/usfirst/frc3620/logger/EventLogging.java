@@ -102,7 +102,35 @@ public class EventLogging {
         StackTraceElement callersCaller = stackTraceElements[3];
         return caller.getClassName() + "." + caller.getMethodName()
           + " from " + callersCaller.getClassName() + "." + callersCaller.getMethodName();
-      }
+    }
+
+  /**
+   * return a description of the call chain of the caller of this routine. the "level"s in the
+   * parameters say what in the caller's chain to include in the description.
+   * 0 is the caller of this routine; 1 is the caller's caller, etc.
+   *
+   * @param closest the first level up the chain to describe.
+   * @param furthest the last level up the chain to describe.
+   * @return a text description of the call chain
+   */
+    public static String callChain(int closest, int furthest) {
+        StringBuilder sb = new StringBuilder();
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        boolean needFrom = false;
+        for (int level = closest + 2; level <= furthest + 2; level++) {
+            StackTraceElement ste = stackTraceElements[level];
+            if (needFrom) {
+                sb.append(" from ");
+            }
+            sb.append(ste.getClassName() + "." + ste.getMethodName());
+            int line = ste.getLineNumber();
+            if (line >= 0) {
+                sb.append("(line:" + line + ")");
+            }
+            needFrom = true;
+        }
+        return sb.toString();
+    }
       
       /**
      * Write a warning message to the DriverStation.

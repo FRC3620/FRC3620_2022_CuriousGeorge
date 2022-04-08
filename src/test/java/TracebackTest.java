@@ -9,16 +9,15 @@ import org.usfirst.frc3620.logger.EventLogging;
 public class TracebackTest {
     @Test
     public void t1() {
-        called();
-        intermediate();
+        setSomething();
     }
 
-    void intermediate() {
-        called();
+    void setSomething() {
+        setSomethingInAParanoidManner();
     }
 
-    void called() {
-        String s = EventLogging.myAndCallersNames();
+    void setSomethingInAParanoidManner() {
+        String s = EventLogging.callChain(0, 2);
         System.out.println(s);
     }
 }
