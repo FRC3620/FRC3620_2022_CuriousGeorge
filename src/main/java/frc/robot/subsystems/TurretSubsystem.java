@@ -44,7 +44,7 @@ public class TurretSubsystem extends SubsystemBase {
       turretPID = turretDrive.getPIDController();
 
       // set up PID for turretPID here
-      turretPID.setP(0.045);   //0.09
+      turretPID.setP(0.11);   //0.045
       turretPID.setI(0.0);     //0.0
       turretPID.setD(30);      //30
       turretPID.setFF(0.0);    //0.0
