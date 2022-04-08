@@ -59,7 +59,7 @@ public class PullTheTriggerCommand extends CommandBase {
     if(distance <= 16){
       timeBetweenShots = 0.0;
     } else {
-      timeBetweenShots = 0.7;
+      timeBetweenShots = 0.4;
     }
     logger.info ("time between shots: {}", timeBetweenShots);
   }
@@ -72,7 +72,7 @@ public class PullTheTriggerCommand extends CommandBase {
         preShooterSubsystem.preshooterOn(1.0);
         intakeSubsystem.overrideIntakeBeltForShooting(0.0);
         intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);
-    } else if (t < 2.0) {
+    } else if (t < 1.5) {
         preShooterSubsystem.preshooterOn(1.0);
         intakeSubsystem.overrideIntakeBeltForShooting(0.4);
         intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);
