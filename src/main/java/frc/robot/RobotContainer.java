@@ -552,6 +552,8 @@ public class RobotContainer {
     //chooser.addOption("TestAuto", new TestAuto(driveSubsystem));
     chooser.addOption("AutoDriveToCargo Test", new DriveToCargoTestAuto(driveSubsystem, visionSubsystem));
     chooser.addOption("Blue 5 Ball P Auto", new BlueFiveBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("Bloop Blue Ball R", new BloopBlueBallAutoR(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
+    chooser.addOption("Steal Blue Ball", new StealBlueBallAuto(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
     chooser.addOption("5 Ball P Auto Baby", new FiveBallAutoPBaby(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
     chooser.addOption("4 Ball P Auto", new FourBallAutoP(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
     chooser.addOption("4 Ball Q Auto", new FourBallAutoQ(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));

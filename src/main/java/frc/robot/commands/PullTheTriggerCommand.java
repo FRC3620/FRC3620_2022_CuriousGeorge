@@ -56,7 +56,7 @@ public class PullTheTriggerCommand extends CommandBase {
     //double rpm = ShooterCalculator.calcMainRPM(distance);
     //SmartDashboard.putString("doug.bar", "" + targetYLocation + " " + rpm);
 
-    if(distance <= 16){
+    if(distance <= 14){
       timeBetweenShots = 0.0;
     } else {
       timeBetweenShots = 0.4;
