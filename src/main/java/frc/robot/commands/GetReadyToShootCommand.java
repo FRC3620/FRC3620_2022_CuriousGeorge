@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.ShooterDecider;
@@ -61,8 +62,10 @@ public abstract class GetReadyToShootCommand extends CommandBase {
   public void end(boolean interrupted) {
     if (!interrupted){
       logPewPewData();
-      rumbleCommandOperator.schedule();
-      rumbleCommandDriver.schedule();
+      if (DriverStation.isTeleopEnabled()){
+        rumbleCommandOperator.schedule();
+        rumbleCommandDriver.schedule();
+      }
     }
   }
 
