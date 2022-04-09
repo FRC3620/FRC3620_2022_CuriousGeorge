@@ -31,8 +31,8 @@ public class BloopBlueBallAutoR extends SequentialCommandGroup {
   
       new IntakeArmDownCommand(), 
 
-      new ParallelDeadlineGroup(
-        new SequentialCommandGroup(
+      new XParallelDeadlineGroup(
+        new XSequentialCommandGroup(
           new LogCommand("Starting AutoDrive"),
           new AutoDriveCommand(55, 238, .5, 238, driveSubsystem)
         ), 
@@ -42,8 +42,8 @@ public class BloopBlueBallAutoR extends SequentialCommandGroup {
 
       new LogCommand("Done with AutoDrive"),
 
-      new ParallelDeadlineGroup(
-        new SequentialCommandGroup(
+      new XParallelDeadlineGroup(
+        new XSequentialCommandGroup(
           new AutoShootCommand(),
           new PullTheTriggerCommand()
         ),
@@ -52,8 +52,8 @@ public class BloopBlueBallAutoR extends SequentialCommandGroup {
 
       new LogCommand("Done with first shots"),
         
-      new ParallelDeadlineGroup(
-        new SequentialCommandGroup(
+      new XParallelDeadlineGroup(
+        new XSequentialCommandGroup(
           new AutoSpinCommand(0.5, 0, driveSubsystem),
           new AutoDriveCommand(34, 270, 0.5, 0, driveSubsystem),
           new AutoDriveCommand(50, 0, 0.5, 0, driveSubsystem),
@@ -63,8 +63,8 @@ public class BloopBlueBallAutoR extends SequentialCommandGroup {
         new IntakeOnCommand()
       ),
 
-      new ParallelDeadlineGroup(
-        new SequentialCommandGroup(
+      new XParallelDeadlineGroup(
+        new XSequentialCommandGroup(
           new PullTheTriggerCommand()
         ),
         new IntakeOffCommand(intakeSubsystem)
@@ -73,7 +73,8 @@ public class BloopBlueBallAutoR extends SequentialCommandGroup {
       new ShooterOffCommand(),
 
       new LogCommand("All done")
-    );  
+    );
+    logger.info ("requirements for {}: {}", toString(), getRequirements());
   }
 
   class LogCommand extends InstantCommand {
