@@ -36,7 +36,7 @@ public class FiveBallAutoPBaby extends SequentialCommandGroup {
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new AutoDriveCommand(40, 90, .6, 90, driveSubsystem)
+          new AutoDriveCommand(40, 90, .6, 90, driveSubsystem) //was 40 inches
         ),
         new GetVisionReadyToShootCommand(),
         new IntakeOnCommand()
@@ -52,7 +52,7 @@ public class FiveBallAutoPBaby extends SequentialCommandGroup {
 
       new LogCommand("Done with first shots"),
 
-      new MoveTurretCommand(turretSubsystem, 190),
+      new MoveTurretCommand(turretSubsystem, 120),
 
       new SetHoodAngleForDistanceCommand(23),
 
@@ -61,7 +61,7 @@ public class FiveBallAutoPBaby extends SequentialCommandGroup {
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
           new IntakeArmDownCommand(),
-          new AutoDriveCommand(130, 200, 0.8, 205, driveSubsystem),
+          new AutoDriveCommand(130, 200, 0.65, 205, driveSubsystem),  //.8 power 3:26 4/11
           new WaitCommand(0.5),
           new PullTheTriggerCommand()
         ),
@@ -71,7 +71,7 @@ public class FiveBallAutoPBaby extends SequentialCommandGroup {
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new AutoDriveCommand(120, 165, 0.7, 145, driveSubsystem)
+          new AutoDriveCommand(128, 167, 0.7, 145, driveSubsystem)  //165  strafe angle
         ),
         new GetVisionReadyToShootCommand(),
         new IntakeOnCommand(),
@@ -89,6 +89,7 @@ public class FiveBallAutoPBaby extends SequentialCommandGroup {
               new AutoPushBallUpCommand(),
               new LogCommand("ball is ready to shoot"),
               new PullTheTriggerForOneCommand(),
+
               new AutoPushBallUpCommand(),
               new PullTheTriggerCommand()
           )
