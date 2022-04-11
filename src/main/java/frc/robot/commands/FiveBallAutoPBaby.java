@@ -62,7 +62,7 @@ public class FiveBallAutoPBaby extends SequentialCommandGroup {
         new SequentialCommandGroup(
           new IntakeArmDownCommand(),
           new AutoDriveCommand(130, 200, 0.65, 205, driveSubsystem),  //.8 power 3:26 4/11
-          new WaitCommand(0.5),
+          new WaitCommand(0.7),
           new PullTheTriggerCommand(.75)
         ),
         new GetVisionReadyToShootCommand(),

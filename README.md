@@ -47,3 +47,11 @@
 * PCM 7 - RingLight
 * PCM 0, 1 - ClimberTilt
 * PCM 2, 3 - IntakeArm
+
+
+
+auto names
+1 five ball auto P baby only 5 ball working if ykyk lmao
+
+
+
