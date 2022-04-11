@@ -26,9 +26,16 @@ public class PullTheTriggerCommand extends CommandBase {
   boolean weAreDone = false;
   double timeBetweenShots = 0.0;
 
+  double totalCommandTime;
+
   ShooterDecider.PewPewData pewPewData = new ShooterDecider.PewPewData();
 
   public PullTheTriggerCommand() {
+    this(1.5);
+  }
+
+  public PullTheTriggerCommand(double totalCommandTime) {
+    this.totalCommandTime = totalCommandTime;
     // Use addRequirements() here to declare subsystem dependencies.
 
     // do not require the intake!!!!!!!!
@@ -72,7 +79,7 @@ public class PullTheTriggerCommand extends CommandBase {
         preShooterSubsystem.preshooterOn(1.0);
         intakeSubsystem.overrideIntakeBeltForShooting(0.0);
         intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);
-    } else if (t < 1.5) {
+    } else if (t < totalCommandTime) {
         preShooterSubsystem.preshooterOn(1.0);
         intakeSubsystem.overrideIntakeBeltForShooting(0.4);
         intakeSubsystem.overrideIntakeWheelBarForShooting(0.0);

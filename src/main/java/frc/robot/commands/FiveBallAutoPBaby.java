@@ -36,7 +36,7 @@ public class FiveBallAutoPBaby extends SequentialCommandGroup {
 
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
-          new AutoDriveCommand(40, 90, .6, 90, driveSubsystem) //was 40 inches
+          new AutoDriveCommand(40, 90, .6, 90, driveSubsystem)
         ),
         new GetVisionReadyToShootCommand(),
         new IntakeOnCommand()
@@ -63,7 +63,7 @@ public class FiveBallAutoPBaby extends SequentialCommandGroup {
           new IntakeArmDownCommand(),
           new AutoDriveCommand(130, 200, 0.65, 205, driveSubsystem),  //.8 power 3:26 4/11
           new WaitCommand(0.5),
-          new PullTheTriggerCommand()
+          new PullTheTriggerCommand(.75)
         ),
         new GetVisionReadyToShootCommand(),
         new IntakeOnCommand()
