@@ -67,7 +67,7 @@ public class ShooterCalculator {
         } else if(distance < 20.0) {
             calcMainRPM = (744 + 97.2*distance + -1.12*distance*distance) * 1.0;
         } else {
-            calcMainRPM = (-695.36 + 214.94*distance + -3.40903*distance) * 1.0;
+            calcMainRPM = (1600.04 + -10.15*distance + 2.1074*distance*distance) * 1.0;
         }
         return calcMainRPM;
     }
