@@ -2,6 +2,7 @@ package frc.robot;
 
 import frc.robot.miscellaneous.MotorStatus;
 import frc.robot.miscellaneous.ShooterCalculator;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.PreShooterSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
@@ -49,6 +50,12 @@ public class ShootingDataLogger {
             dataLogger.addDataProvider("hood.velocity", () -> RobotContainer.shooterSubsystemHoodMax.getEncoder().getVelocity());
             dataLogger.addDataProvider("hood.power", () -> RobotContainer.shooterSubsystemHoodMax.getAppliedOutput());
             dataLogger.addDataProvider("hood.current", () -> RobotContainer.shooterSubsystemHoodMax.getOutputCurrent());
+        }
+
+        if(RobotContainer.intakeWheelbar != null){
+        dataLogger.addDataProvider("intake.power", () -> RobotContainer.intakeWheelbar.get());
+        dataLogger.addDataProvider("intake.current", () -> RobotContainer.intakeWheelbar.getOutputCurrent());
+        dataLogger.addDataProvider("intake.velocity", () -> RobotContainer.intakeWheelbar.getEncoder().getVelocity());
         }
 
         dataLogger.addDataProvider("navx.heading", () -> RobotContainer.driveSubsystem.getNavXFixedAngle());
