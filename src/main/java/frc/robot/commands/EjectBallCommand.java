@@ -31,7 +31,7 @@ public class EjectBallCommand extends CommandBase {
 
   public void ejectBall() {
     intakeSubsystem.spinIntakeWheelBar(-0.6);
-    intakeSubsystem.spinIntakeBelt(-0.6);
+    intakeSubsystem.spinIntakeBelt(-0.8);
   }
 
   // Called once the command ends or is interrupted.

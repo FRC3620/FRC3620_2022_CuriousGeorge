@@ -31,7 +31,7 @@ public class IntakeOnCommand extends CommandBase {
   }
 
   public void intakeBall() {
-    intakeSubsystem.spinIntakeWheelBar(0.75);
+    intakeSubsystem.spinIntakeWheelBar(0.85);
     intakeSubsystem.spinIntakeBelt(0.8);
   }
 

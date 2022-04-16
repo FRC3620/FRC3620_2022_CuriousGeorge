@@ -63,11 +63,11 @@ public class ShooterCalculator {
     public static double calcMainRPM(double distance) {
         double calcMainRPM;
         if(distance < 15.0){
-            calcMainRPM = (1080 + 70*distance + -0.8*distance*distance) * 1.0;
+            calcMainRPM = (1090 + 70*distance + -0.8*distance*distance) * 1.0;
         } else if(distance < 20.0) {
-            calcMainRPM = (744 + 97.2*distance + -1.12*distance*distance) * 1.0;
+            calcMainRPM = (754 + 97.2*distance + -1.12*distance*distance) * 1.0;
         } else {
-            calcMainRPM = (1600.04 + -10.15*distance + 2.1074*distance*distance) * 1.0;
+            calcMainRPM = (1610.04 + -10.15*distance + 2.1074*distance*distance) * 1.0;
         }
         return calcMainRPM;
     }
@@ -103,7 +103,7 @@ public class ShooterCalculator {
         } else {
 
             // this is for running the Limelight in a high resolution mode
-            distance = 14.133645 + -0.53658372 * ty + 0.02704952 * ty * ty + -0.0007223267 * ty * ty * ty;
+            distance = (14.133645 + -0.53658372 * ty + 0.02704952 * ty * ty + -0.0007223267 * ty * ty * ty) + 0.5;
         }
 
         return distance;
