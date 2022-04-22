@@ -75,13 +75,13 @@ public class ThreeBallAutoP extends SequentialCommandGroup {
 
       new MoveTurretCommand(turretSubsystem, 180),
 
-      new ParallelDeadlineGroup(
+      /*new ParallelDeadlineGroup(
         new SequentialCommandGroup(
           new AutoDriveCommand(108, 205, .5, 135, driveSubsystem),
           new AutoDriveCommand(45, 135, .5, 135, driveSubsystem)
         ),
         new ShooterOffCommand()
-      ),
+      ),*/
 
       new LogCommand("All done")
     );  
