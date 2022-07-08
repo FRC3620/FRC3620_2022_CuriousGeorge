@@ -50,24 +50,24 @@ public class ShooterCalculator {
 
     public static double calcHoodAngle(double distance) {
         double calcHoodAngle;
-        if(distance < 15){
-            calcHoodAngle = 122 + -8.0*distance + 0.24*distance*distance;
-        } else if(distance < 20){
-            calcHoodAngle = 77 + -1.4*distance + 0.0*distance*distance;
+        if(distance < 16.0){
+            calcHoodAngle = 118.413 + -7.07438*distance + 0.19835*distance*distance;
+        } else if(distance < 21.0){
+            calcHoodAngle = 78.4 + -1.4*distance + 0.0*distance*distance;
         } else {
-            calcHoodAngle = 54.216 + 0.03753*distance + -0.0149171*distance*distance;
+            calcHoodAngle = 108.415 + -4.683*distance + 0.0883056*distance*distance;
         }
         return calcHoodAngle;
     }
 
     public static double calcMainRPM(double distance) {
         double calcMainRPM;
-        if(distance < 15.0){
-            calcMainRPM = (1090 + 70*distance + -0.8*distance*distance) * 1.0;
-        } else if(distance < 20.0) {
-            calcMainRPM = (754 + 97.2*distance + -1.12*distance*distance) * 1.0;
+        if(distance < 16.0){
+            calcMainRPM = (1121.65 + 62.975*distance + -0.66116*distance*distance) * 1.0;
+        } else if(distance < 21.0) {
+            calcMainRPM = (655.68 + 99.44*distance + -1.12*distance*distance) * 1.0;
         } else {
-            calcMainRPM = (1610.04 + -10.15*distance + 2.1074*distance*distance) * 1.0;
+            calcMainRPM = (-5594.18 + 617.534*distance + -11.61915*distance*distance) * 1.0;
         }
         return calcMainRPM;
     }
