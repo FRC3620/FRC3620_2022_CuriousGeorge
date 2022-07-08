@@ -57,8 +57,8 @@ public class CenterOnBallCommand extends CommandBase {
 
     if(targetX < 0){
       // Vision doesn't see a ball - set spin to MAX_ROTATE_SPEED
-      spinX = MAX_ROTATE_SPEED;
-      //spinX = 0;
+      //spinX = MAX_ROTATE_SPEED;
+      spinX = 0;
     } else {
 
       // Vision sees a ball; set power proportional to distanve to travel
@@ -96,9 +96,9 @@ public class CenterOnBallCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     // This method should return true when the the x-value from the network table reads 0.5 +/- TOLERANCE
-    if (Math.abs(targetX-0.5) <= BALL_LOCATION_TOLERANCE){
+    /*if (Math.abs(targetX-0.5) <= BALL_LOCATION_TOLERANCE){
       return true;
-    }
+    }*/
     return false;
   }
 }
