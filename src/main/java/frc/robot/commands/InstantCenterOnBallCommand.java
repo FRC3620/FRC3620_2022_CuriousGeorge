@@ -54,6 +54,7 @@ public class InstantCenterOnBallCommand extends CommandBase {
     double spinX = 0;
     double spinDegrees = 0;
     double spinHeading = 0;
+    double xToDegrees = 0;
     
     targetX = visionSubsystem.getBallXLocation();
     startNavX = driveSubsystem.getNavXFixedAngle();
@@ -71,6 +72,7 @@ public class InstantCenterOnBallCommand extends CommandBase {
 
       // Vision sees a ball; set power proportional to distanve to travel
       spinDegrees = (Math.abs((targetX - 0.5)/0.0825)*5);
+      xToDegrees = ((targetX * 100) - 50);
 
       spinX = MIN_ROTATE_SPEED;
       // + (MAX_ROTATE_SPEED - MIN_ROTATE_SPEED)*(
@@ -85,6 +87,7 @@ public class InstantCenterOnBallCommand extends CommandBase {
       SmartDashboard.putNumber("CenterOnBall.targetX", targetX);
       SmartDashboard.putNumber("CenterOnBall.spinDegrees", spinDegrees);
       SmartDashboard.putNumber("CenterOnBall.spinHeading", spinHeading);
+      SmartDashboard.putNumber("CenterOnBall.xToDegrees", xToDegrees);
     
       driveSubsystem.setTargetHeading(spinHeading);
 

@@ -52,6 +52,7 @@ public class CenterOnBallCommand extends CommandBase {
 
     double spinX = 0;
     double spinDegrees = 0;
+    double xToDegrees = 0;
     
     targetX = visionSubsystem.getBallXLocation();
 
@@ -61,11 +62,11 @@ public class CenterOnBallCommand extends CommandBase {
       spinX = 0;
     } else {
 
-      // Vision sees a ball; set power proportional to distanve to travel
+      // Vision sees a ball; set power proportional to distance to travel
       spinDegrees = (Math.abs((targetX - 0.5)/0.0825)*5);
+      xToDegrees = (40 + (targetX * 100));
 
-      spinX = MIN_ROTATE_SPEED + (MAX_ROTATE_SPEED - MIN_ROTATE_SPEED)*(
-        (Math.abs(targetX - 0.5))*2);
+      spinX = MIN_ROTATE_SPEED + (MAX_ROTATE_SPEED - MIN_ROTATE_SPEED)*((Math.abs(targetX - 0.5))*2);
 
       if(targetX<0.5){
           spinX=-spinX;
@@ -76,6 +77,8 @@ public class CenterOnBallCommand extends CommandBase {
     SmartDashboard.putNumber("CenterOnBall.targetX", targetX);
     SmartDashboard.putNumber("CenterOnBall.spinSpeed",spinX);
     SmartDashboard.putNumber("CenterOnBall.spinDegrees", spinDegrees);
+    SmartDashboard.putNumber("CenterOnBall.xToDegrees", xToDegrees);
+    SmartDashboard.putString("DougIsStupid", Double.toString(xToDegrees));
 
     driveSubsystem.autoDrive(spinDegrees, 0, spinX);
     //driveSubsystem.twoWheelRotation(spinX);
