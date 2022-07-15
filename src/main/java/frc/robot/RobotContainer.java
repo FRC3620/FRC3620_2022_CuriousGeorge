@@ -470,8 +470,8 @@ public class RobotContainer {
     //x mode
     new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A).whileHeld(new XModeCommand(driveSubsystem));
 
-    JoystickButton centerOnBallButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);
-    centerOnBallButton.whileHeld(new InstantCenterOnBallCommand(driveSubsystem, visionSubsystem));
+    JoystickButton searchForTargetButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_Y);
+    searchForTargetButton.whenPressed(new SearchForTargetCommand(visionSubsystem));
     JoystickButton resetNavXButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_X);
     resetNavXButton.whenPressed(new ResetNavXCommand(driveSubsystem));
     JoystickButton stopDriveButton = new JoystickButton(driverJoystick, XBoxConstants.BUTTON_RIGHT_BUMPER);
