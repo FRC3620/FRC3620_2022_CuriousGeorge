@@ -512,6 +512,9 @@ public class RobotContainer {
     SmartDashboard.putData("4 Ball Auto Q", new FourBallAutoQ(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
     SmartDashboard.putData("4 Ball Auto R", new FourBallAutoR(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
     SmartDashboard.putData("3 Ball Auto Q", new ThreeBallAutoQ(driveSubsystem,  visionSubsystem, turretSubsystem, intakeSubsystem));
+    SmartDashboard.putData("Wheels Forward",new RunWheelsForwardButton());
+    SmartDashboard.putData("Wheels Rotate",new RotateWheelsButton());
+
 
     SmartDashboard.putData("Reset NavX", new ResetNavXCommand(driveSubsystem));
     SmartDashboard.putData("Toggle field relative", new ToggleFieldRelativeModeCommand(driveSubsystem));

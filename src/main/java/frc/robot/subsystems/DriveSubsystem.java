@@ -264,6 +264,7 @@ public class DriveSubsystem extends SubsystemBase {
 		if (rightFrontDriveEncoder != null) {
 			SmartDashboard.putNumber("Right Front Velocity", rightFrontDriveEncoder.getVelocity());
 			SmartDashboard.putNumber("Right Front Azimuth", rightFrontAzimuthEncoder.getPosition());
+			SmartDashboard.putNumber("Right Front Azimuth Velocity", rightFrontAzimuthEncoder.getVelocity());
 			SmartDashboard.putNumber("Right Front Azimuth fixed", getFixedPosition(rightFrontAzimuthEncoder));
 			SmartDashboard.putNumber("Right Front Drive Current Draw", rightFrontDriveMaster.getOutputCurrent());
 			SmartDashboard.putNumber("Right Front Drive Voltage", rightFrontDriveMaster.getAppliedOutput());
@@ -271,6 +272,7 @@ public class DriveSubsystem extends SubsystemBase {
 		if (leftFrontDriveEncoder != null) {
 			SmartDashboard.putNumber("Left Front Velocity", leftFrontDriveEncoder.getVelocity());
 			SmartDashboard.putNumber("Left Front Azimuth", leftFrontAzimuthEncoder.getPosition());
+			SmartDashboard.putNumber("Left Front AZimuth Velocity", leftFrontAzimuthEncoder.getVelocity());
 			SmartDashboard.putNumber("Left Front Azimuth fixed", getFixedPosition(leftFrontAzimuthEncoder));
 			SmartDashboard.putNumber("Left Front Drive Current Draw", leftFrontDriveMaster.getOutputCurrent());
 			SmartDashboard.putNumber("Left Front Drive Voltage", leftFrontDriveMaster.getAppliedOutput());
@@ -278,6 +280,7 @@ public class DriveSubsystem extends SubsystemBase {
 		if (leftBackDriveEncoder != null) {
 			SmartDashboard.putNumber("Left Back Velocity", leftBackDriveEncoder.getVelocity());
 			SmartDashboard.putNumber("Left Back Azimuth", leftBackAzimuthEncoder.getPosition());
+			SmartDashboard.putNumber("Left Back Azimuth Velocity", leftBackAzimuthEncoder.getVelocity());
 			SmartDashboard.putNumber("Left Back Azimuth fixed", getFixedPosition(leftBackAzimuthEncoder));
 			SmartDashboard.putNumber("Left Back Drive Current Draw", leftBackDriveMaster.getOutputCurrent());
 			SmartDashboard.putNumber("Left Back Drive Voltage", leftBackDriveMaster.getAppliedOutput());
@@ -285,6 +288,7 @@ public class DriveSubsystem extends SubsystemBase {
 		if (rightBackDriveEncoder != null) {
 			SmartDashboard.putNumber("Right Back Velocity", rightBackDriveEncoder.getVelocity());
 			SmartDashboard.putNumber("Right Back Azimuth", rightBackAzimuthEncoder.getPosition());
+			SmartDashboard.putNumber("Right Back Azimuth Velocity", rightBackAzimuthEncoder.getVelocity());
 			SmartDashboard.putNumber("Right Back Azimuth fixed", getFixedPosition(rightBackAzimuthEncoder));
 			SmartDashboard.putNumber("Right Back Drive Current Draw", rightBackDriveMaster.getOutputCurrent());
 			SmartDashboard.putNumber("Right Back Drive Voltage", rightBackDriveMaster.getAppliedOutput());
@@ -1091,6 +1095,9 @@ public class DriveSubsystem extends SubsystemBase {
 		setOneDriveIdle(rightFrontDriveMaster, idleMode);
 		setOneDriveIdle(leftBackDriveMaster, idleMode);
 		setOneDriveIdle(rightBackDriveMaster, idleMode);
+	}
+
+	public class testDrive {
 	}
 
 }
