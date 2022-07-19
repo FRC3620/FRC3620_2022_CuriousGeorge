@@ -4,28 +4,53 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 public class SearchForTargetCommand extends CommandBase {
 
   private VisionSubsystem visionSubsystem;
+  private DriveSubsystem driveSubsystem;
   private Logger logger;
+
+  private double initialPositionRightFront;
+  private double initialPositionLeftFront;
+  private double initialPositionRightBack;
+  private double initialPositionLeftBack;
+  private double distanceTravelled;
+  private double desiredDistance;
+
+  private Timer timer;
+
+  private IAutonomousLogger autonomousLogger;
+  private String legName;
 
   static double BALL_LOCATION_TOLERANCE = 0.02;
 
   double targetX = 0;
   static double xToDegrees = 0;
 
+  AutoDriveCommand driveCommand;
+
   /** Creates a new SearchForTargetCommand. */
-  public SearchForTargetCommand(VisionSubsystem visionSubsystem) {
+  public SearchForTargetCommand(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.visionSubsystem = visionSubsystem;
+    this.driveSubsystem = driveSubsystem;
+
+    this.legName = legName;
+    this.autonomousLogger = autonomousLogger;
+
+    this.timer = new Timer();
+
     SmartDashboard.putBoolean("SearchForTargetCommand.running", false);
     logger = EventLogging.getLogger(SearchForTargetCommand.class, Level.INFO);
   }
@@ -34,28 +59,23 @@ public class SearchForTargetCommand extends CommandBase {
   @Override
   public void initialize() {
     SmartDashboard.putBoolean("SearchForTargetCommand.running", true);
+
+    double distance = 5.0;
+    double heading = driveSubsystem.getTargetHeading(); // should really be current heading, do we need to add a method
+    double strafeAngle = heading + 45;
+    double speed = 0.3; // don't you dare, Grace
+
+    driveCommand = new AutoDriveCommand(distance, strafeAngle, speed, heading, null);
+
+    driveCommand.schedule();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    targetX = visionSubsystem.getBallXLocation();
-
-    if(targetX < 0){
-      // Vision doesn't see a ball
-      logger.info ("Target Not Found");
-      logger.info("TargetX: {}", targetX);
-    } else {
-      logger.info ("Target Found");
-      logger.info("TargetX: {}", targetX);
-
-      xToDegrees = ((targetX * 100) - 50);
-    }
-
-    SmartDashboard.putNumber("SearchForTargetCommand.xToDegrees", xToDegrees);
-    SmartDashboard.putNumber("SearchForTargetCommand.targetX", targetX);
   }
+
 
   // Called once the command ends or is interrupted.
   @Override
@@ -66,9 +86,6 @@ public class SearchForTargetCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(xToDegrees != -50) {
-      return true;
-    }
-    return false;
+    return driveCommand.isDone();
   }
 }
