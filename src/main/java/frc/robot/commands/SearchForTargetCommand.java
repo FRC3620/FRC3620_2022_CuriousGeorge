@@ -72,7 +72,7 @@ public class SearchForTargetCommand extends CommandBase {
 
     distance = 5.0;
     heading = driveSubsystem.getTargetHeading(); // should really be current heading, do we need to add a method
-    strafeAngle = heading + 45;
+    strafeAngle = xToDegrees;
     speed = 0.3; // don't you dare, Grace
 
     driveSubsystem.setForcedManualModeTrue();
