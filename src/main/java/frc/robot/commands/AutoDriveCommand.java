@@ -30,13 +30,19 @@ public class AutoDriveCommand extends CommandBase {
     private IAutonomousLogger autonomousLogger;
     private String legName;
 
+    private boolean allDone = false;
+
     public AutoDriveCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem) {
         this(distance, strafeAngle, speed, heading, driveSubsystem, null, null);
     }
 
     public AutoDriveCommand(double distance, double strafeAngle, double speed, double heading, DriveSubsystem driveSubsystem, String legName, IAutonomousLogger autonomousLogger) {
         this.driveSubsystem = driveSubsystem;
-        addRequirements(driveSubsystem);
+
+        if (driveSubsystem != null) {
+            addRequirements(driveSubsystem);
+        }
+
 
         desiredDistance = distance;
         desiredAngle = strafeAngle;
@@ -109,6 +115,7 @@ public class AutoDriveCommand extends CommandBase {
         if (autonomousLogger != null) {
           timer.stop();
         }
+        allDone = true;
     }
 
     // Returns true when the command should end.
@@ -118,5 +125,9 @@ public class AutoDriveCommand extends CommandBase {
             return true;
         }
         return false;
+    }
+
+    public boolean isDone() {
+        return allDone;
     }
 }

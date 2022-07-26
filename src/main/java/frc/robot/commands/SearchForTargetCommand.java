@@ -38,6 +38,11 @@ public class SearchForTargetCommand extends CommandBase {
   double targetX = 0;
   static double xToDegrees = 0;
 
+  double distance;
+  double heading;
+  double strafeAngle;
+  double speed;
+
   AutoDriveCommand driveCommand;
 
   /** Creates a new SearchForTargetCommand. */
@@ -53,6 +58,8 @@ public class SearchForTargetCommand extends CommandBase {
 
     SmartDashboard.putBoolean("SearchForTargetCommand.running", false);
     logger = EventLogging.getLogger(SearchForTargetCommand.class, Level.INFO);
+
+
   }
 
   // Called when the command is initially scheduled.
@@ -60,19 +67,26 @@ public class SearchForTargetCommand extends CommandBase {
   public void initialize() {
     SmartDashboard.putBoolean("SearchForTargetCommand.running", true);
 
-    double distance = 5.0;
-    double heading = driveSubsystem.getTargetHeading(); // should really be current heading, do we need to add a method
-    double strafeAngle = heading + 45;
-    double speed = 0.3; // don't you dare, Grace
+    targetX = visionSubsystem.getBallXLocation();
+    xToDegrees = ((targetX * 100) - 50);
 
-    driveCommand = new AutoDriveCommand(distance, strafeAngle, speed, heading, null);
+    distance = 5.0;
+    heading = driveSubsystem.getTargetHeading(); // should really be current heading, do we need to add a method
+    strafeAngle = heading + 45;
+    speed = 0.3; // don't you dare, Grace
 
-    driveCommand.schedule();
+    driveSubsystem.setForcedManualModeTrue();
+
+    //driveCommand = new AutoDriveCommand(distance, strafeAngle, speed, heading, driveSubsystem);
+
+    //driveCommand.schedule();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    driveSubsystem.autoDrive(strafeAngle, speed, 0); //TEST IF DOES WORK
 
   }
 
@@ -81,11 +95,15 @@ public class SearchForTargetCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     SmartDashboard.putBoolean("SearchForTargetCommand.running", false);
+
+    driveSubsystem.teleOpDrive(0,0,0);
+    driveSubsystem.setForcedManualModeFalse();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return driveCommand.isDone();
+    //return driveCommand.isDone();
+    return false;
   }
 }

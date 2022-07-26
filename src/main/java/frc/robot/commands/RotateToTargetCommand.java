@@ -28,7 +28,7 @@ public class RotateToTargetCommand extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     this.driveSubsystem = driveSubsystem;
     SmartDashboard.putBoolean("RotateToTargetCommand.running", false);
-    logger = EventLogging.getLogger(InstantCenterOnBallCommand.class, Level.INFO);
+    logger = EventLogging.getLogger(RotateToTargetCommand.class, Level.INFO);
   }
 
   // Called when the command is initially scheduled.
