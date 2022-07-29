@@ -104,9 +104,7 @@ public class InstantCenterOnBallCommand extends CommandBase {
       driveSubsystem.autoDrive(0, 0, spinX);
 
       SmartDashboard.putNumber("CenterOnBall.spinSpeed",spinX);
-  
-  
-      
+        
     }
   
     // Called once the command ends or is interrupted.

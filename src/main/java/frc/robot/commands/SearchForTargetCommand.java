@@ -42,6 +42,8 @@ public class SearchForTargetCommand extends CommandBase {
   double heading;
   double strafeAngle;
   double speed;
+  double ballY;
+  double targetDistance;
 
   AutoDriveCommand driveCommand;
 
@@ -77,6 +79,10 @@ public class SearchForTargetCommand extends CommandBase {
 
     driveSubsystem.setForcedManualModeTrue();
 
+    ballY = visionSubsystem.getBallYLocation();
+
+    targetDistance = (600.6 * ballY * ballY + -216.4 * ballY + 50.71) + 0; 
+
     //driveCommand = new AutoDriveCommand(distance, strafeAngle, speed, heading, driveSubsystem);
 
     //driveCommand.schedule();
@@ -86,7 +92,13 @@ public class SearchForTargetCommand extends CommandBase {
   @Override
   public void execute() {
 
-    driveSubsystem.autoDrive(strafeAngle, speed, 0); //TEST IF DOES WORK
+    //driveSubsystem.autoDrive(strafeAngle, speed, 0);
+    driveCommand = new AutoDriveCommand(targetDistance, strafeAngle, speed, heading, driveSubsystem);
+    driveCommand.schedule();
+
+    SmartDashboard.putNumber("SearchForTargetCommand.xToDegrees", xToDegrees);
+    SmartDashboard.putNumber("SearchForTargetCommand.ballY", ballY);
+    SmartDashboard.putNumber("SearchForTargetCommand.targetDistance", targetDistance);
 
   }
 
