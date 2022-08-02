@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import pabeles.concurrency.ConcurrencyOps.Reset;
 
 public class SearchForTargetCommand extends CommandBase {
 
@@ -44,8 +45,11 @@ public class SearchForTargetCommand extends CommandBase {
   double speed;
   double ballY;
   double targetDistance;
+  double currentNavX;
 
   AutoDriveCommand driveCommand;
+  ResetNavXCommand navXCommand;
+
 
   /** Creates a new SearchForTargetCommand. */
   public SearchForTargetCommand(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
@@ -83,6 +87,11 @@ public class SearchForTargetCommand extends CommandBase {
 
     targetDistance = (600.6 * ballY * ballY + -216.4 * ballY + 50.71) + 0; 
 
+    currentNavX = driveSubsystem.getNavXFixedAngle();
+
+    navXCommand = new ResetNavXCommand(driveSubsystem);
+    navXCommand.schedule();
+
     //driveCommand = new AutoDriveCommand(distance, strafeAngle, speed, heading, driveSubsystem);
 
     //driveCommand.schedule();
@@ -93,12 +102,16 @@ public class SearchForTargetCommand extends CommandBase {
   public void execute() {
 
     //driveSubsystem.autoDrive(strafeAngle, speed, 0);
+
+ 
+    
     driveCommand = new AutoDriveCommand(targetDistance, strafeAngle, speed, heading, driveSubsystem);
     driveCommand.schedule();
 
     SmartDashboard.putNumber("SearchForTargetCommand.xToDegrees", xToDegrees);
     SmartDashboard.putNumber("SearchForTargetCommand.ballY", ballY);
     SmartDashboard.putNumber("SearchForTargetCommand.targetDistance", targetDistance);
+    SmartDashboard.putNumber("SearchForTargetCommand.currentNavX", currentNavX);
 
   }
 
@@ -110,6 +123,8 @@ public class SearchForTargetCommand extends CommandBase {
 
     driveSubsystem.teleOpDrive(0,0,0);
     driveSubsystem.setForcedManualModeFalse();
+
+    driveSubsystem.setNavXOffset(currentNavX);
   }
 
   // Returns true when the command should end.
