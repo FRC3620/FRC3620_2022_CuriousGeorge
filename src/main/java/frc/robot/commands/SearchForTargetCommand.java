@@ -44,7 +44,6 @@ public class SearchForTargetCommand extends CommandBase {
   double strafeAngle;
   double speed;
   double ballY;
-  double targetDistance;
   double currentNavX;
 
   AutoDriveCommand driveCommand;
@@ -73,25 +72,24 @@ public class SearchForTargetCommand extends CommandBase {
   public void initialize() {
     SmartDashboard.putBoolean("SearchForTargetCommand.running", true);
 
+    currentNavX = driveSubsystem.getNavXFixedAngle();
+
+    navXCommand = new ResetNavXCommand(driveSubsystem);
+    navXCommand.schedule(); 
+
     targetX = visionSubsystem.getBallXLocation();
     xToDegrees = ((targetX * 100) - 50);
 
-    distance = 5.0;
-    heading = driveSubsystem.getTargetHeading(); // should really be current heading, do we need to add a method
-    strafeAngle = xToDegrees;
+    distance = (600.6 * ballY * ballY + -216.4 * ballY + 50.71) + 0; 
+    heading = currentNavX; //driveSubsystem.getTargetHeading(); // should really be current heading, do we need to add a method
+    strafeAngle = xToDegrees + currentNavX; //maybe +/- 180
     speed = 0.3; // don't you dare, Grace
 
     driveSubsystem.setForcedManualModeTrue();
 
     ballY = visionSubsystem.getBallYLocation();
 
-    targetDistance = (600.6 * ballY * ballY + -216.4 * ballY + 50.71) + 0; 
-
-    currentNavX = driveSubsystem.getNavXFixedAngle();
-
-    navXCommand = new ResetNavXCommand(driveSubsystem);
-    navXCommand.schedule();
-
+    
     //driveCommand = new AutoDriveCommand(distance, strafeAngle, speed, heading, driveSubsystem);
 
     //driveCommand.schedule();
@@ -103,14 +101,14 @@ public class SearchForTargetCommand extends CommandBase {
 
     //driveSubsystem.autoDrive(strafeAngle, speed, 0);
 
- 
+; 
     
-    driveCommand = new AutoDriveCommand(targetDistance, strafeAngle, speed, heading, driveSubsystem);
+    driveCommand = new AutoDriveCommand(distance, strafeAngle, speed, heading, driveSubsystem);
     driveCommand.schedule();
 
     SmartDashboard.putNumber("SearchForTargetCommand.xToDegrees", xToDegrees);
     SmartDashboard.putNumber("SearchForTargetCommand.ballY", ballY);
-    SmartDashboard.putNumber("SearchForTargetCommand.targetDistance", targetDistance);
+    SmartDashboard.putNumber("SearchForTargetCommand.targetDistance", distance);
     SmartDashboard.putNumber("SearchForTargetCommand.currentNavX", currentNavX);
 
   }
@@ -131,6 +129,6 @@ public class SearchForTargetCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     //return driveCommand.isDone();
-    return false;
+    return true;
   }
 }
