@@ -74,15 +74,13 @@ public class SearchForTargetCommand extends CommandBase {
 
     currentNavX = driveSubsystem.getNavXFixedAngle();
 
-    navXCommand = new ResetNavXCommand(driveSubsystem);
-    navXCommand.schedule(); 
 
     targetX = visionSubsystem.getBallXLocation();
     xToDegrees = ((targetX * 100) - 50);
 
-    distance = (600.6 * ballY * ballY + -216.4 * ballY + 50.71) + 0; 
+    distance = 3.775 * Math.exp(6.214*ballY) + 28.11; //(600.6 * ballY * ballY + -216.4 * ballY + 50.71) + 0; 
     heading = currentNavX; //driveSubsystem.getTargetHeading(); // should really be current heading, do we need to add a method
-    strafeAngle = xToDegrees + currentNavX; //maybe +/- 180
+    strafeAngle = xToDegrees + currentNavX; 
     speed = 0.3; // don't you dare, Grace
 
     driveSubsystem.setForcedManualModeTrue();
@@ -101,7 +99,7 @@ public class SearchForTargetCommand extends CommandBase {
 
     //driveSubsystem.autoDrive(strafeAngle, speed, 0);
 
-; 
+
     
     driveCommand = new AutoDriveCommand(distance, strafeAngle, speed, heading, driveSubsystem);
     driveCommand.schedule();
@@ -122,7 +120,6 @@ public class SearchForTargetCommand extends CommandBase {
     driveSubsystem.teleOpDrive(0,0,0);
     driveSubsystem.setForcedManualModeFalse();
 
-    driveSubsystem.setNavXOffset(currentNavX);
   }
 
   // Returns true when the command should end.
