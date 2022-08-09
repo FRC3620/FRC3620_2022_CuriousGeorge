@@ -190,4 +190,12 @@ public class VisionSubsystem extends SubsystemBase {
       ringLight.set(false);
     }
   }
+ 
+  public boolean isCargoFound() {
+    if(ballY.getDouble(0) != 0 && ballX.getDouble(0) != 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

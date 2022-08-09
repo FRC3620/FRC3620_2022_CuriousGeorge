@@ -4,7 +4,11 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.Timer;
+
+import javax.lang.model.util.ElementScanner6;
+
 import org.slf4j.Logger;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.Level;
@@ -49,6 +53,8 @@ public class SearchForTargetCommand extends CommandBase {
   AutoDriveCommand driveCommand;
   ResetNavXCommand navXCommand;
 
+  boolean isTargetFound;
+  boolean commandIsFinished;
 
   /** Creates a new SearchForTargetCommand. */
   public SearchForTargetCommand(DriveSubsystem driveSubsystem, VisionSubsystem visionSubsystem) {
@@ -72,42 +78,43 @@ public class SearchForTargetCommand extends CommandBase {
   public void initialize() {
     SmartDashboard.putBoolean("SearchForTargetCommand.running", true);
 
-    currentNavX = driveSubsystem.getNavXFixedAngle();
-
-
-    targetX = visionSubsystem.getBallXLocation();
-    xToDegrees = ((targetX * 100) - 50);
-
-    distance = 3.775 * Math.exp(6.214*ballY) + 28.11; //(600.6 * ballY * ballY + -216.4 * ballY + 50.71) + 0; 
-    heading = currentNavX; //driveSubsystem.getTargetHeading(); // should really be current heading, do we need to add a method
-    strafeAngle = xToDegrees + currentNavX; 
-    speed = 0.3; // don't you dare, Grace
-
-    driveSubsystem.setForcedManualModeTrue();
-
-    ballY = visionSubsystem.getBallYLocation();
+    commandIsFinished = false;
 
     
-    //driveCommand = new AutoDriveCommand(distance, strafeAngle, speed, heading, driveSubsystem);
-
-    //driveCommand.schedule();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    targetX = visionSubsystem.getBallXLocation(); 
+    ballY = visionSubsystem.getBallYLocation();
 
-    //driveSubsystem.autoDrive(strafeAngle, speed, 0);
+    if (targetX > 0.01 && ballY > 0.01) {
+      currentNavX = driveSubsystem.getNavXFixedAngle();
 
 
-    
-    driveCommand = new AutoDriveCommand(distance, strafeAngle, speed, heading, driveSubsystem);
-    driveCommand.schedule();
+      commandIsFinished = true;
 
+      xToDegrees = ((targetX * 100) - 50);
+
+      distance = 3.775 * Math.exp(6.214*ballY) + 28.11; //(600.6 * ballY * ballY + -216.4 * ballY + 50.71) + 0; 
+      heading = currentNavX; //driveSubsystem.getTargetHeading(); // should really be current heading, do we need to add a method
+      strafeAngle = xToDegrees + currentNavX; 
+      speed = 0.3; // don't you dare, Grace
+
+      driveCommand = new AutoDriveCommand(distance, strafeAngle, speed, heading, driveSubsystem);
+      driveCommand.schedule();
+
+      
     SmartDashboard.putNumber("SearchForTargetCommand.xToDegrees", xToDegrees);
     SmartDashboard.putNumber("SearchForTargetCommand.ballY", ballY);
+    SmartDashboard.putNumber("SearchForTargetCommand.ballX", targetX);
     SmartDashboard.putNumber("SearchForTargetCommand.targetDistance", distance);
     SmartDashboard.putNumber("SearchForTargetCommand.currentNavX", currentNavX);
+    SmartDashboard.putBoolean("SearchForTargetCommand.CommandisFinished", commandIsFinished);
+
+    
+    }
 
   }
 
@@ -116,16 +123,15 @@ public class SearchForTargetCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     SmartDashboard.putBoolean("SearchForTargetCommand.running", false);
-
-    driveSubsystem.teleOpDrive(0,0,0);
-    driveSubsystem.setForcedManualModeFalse();
-
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //return driveCommand.isDone();
-    return true;
+    if(commandIsFinished == true) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
