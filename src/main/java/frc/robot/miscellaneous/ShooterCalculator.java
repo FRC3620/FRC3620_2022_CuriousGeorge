@@ -106,7 +106,10 @@ public class ShooterCalculator {
             distance = (14.133645 + -0.53658372 * ty + 0.02704952 * ty * ty + -0.0007223267 * ty * ty * ty) + 0.5;
         }
 
-        return distance;
+        double distanceAdjust = SmartDashboard.getNumber("distance.adjust", 4);
+        SmartDashboard.putNumber("distance.adjust", distanceAdjust);
+
+        return distance + distanceAdjust;
     }
 
 }

@@ -102,8 +102,8 @@ public class SearchForTargetCommand extends CommandBase {
       strafeAngle = xToDegrees + currentNavX; 
       speed = 0.3; // don't you dare, Grace
 
-      driveCommand = new AutoDriveCommand(distance, strafeAngle, speed, heading, driveSubsystem);
-      driveCommand.schedule();
+      //driveCommand = new AutoDriveCommand(distance, strafeAngle, speed, heading, driveSubsystem);
+      //driveCommand.schedule();
 
       
     SmartDashboard.putNumber("SearchForTargetCommand.xToDegrees", xToDegrees);

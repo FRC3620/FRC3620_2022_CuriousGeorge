@@ -74,6 +74,7 @@ public class VisionSubsystem extends SubsystemBase {
     double targetDistance = ShooterCalculator.calcDistanceFromHub(targetYLocation);
     double targetRPM = ShooterCalculator.calcMainRPM(targetDistance);
     double targetHood = ShooterCalculator.calcHoodAngle(targetDistance);
+    double distanceAdjust = SmartDashboard.getNumber("distance.adjust", 0);    
     SmartDashboard.putNumber("vision.target.data_age", getTargetDataAge());
     SmartDashboard.putBoolean("vision.target.data_is_fresh", !isTargetDataStale());
     SmartDashboard.putNumber("vision.target.y", targetYLocation);
