@@ -51,11 +51,11 @@ public class ShooterCalculator {
     public static double calcHoodAngle(double distance) {
         double calcHoodAngle;
         if(distance < 16.0){
-            calcHoodAngle = 118.413 + -7.07438*distance + 0.19835*distance*distance;
+            calcHoodAngle = 144.44628 + -10.94215*distance + 0.33058*distance*distance;
         } else if(distance < 21.0){
-            calcHoodAngle = 78.4 + -1.4*distance + 0.0*distance*distance;
+            calcHoodAngle = 73.2 + -1.2*distance + 0.0*distance*distance;
         } else {
-            calcHoodAngle = 108.415 + -4.683*distance + 0.0883056*distance*distance;
+            calcHoodAngle = -49.48263 + 9.77115*distance + -0.2442437*distance*distance;
         }
         return calcHoodAngle;
     }
@@ -63,11 +63,11 @@ public class ShooterCalculator {
     public static double calcMainRPM(double distance) {
         double calcMainRPM;
         if(distance < 16.0){
-            calcMainRPM = (1121.65 + 62.975*distance + -0.66116*distance*distance) * 1.0;
+            calcMainRPM = (1405.41322 + 11.65289*distance + 1.65289*distance*distance) * 1.0;
         } else if(distance < 21.0) {
-            calcMainRPM = (655.68 + 99.44*distance + -1.12*distance*distance) * 1.0;
+            calcMainRPM = (-1501.8 + 328.6*distance + -6.8*distance*distance) * 1.0;
         } else {
-            calcMainRPM = (-5594.18 + 617.534*distance + -11.61915*distance*distance) * 1.0;
+            calcMainRPM = (7140.80184 + -513.23307*distance + 13.68955*distance*distance) * 1.0;
         }
         return calcMainRPM;
     }
@@ -106,7 +106,7 @@ public class ShooterCalculator {
             distance = (14.133645 + -0.53658372 * ty + 0.02704952 * ty * ty + -0.0007223267 * ty * ty * ty) + 0.5;
         }
 
-        double distanceAdjust = SmartDashboard.getNumber("distance.adjust", 4);
+        double distanceAdjust = SmartDashboard.getNumber("distance.adjust", 0);
         SmartDashboard.putNumber("distance.adjust", distanceAdjust);
 
         return distance + distanceAdjust;
