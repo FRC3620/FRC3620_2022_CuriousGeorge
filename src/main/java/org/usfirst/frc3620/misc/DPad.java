@@ -1,7 +1,8 @@
 package org.usfirst.frc3620.misc;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.*;
 
 public class DPad {
@@ -53,47 +54,54 @@ public class DPad {
 	AngleLimits alLeft = new AngleLimits(225, 315);
 	AngleLimits alUp = new AngleLimits(315, 45);
 
-	class AlTrigger extends Button {
+	class AlTrigger extends Trigger {
+		public AlTrigger(AngleLimits angleLimits) {
+			super(new AlBooleanSupplier(angleLimits));
+		}
+	}
+
+	class AlBooleanSupplier implements BooleanSupplier {
 		private AngleLimits angleLimits;
 
-		public AlTrigger(AngleLimits angleLimits) {
-			super();
+		AlBooleanSupplier(AngleLimits angleLimits) {
 			this.angleLimits = angleLimits;
 		}
 
 		@Override
-		public boolean get() {
+		public boolean getAsBoolean() {
 			int angle = genericHID.getPOV(pov);
 			if (angle < 0)
 				return false;
 			return angleLimits.inLimit(angle);
 		}
+
 	}
 
-	public Button up() {
+	public Trigger up() {
         alLeft.narrowHi();
         alRight.narrowLo();
 		return new AlTrigger(alUp);
 	}
 
-	public Button right() {
+	public Trigger right() {
         alUp.narrowHi();
         alDown.narrowLo();
 		return new AlTrigger(alRight);
 	}
 
-	public Button down() {
+	public Trigger down() {
         alRight.narrowHi();
         alLeft.narrowLo();
 		return new AlTrigger(alDown);
 	}
 
-	public Button left() {
+	public Trigger left() {
         alDown.narrowHi();
         alUp.narrowLo();
 		return new AlTrigger(alLeft);
 	}
 	
+	/*
 	public void horizontalCommand (Command command) {
 		right().whileHeld(command);
 		left().cancelWhenPressed(command);
@@ -103,5 +111,6 @@ public class DPad {
 		up().whileHeld(command);
 		down().cancelWhenPressed(command);
 	}
+	*/
 
 }

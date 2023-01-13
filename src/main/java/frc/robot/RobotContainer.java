@@ -134,6 +134,8 @@ public class RobotContainer {
   public static RumbleSubsystem operatorRumbleSubsystem;
   public static RumbleSubsystem driverRumbleSubsystem;
 
+  public static AprilTagVision apriltagVisionSubsystem;
+
   // joysticks here....
   public static Joystick driverJoystick;
   public static Joystick operatorJoystick;
@@ -425,6 +427,7 @@ public class RobotContainer {
     preShooterSubsystem = new PreShooterSubsystem();
     operatorRumbleSubsystem = new RumbleSubsystem(1);
     driverRumbleSubsystem = new RumbleSubsystem(0);
+    apriltagVisionSubsystem = new AprilTagVision();
   }
 
   /**
@@ -462,10 +465,10 @@ public class RobotContainer {
     new JoystickButton(operatorJoystick, XBoxConstants.BUTTON_LEFT_STICK).whenPressed(new ShooterOffCommand());
 
 
-    operatorDPad.up().whenPressed(new MoveTurretCommand(turretSubsystem, 0));
-    operatorDPad.right().whenPressed(new MoveTurretCommand(turretSubsystem, 120));
-    operatorDPad.down().whenPressed(new MoveTurretCommand(turretSubsystem, 180));
-    operatorDPad.left().whenPressed(new MoveTurretCommand(turretSubsystem, 240));
+    //operatorDPad.up().whenPressed(new MoveTurretCommand(turretSubsystem, 0));
+    //operatorDPad.right().whenPressed(new MoveTurretCommand(turretSubsystem, 120));
+    //operatorDPad.down().whenPressed(new MoveTurretCommand(turretSubsystem, 180));
+    //operatorDPad.left().whenPressed(new MoveTurretCommand(turretSubsystem, 240));
 
     //x mode
     new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A).whileHeld(new XModeCommand(driveSubsystem));
@@ -489,6 +492,8 @@ public class RobotContainer {
     ejectButton.whileHeld(new EjectBallCommand());
 
     new TriggerButton(operatorJoystick, false).toggleWhenPressed(new PushBallUpCommand());
+    
+    new CenterOnTag().schedule();
   }
 
   public static double getOperatorJoystickRightY() {
@@ -544,6 +549,8 @@ public class RobotContainer {
 
     SmartDashboard.putData("test for vision lag", new TestVisionLagCommand());
     SmartDashboard.putData("bump turret position", new BumpTurretPositionCommand(turretSubsystem));
+
+    SmartDashboard.putData("Strafe to target", new StrafeToTargetCommand(driveSubsystem));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();

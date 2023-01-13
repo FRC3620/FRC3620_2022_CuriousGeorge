@@ -591,6 +591,46 @@ public class DriveSubsystem extends SubsystemBase {
 		}
 	}
 	
+	/**
+	 * Strafe sideways
+	 * @param speed positive is to the right
+	 */
+	public void strafeSideways(double speed){ 
+		// these angles are angles for Vectors. Math class degress:
+		// 0 degrees is to the right, 90 degrees is front, -90 degrees is behind, +/-180 degrees is left
+
+		double leftFrontAngle = 0;
+		double rightFrontAngle = 0;
+		double leftBackAngle = 0;
+		double rightBackAngle = 0; //should be pointing forward
+		double turnSpeed = speed*MAX_VELOCITY_IN_PER_SEC;
+
+		DriveVectors currentDirections = getCurrentVectors();
+		 
+		DriveVectors newVectors = new DriveVectors();
+
+		// need to have non-zero velocity so that fixVectors actually changes azimuth.
+		newVectors.leftFront = new Vector (leftFrontAngle, turnSpeed);
+		newVectors.rightFront = new Vector(rightFrontAngle, turnSpeed);
+		newVectors.leftBack = new Vector(leftBackAngle, turnSpeed);
+		newVectors.rightBack = new Vector(rightBackAngle, turnSpeed);
+
+		newVectors = SwerveCalculator.fixVectors(newVectors, currentDirections); //gets quickest wheel angle and direction configuration
+		
+		if (rightFrontDriveMaster != null) {
+			rightFrontPositionPID.setReference(newVectors.rightFront.getDirection(), ControlType.kPosition);
+			leftFrontPositionPID.setReference(newVectors.leftFront.getDirection(), ControlType.kPosition);
+			leftBackPositionPID.setReference(newVectors.leftBack.getDirection(), ControlType.kPosition);
+			rightBackPositionPID.setReference(newVectors.rightBack.getDirection(), ControlType.kPosition);
+			
+			rightFrontVelPID.setReference(newVectors.rightFront.getMagnitude(), ControlType.kVelocity);
+			leftFrontVelPID.setReference(newVectors.leftFront.getMagnitude(), ControlType.kVelocity);
+			leftBackVelPID.setReference(newVectors.leftBack.getMagnitude(), ControlType.kVelocity);
+			rightBackVelPID.setReference(newVectors.rightBack.getMagnitude(), ControlType.kVelocity);
+
+		}
+	}
+
 	public void twoWheelRotation(double speed){ 
 		// these angles are angles for Vectors. Math class degress:
 		// 0 degrees is to the right, 90 degrees is front, -90 degrees is behind, +/-180 degrees is left

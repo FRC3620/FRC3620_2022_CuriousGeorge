@@ -1,84 +1,12 @@
-import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO
-
-// debug this by doing 
-// ./gradlew --console=plain :build 
-// in VSCode terminal
-
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2022.3.1"
-    id "com.gorylenko.gradle-git-properties" version "2.4.0"
+    id "edu.wpi.first.GradleRIO" version "2023.1.1"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
-
-test {
-    filter {
-        // https://stackoverflow.com/a/52879530/17887564
-        setFailOnNoMatchingTests(false)
-
-        // run this if nothing else so only this runs
-        includeTestsMatching 'DummyTest'
-
-        // includeTestsMatching 'SwerveCalcTest'
-
-        // includeTestsMatching 'RobotParametersTest'
-        // includeTestsMatching 'RobotParameters2022Test'
-
-        // includeTestsMatching 'ShooterCalculatorTest'
-
-        //includeTestsMatching 'HoodCalculatorTest'
-
-        // includeTestsMatching 'TracebackTest'
-    }
-}
-
-// this helps junit test results show up in output
-// look at https://stackoverflow.com/a/36130467/17887564 for some more suggestions
-tasks.withType(Test) { 
-  testLogging {
-    exceptionFormat "full"
-    // events "passed", "failed" // , "started", "skipped"
-    showStandardStreams true
-    showExceptions true
-  }
-}
-
-task printGitProperties {
-    dependsOn generateGitProperties
-    doLast {
-        println "Project: " + project.ext.gitProps["project.dir"]
-        println "Branch: " + project.ext.gitProps["git.branch"]
-        println "Describe: " + project.ext.gitProps["git.commit.id.describe"]
-        println "Dirty: "  + project.ext.gitProps["git.dirty"]
-        println "Build time: " + project.ext.gitProps["build.time"]
-        println "Build host: " + project.ext.gitProps["git.build.host"]
-    }
-}
-
-def getBuildTime() {
-    return new Date().toString();
-}
-
-gitProperties {
-    // Customize directory using gitPropertiesResourceDir config
-    // The directory in this config key is also added as a classpath entry
-    // (so the git.properties file will be included in the final JAR file)
-    customProperty "build.time", { getBuildTime() }
-    customProperty "project.dir", { project.projectDir.getName() }
-    customProperty 'git.commit.id.describe', { it.describe(tags: true, always: true) } 
-    gitPropertiesResourceDir = file("${project.rootDir}/src/main/deploy")
-    extProperty = 'gitProps'
-}
-generateGitProperties.finalizedBy printGitProperties // make sure we do things in the correct order
-generateGitProperties.outputs.upToDateWhen { false } // make sure the generateGitProperties task always executes (even when git.properties is not changed)
-
-tasks.processResources.dependsOn generateGitProperties // make sure we do things in the correct order
-// https://stackoverflow.com/a/70648216/17887564
-tasks.processResources.outputs.upToDateWhen { false }  // make sure the processResources task always runs
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project DeployUtils.
@@ -115,10 +43,10 @@ def deployArtifact = deploy.targets.roborio.artifacts.frcJava
 wpi.java.debugJni = false
 
 // Set this to true to enable desktop support.
-def includeDesktopSupport = true
+def includeDesktopSupport = false
 
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
-// Also defines JUnit 4.
+// Also defines JUnit 5.
 dependencies {
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
@@ -144,7 +72,14 @@ dependencies {
     nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)
     simulationRelease wpi.sim.enableRelease()
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
 }
 
 // Simulation configuration (e.g. environment variables).
@@ -164,3 +99,8 @@ jar {
 deployArtifact.jarTask = jar
 wpi.java.configureExecutableTasks(jar)
 wpi.java.configureTestTasks(test)
+
+// Configure string concat to always inline compile
+tasks.withType(JavaCompile) {
+    options.compilerArgs.add '-XDstringConcat=inline'
+}

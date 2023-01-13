@@ -24,10 +24,10 @@ public class DriverStationLoggingHandler extends Handler {
 		sb.append(s);
 		if (level >= Level.SEVERE.intValue()) {
 			//DriverStation.reportError(sb.toString(), false);
-			HAL.sendError(true, 2, false, sb.toString(), "", "", false);
+			System.out.println (sb.toString());
 		} else if (level >= Level.WARNING.intValue()) {
 			//DriverStation.reportWarning(sb.toString(), false);
-			HAL.sendError(false, 2, false, sb.toString(), "", "", false);
+			System.out.println (sb.toString());
 		} else {
 			System.out.print(sb.toString()); // NOPMD
 		}

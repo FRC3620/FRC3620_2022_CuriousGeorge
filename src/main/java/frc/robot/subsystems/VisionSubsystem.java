@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.networktables.EntryListenerFlags;
-import edu.wpi.first.networktables.EntryNotification;
+//import edu.wpi.first.networktables.EntryListenerFlags;
+//import edu.wpi.first.networktables.EntryNotification;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -51,15 +51,16 @@ public class VisionSubsystem extends SubsystemBase {
   public VisionSubsystem() {
     SendableRegistry.addLW(RobotContainer.ringLight, getName(), "ringlight");
 
-    tl.addListener(new LimelightListener(), EntryListenerFlags.kUpdate | EntryListenerFlags.kImmediate | EntryListenerFlags.kNew);
+    //tl.addListener(new LimelightListener(), EntryListenerFlags.kUpdate | EntryListenerFlags.kImmediate | EntryListenerFlags.kNew);
   }
-
+/* 
   class LimelightListener implements Consumer<EntryNotification> {
     @Override
     public void accept(EntryNotification t) {
       targetDataLastUpdated = Timer.getFPGATimestamp();
     }
   }
+  */
 
   @Override
   public void periodic() {
