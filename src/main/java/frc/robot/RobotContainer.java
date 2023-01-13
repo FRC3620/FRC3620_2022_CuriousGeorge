@@ -493,7 +493,7 @@ public class RobotContainer {
 
     new TriggerButton(operatorJoystick, false).toggleWhenPressed(new PushBallUpCommand());
     
-    new CenterOnTag().schedule();
+    new WatchForAprilTagCommand().schedule();
   }
 
   public static double getOperatorJoystickRightY() {
@@ -550,7 +550,7 @@ public class RobotContainer {
     SmartDashboard.putData("test for vision lag", new TestVisionLagCommand());
     SmartDashboard.putData("bump turret position", new BumpTurretPositionCommand(turretSubsystem));
 
-    SmartDashboard.putData("Strafe to target", new StrafeToTargetCommand(driveSubsystem));
+    SmartDashboard.putData("Strafe to target", new StrafeToAprilTagCommand(driveSubsystem));
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
