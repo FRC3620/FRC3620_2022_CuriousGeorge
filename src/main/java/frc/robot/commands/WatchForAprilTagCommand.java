@@ -23,9 +23,9 @@ public class WatchForAprilTagCommand extends CommandBase {
   public void execute() 
   { if(AprilTagVision.targetOneX == null)
     {
-      SmartDashboard.putString("TagX", "null");
+      SmartDashboard.putString("TagX", "not seen");
     } 
-    else if(AprilTagVision.targetOneX > 0.5)
+    else if(AprilTagVision.targetOneX > 0.32)
     {
       SmartDashboard.putString("TagX", "right");
     }
