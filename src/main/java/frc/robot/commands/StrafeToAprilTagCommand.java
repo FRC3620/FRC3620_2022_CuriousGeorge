@@ -36,9 +36,10 @@ double targetSpeed;
   @Override
   public void execute() {
     distanceToX = AprilTagVision.targetOneX;
+
     if(distanceToX != null)
     {
-      targetSpeed = -(1.7*(distanceToX - 0.25));
+      targetSpeed = (1.2*(distanceToX - 0.5));
     }
     else
     {
@@ -48,15 +49,15 @@ double targetSpeed;
     if(targetSpeed > -0.2 && targetSpeed < 0.2)
     {
       if (targetSpeed < 0){
-        targetSpeed = -0.2;
+        targetSpeed = -0.1;
       }
       else{
-        targetSpeed = 0.2;
+        targetSpeed = 0.1;
       }
     }
 
     // watch the target, and call strafeWidways as needed
-    if(distanceToX == null || distanceToX > 0.23 && distanceToX < 0.27)
+    if(distanceToX == null || distanceToX > 0.45 && distanceToX < 0.55)
     {
       driveSubsystem.stopDrive();
       //do nothing

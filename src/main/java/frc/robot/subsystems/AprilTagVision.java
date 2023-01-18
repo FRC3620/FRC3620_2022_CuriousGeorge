@@ -43,12 +43,12 @@ public class AprilTagVision extends SubsystemBase {
     // Get the UsbCamera from CameraServer
     UsbCamera camera = CameraServer.startAutomaticCapture();
     // Set the resolution
-    camera.setResolution(640, 480);
+    camera.setResolution(640, 360);
 
     // Get a CvSink. This will capture Mats from the camera
     CvSink cvSink = CameraServer.getVideo();
     // Setup a CvSource. This will send images back to the Dashboard
-    CvSource outputStream = CameraServer.putVideo("detect", 640, 480);
+    CvSource outputStream = CameraServer.putVideo("detect", 640, 360);
 
     // Mats are very memory expensive. Lets reuse this Mat.
     Mat mat = new Mat();
@@ -71,6 +71,9 @@ public class AprilTagVision extends SubsystemBase {
         // skip the rest of the current iteration
         continue;
       }
+      double width = mat.width();
+      SmartDashboard.putNumber("width?", width);
+
 
       Imgproc.cvtColor(mat, grayMat, Imgproc.COLOR_RGB2GRAY);
 
@@ -82,7 +85,8 @@ public class AprilTagVision extends SubsystemBase {
 
         if(detection.getId() == 1){
           System.out.println (detection.getCenterX());
-          temp = detection.getCenterX()/639f;
+          temp = detection.getCenterX()/(width-1);
+          SmartDashboard.putNumber("x-value", detection.getCenterX());
         }
 
         for (var i = 0; i <= 3; i++) {
