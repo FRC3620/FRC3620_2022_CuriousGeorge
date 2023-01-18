@@ -574,6 +574,7 @@ public class RobotContainer {
     chooser.addOption("2 Ball Q Auto", new TwoBallAutoQ(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
     chooser.addOption("2 Ball R Auto", new TwoBallAutoR(driveSubsystem, visionSubsystem, turretSubsystem, intakeSubsystem));
     chooser.addOption("shoot far command",new ShootFarAutoCommand(driveSubsystem, visionSubsystem,turretSubsystem, intakeSubsystem));
+    chooser.addOption("April Tag Auto Test", new AprilTagAutoTest(driveSubsystem));
   }
   
   static double driverStrafeDeadzone = 0.1;
