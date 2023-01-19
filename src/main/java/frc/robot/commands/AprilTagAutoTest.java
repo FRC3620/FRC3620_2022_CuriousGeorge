@@ -20,7 +20,7 @@ public class AprilTagAutoTest extends SequentialCommandGroup {
       new SequentialCommandGroup(
         new StrafeToAprilTagCommand(driveSubsystem),
         // strafes from april tag to cone stick 10in
-        new AutoDriveCommand(10, 0, 0.2, 0, driveSubsystem)
+        new AutoDriveCommand(22, 90, 0.4, 0, driveSubsystem)
       ),
       new LogCommand("All done")
     );

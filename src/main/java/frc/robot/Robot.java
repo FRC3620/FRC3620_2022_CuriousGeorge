@@ -56,9 +56,9 @@ public class Robot extends TimedRobot {
     PortForwarder.add(5804, "limelight.local", 5804);
     PortForwarder.add(5805, "limelight.local", 5805);
 
-    UsbCamera camera = CameraServer.startAutomaticCapture();
-    camera.setResolution(320, 240);
-    camera.setFPS(15);
+    // UsbCamera camera = CameraServer.startAutomaticCapture();
+    // camera.setResolution(320, 240);
+    // camera.setFPS(15);
 
     CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {//whenever a command initializes, the function declared bellow will run.
       public void accept(Command command) {

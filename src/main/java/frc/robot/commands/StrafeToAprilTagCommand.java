@@ -12,6 +12,7 @@ import frc.robot.subsystems.AprilTagVision;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class StrafeToAprilTagCommand extends CommandBase {
+boolean end = false;
 DriveSubsystem driveSubsystem;
 AprilTagVision aprilTagVision;
 Double distanceToX = AprilTagVision.targetOneX;
@@ -29,6 +30,7 @@ double targetSpeed;
   public void initialize() {
     // set the wheels to strafe here
     driveSubsystem.setWheelsToStrafe(0);
+    end = false;
     // driveSubsystem.setWheelsToStrafe(0);
   }
 
@@ -57,9 +59,13 @@ double targetSpeed;
     }
 
     // watch the target, and call strafeWidways as needed
-    if(distanceToX == null || distanceToX > 0.45 && distanceToX < 0.55)
+    if(distanceToX == null || distanceToX > 0.46 && distanceToX < 0.54)
     {
       driveSubsystem.stopDrive();
+      if(distanceToX > 0.45 && distanceToX < 0.55)
+    {
+      end = true;
+    }
       //do nothing
     }
     else
@@ -94,7 +100,7 @@ double targetSpeed;
   public boolean isFinished() {
 
     {
-    return false;
+      return end;
     }
   }
 }
