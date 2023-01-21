@@ -13,10 +13,17 @@ import org.opencv.imgproc.Imgproc;
 
 import edu.wpi.first.apriltag.AprilTagDetection;
 import edu.wpi.first.apriltag.AprilTagDetector;
+import edu.wpi.first.apriltag.AprilTagPoseEstimate;
+import edu.wpi.first.apriltag.AprilTagPoseEstimator;
+import edu.wpi.first.apriltag.AprilTagPoseEstimator.Config;
+import frc.robot.commands.LocateAprilTagCommand;
+
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.CvSink;
 import edu.wpi.first.cscore.CvSource;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -29,6 +36,13 @@ public class AprilTagVision extends SubsystemBase {
     visionThread.start();
   }
 
+  public Config atagCamConfig = new Config(0.1524,573.18, 573.08, 334.47, 180.12);
+  public double atag1TransformX;
+  public double atag1TransformY;
+  public double atag1TransformZ;
+  public boolean getTargetTransform = true;
+
+
   public static Double targetOneX = null;
 
   @Override
@@ -36,9 +50,13 @@ public class AprilTagVision extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  void apriltagVisionThreadProc() {
-    AprilTagDetector detector = new AprilTagDetector();
+  public Transform3d tag1Transform;
+
+  public void apriltagVisionThreadProc() {
+
+      AprilTagDetector detector = new AprilTagDetector();
     detector.addFamily("tag16h5", 0);
+    AprilTagPoseEstimator atagPoseEstimator = new AprilTagPoseEstimator(atagCamConfig);
   
     // Get the UsbCamera from CameraServer
     UsbCamera camera = CameraServer.startAutomaticCapture();
@@ -83,10 +101,13 @@ public class AprilTagVision extends SubsystemBase {
       for (AprilTagDetection detection : detections) {
         tags.add(detection.getId());
 
-        if(detection.getId() == 1){
+        if(detection.getId() == 1)
+        {
           System.out.println (detection.getCenterX());
           temp = detection.getCenterX()/(width-1);
           SmartDashboard.putNumber("x-value", detection.getCenterX());
+          tag1Transform = atagPoseEstimator.estimate(detection);
+          
         }
 
         for (var i = 0; i <= 3; i++) {
@@ -106,7 +127,9 @@ public class AprilTagVision extends SubsystemBase {
 
       targetOneX = temp;
 
+      
       SmartDashboard.putString("tag", tags.toString());
+
       // Give the output stream a new image to display
       outputStream.putFrame(mat);
     }
@@ -114,4 +137,14 @@ public class AprilTagVision extends SubsystemBase {
     detector.close();
   }
 
+  public Transform3d getTag1Transform() {
+    return tag1Transform;
+  }
+
+  public void clearTag1Transform() {
+    tag1Transform = null;
+  }
+
 }
+    
+

@@ -551,6 +551,9 @@ public class RobotContainer {
     SmartDashboard.putData("bump turret position", new BumpTurretPositionCommand(turretSubsystem));
 
     SmartDashboard.putData("Strafe to target", new StrafeToAprilTagCommand(driveSubsystem));
+
+    SmartDashboard.putData("Move to target", new LocateAprilTagCommand(driveSubsystem));
+
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
