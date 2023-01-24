@@ -127,7 +127,12 @@ public class AprilTagVision extends SubsystemBase {
 
       targetOneX = temp;
 
-      
+      SmartDashboard.putNumber("LAT.tag1posex", tag1Transform.getX()*39.3701);
+      SmartDashboard.putNumber("LAT.tag1posey", tag1Transform.getY()*39.3701);
+      SmartDashboard.putNumber("LAT.tag1posez", tag1Transform.getZ()*39.3701); 
+      SmartDashboard.putNumber("LAT.angle", Math.toDegrees (Math.atan((tag1Transform.getX()*39.3701)/(tag1Transform.getZ()*39.3701))));
+      SmartDashboard.putNumber("LAT.distance", Math.sqrt(Math.pow(tag1Transform.getZ()*39.3701-36, 2) + Math.pow(tag1Transform.getX()*39.3701, 2)));
+
       SmartDashboard.putString("tag", tags.toString());
 
       // Give the output stream a new image to display

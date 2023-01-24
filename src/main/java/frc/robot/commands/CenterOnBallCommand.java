@@ -61,7 +61,7 @@ public class CenterOnBallCommand extends CommandBase {
       //spinX = 0;
     } else {
 
-      // Vision sees a ball; set power proportional to distanve to travel
+      // Vision sees a ball; set power proportional to distance to travel
       spinDegrees = (Math.abs((targetX - 0.5)/0.0825)*5);
 
       spinX = MIN_ROTATE_SPEED + (MAX_ROTATE_SPEED - MIN_ROTATE_SPEED)*(
